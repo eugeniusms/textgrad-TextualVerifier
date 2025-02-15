@@ -1,6 +1,6 @@
 # TextGrad
 
-## Main References:
+## Main References
 | Type | Title | Link |
 | ---- | ---- | ---- |
 | Article | "TextGrad: AutoGrad for Text" by Stanford HAI | https://hai.stanford.edu/news/textgrad-autograd-text |
@@ -8,3 +8,9 @@
 | Documentation | TextGrad's Documentation | https://textgrad.readthedocs.io/en/latest/index.html |
 | Github | textgrad | https://github.com/zou-group/textgrad |
 | HuggingFace | TextGrad | https://huggingface.co/TextGrad | 
+
+## Helpful Arcticles
+- https://codeslord.github.io/general/2024/06/12/textgrad/
+
+## License
+This project is licensed under the [MIT License](LICENSE).
