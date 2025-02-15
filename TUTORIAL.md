@@ -29,5 +29,17 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+### 5. Add .env File
+```bash
+GOOGLE_API_KEY=xxx
+```
+
+### 6. Test with Run The Example
+```bash
+python3 examples/code/tutorial_primitives.py
+```
+
 Your development environment is now ready to use!
 
+
+## You Can Use Jupyter
