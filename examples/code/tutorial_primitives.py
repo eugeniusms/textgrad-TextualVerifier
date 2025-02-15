@@ -10,10 +10,23 @@ x = Variable("A sntence with a typo", role_description="The input sentence", req
 print(x.gradients)
 
 # Introduction: Engine
-# When we talk about the engine in TextGrad, we are referring to an LLM. 
-# The engine is an abstraction we use to interact with the model.
-engine = get_engine("gemini-pro")
-
-# This object behaves like you would expect an LLM to behave: 
-# You can sample generation from the engine using the generate method.
+engine = get_engine("gemini-1.5-pro")
 print(engine.generate("Hello how are you?"))
+
+# Introduction: Loss
+system_prompt = Variable("Evaluate the correctness of this sentence", role_description="The system prompt")
+loss = TextLoss(system_prompt, engine=engine)
+print(loss)
+
+# Introduction: Optimizer
+optimizer = TextualGradientDescent(parameters=[x], engine=engine)
+
+# Putting it all together
+l = loss(x)
+l.backward(engine)
+optimizer.step()
+
+print(x.value)
+
+# Multiple Optimization
+optimizer.zero_grad()
