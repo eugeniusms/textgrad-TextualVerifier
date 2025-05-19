@@ -1,7 +1,6 @@
-# TextGrad
+# VTGD - Verified Textual Gradient Descent
 
 ## Introduction
-![Analogy of TextGrad](assets/analogy.png)
 
 ## Main References
 | Type | Title | Link |
