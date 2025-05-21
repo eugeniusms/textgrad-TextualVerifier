@@ -4,8 +4,8 @@ import os
 import yaml
 import pandas as pd
 import textgrad as tg
-from textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
-from textgrad.verification.base import get_verifier
+from textgrad.textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
+from textgrad.textgrad.verification.base import get_verifier
 
 def load_config(config_path):
     """Load experiment configuration."""
@@ -188,16 +188,16 @@ def main():
     # Combine results
     # ...
     
-    # UPDATE BASED ON NEW METRICS
-    # from analysis.accuracy_analysis import analyze_accuracy_improvements
-    # from analysis.threshold_analysis import analyze_threshold_impact
-    # from analysis.error_analysis import analyze_error_reduction
-    # from analysis.convergence_analysis import analyze_convergence
+    # Do Analysis
+    from analysis.accuracy_analysis import analyze_accuracy_improvements
+    from analysis.threshold_analysis import analyze_threshold_impact
+    from analysis.error_analysis import analyze_error_reduction
+    from analysis.convergence_analysis import analyze_convergence
     
-    # accuracy_summary = analyze_accuracy_improvements(config['general']['results_dir'])
-    # threshold_summary = analyze_threshold_impact(config['general']['results_dir'])
-    # error_summary = analyze_error_reduction(config['general']['results_dir'])
-    # convergence_summary = analyze_convergence(config['general']['results_dir'])
+    accuracy_summary = analyze_accuracy_improvements(config['general']['results_dir'])
+    threshold_summary = analyze_threshold_impact(config['general']['results_dir'])
+    error_summary = analyze_error_reduction(config['general']['results_dir'])
+    convergence_summary = analyze_convergence(config['general']['results_dir'])
     
     print("Experiments and analysis complete!")
 
