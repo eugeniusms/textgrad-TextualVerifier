@@ -34,6 +34,19 @@ def config():
                         help="Random seed for reproducibility")
     return parser.parse_args()
 
+
+# Global setup - initialize args and related variables
+args = config()
+llm_engine = tg.get_engine(engine_name=args.engine)
+tg.set_backward_engine(llm_engine, override=True)
+test_set = load_instance_task(args.task, evaluation_api=llm_engine)
+# test_subset = test_set[:args.test_size] if args.test_size < len(test_set) else test_set
+test_subset = [test_set[0], test_set[1]]
+
+# Parse global arguments
+strategies = args.verification_strategies.split(",")
+thresholds = [float(t) for t in args.confidence_thresholds.split(",")]
+
 def get_zeroshot_answer(question):
     """Getting the zero-shot answer from an LLM without optimizing the response at test time."""
     # The system prompt is from: https://github.com/openai/simple-evals/blob/main/sampler/chat_completion_sampler.py
@@ -51,7 +64,7 @@ def run_optimization_with_verification(sample, strategy, threshold, engine, max_
     question, answer, test_time_objective, instance_eval_fn = sample
     
     # Get initial solution
-    zero_shot_response = get_zeroshot_answer(question, engine)
+    zero_shot_response = get_zeroshot_answer(question)
     
     # Create variable to optimize
     instance_var = tg.Variable(
@@ -115,26 +128,9 @@ def run_optimization_with_verification(sample, strategy, threshold, engine, max_
     }
 
 def main():
-    args = config()
-    
-    # Parse arguments
-    strategies = args.verification_strategies.split(",")
-    thresholds = [float(t) for t in args.confidence_thresholds.split(",")]
-    
     # Setup output directory
     os.makedirs(args.output_dir, exist_ok=True)
-    
-    # Setup engine
-    engine = tg.get_engine(args.engine)
-    tg.set_backward_engine(engine, override=True)
-    
-    # Load dataset
-    test_set = load_instance_task(args.task, evaluation_api=engine)
-    if args.test_size > 0:
-        test_subset = test_set[:args.test_size]
-    else:
-        test_subset = test_set
-    
+
     # Store results
     results = []
     
@@ -148,7 +144,7 @@ def main():
             
             for i, sample in enumerate(tqdm(test_subset)):
                 result = run_optimization_with_verification(
-                    sample, strategy, threshold, engine, args.max_iterations
+                    sample, strategy, threshold, llm_engine, args.max_iterations
                 )
                 
                 # Add metadata
@@ -330,6 +326,3 @@ def plot_verification_metrics(summary_df, output_dir):
 
 if __name__ == "__main__":
     main()
-
-args = config()
-llm_engine = tg.get_engine(engine_name=args.engine)
