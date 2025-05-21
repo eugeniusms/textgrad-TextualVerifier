@@ -30,5 +30,11 @@ def get_verifier(strategy, engine):
     elif strategy == "outcome":
         from .outcome_verification import OutcomeVerifier
         return OutcomeVerifier(engine)
+    elif strategy == "hybrid_sequential":
+        from .hybrid_verification import HybridSequentialVerifier
+        return HybridSequentialVerifier(engine)
+    elif strategy == "hybrid_combined":
+        from .hybrid_verification import HybridCombinedVerifier
+        return HybridCombinedVerifier(engine)
     else:
         raise ValueError(f"Unknown verification strategy: {strategy}")
