@@ -41,17 +41,16 @@ class GPQA(Dataset):
         self._task_description = 'GPQA task' # Need to update
             
     def __getitem__(self, index):
-        print(self.data)
         row = self.data[index]
         
         choices = [row['Incorrect Answer 1'], row['Incorrect Answer 2'], row['Incorrect Answer 3'], row['Correct Answer']]
-        choices = [choice for choice in choices]
+        choices = [choice.strip() for choice in choices]
         random.seed(42)
         random.shuffle(choices)
         choices_dict = dict(
                 A=choices[0], B=choices[1], C=choices[2], D=choices[3], Question=row["Question"]
             ) 
-        correct_answer_idx = choices.index(row['Correct Answer'])
+        correct_answer_idx = choices.index(row['Correct Answer'].strip())
         
         # Choices will be a. Choice 1 b. Choice 2 ... etc
         question_prompt = QUERY_TEMPLATE_MULTICHOICE.format(**choices_dict)
@@ -116,32 +115,26 @@ class GPQAInstanceDataset(GPQA):
     def __getitem__(self, index):
         row = self.data[index]
         
-        question_list = row['Question']
-        idx = 0
-        for question in question_list:
-            choices = [
-                row['Incorrect Answer 1'][idx],
-                row['Incorrect Answer 2'][idx],
-                row['Incorrect Answer 3'][idx],
-                row['Correct Answer'][idx]
-            ]
-            random.seed(42)
-            random.shuffle(choices)
-            choices_dict = dict(
-                    A=choices[0], B=choices[1], C=choices[2], D=choices[3], Question=question
-                ) 
-            correct_answer_idx = choices.index(row['Correct Answer'][idx])
+        choices = [row['Incorrect Answer 1'], row['Incorrect Answer 2'], row['Incorrect Answer 3'], row['Correct Answer']]
+        choices = [choice.strip() for choice in choices]
+        random.seed(42)
+        random.shuffle(choices)
+        choices_dict = dict(
+                A=choices[0], B=choices[1], C=choices[2], D=choices[3], Question=row["Question"]
+            ) 
+        correct_answer_idx = choices.index(row['Correct Answer'].strip())
         
-            # Choices will be a. Choice 1 b. Choice 2 ... etc
-            question_prompt = QUERY_TEMPLATE_MULTICHOICE.format(**choices_dict)
-            answer = chr(65+correct_answer_idx)
+        # Choices will be a. Choice 1 b. Choice 2 ... etc
+        question_prompt = QUERY_TEMPLATE_MULTICHOICE.format(**choices_dict)
+        answer = chr(65+correct_answer_idx)
 
-            # TODO: Make the two-way comparison class abstract enough.
-            # TODO: How do we determine the role of the instances? We should be more consistent
-            return question_prompt, answer, self._get_instance_test_time_objective(question_prompt), self._get_instance_eval_fn(question_prompt, answer)
+        # TODO: Make the two-way comparison class abstract enough.
+        # TODO: How do we determine the role of the instances? We should be more consistent
+        return question_prompt, answer, self._get_instance_test_time_objective(question_prompt), self._get_instance_eval_fn(question_prompt, answer)
 
     def get_task_description(self):
         return "Given a multiple choice question, the goal is to select the correct final answer from the choices."
+
 
 
 class GPQAInstanceDatasetOpenAI(Dataset):
