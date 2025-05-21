@@ -1,205 +1,320 @@
-# experiments/run_experiments.py
-
+import argparse
 import os
-import yaml
+import json
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+
 import textgrad as tg
+from textgrad.tasks import load_instance_task
 from textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
-from textgrad.verification.base import get_verifier
 
-def load_config(config_path):
-    """Load experiment configuration."""
-    with open(config_path, 'r') as f:
-        config = yaml.safe_load(f)
-    return config
+def config():
+    parser = argparse.ArgumentParser(description="Compare verification strategies for TextGrad optimization")
+    parser.add_argument("--task", type=str, default="GPQA_diamond", 
+                        help="Task to evaluate optimization on")
+    parser.add_argument("--engine", type=str, default="gpt-4o", 
+                        help="Engine for evaluation and optimization")
+    parser.add_argument("--max_iterations", type=int, default=3, 
+                        help="Maximum iterations for optimization")
+    parser.add_argument("--verification_strategies", type=str, 
+                        default="none,process,outcome", 
+                        help="Comma-separated list of verification strategies to test")
+    parser.add_argument("--confidence_thresholds", type=str, 
+                        default="0.7,0.8,0.9", 
+                        help="Comma-separated list of confidence thresholds to test")
+    parser.add_argument("--output_dir", type=str, default="results/verification", 
+                        help="Directory to save results")
+    parser.add_argument("--num_threads", type=int, default=8, 
+                        help="Number of threads for parallel processing")
+    parser.add_argument("--test_size", type=int, default=50, 
+                        help="Number of test samples to evaluate")
+    parser.add_argument("--seed", type=int, default=42, 
+                        help="Random seed for reproducibility")
+    return parser.parse_args()
 
-def setup_directories(config):
-    """Set up directories for logs and results."""
-    os.makedirs(config['general']['log_dir'], exist_ok=True)
-    os.makedirs(config['general']['results_dir'], exist_ok=True)
-    os.makedirs(f"{config['general']['results_dir']}/figures", exist_ok=True)
-
-def run_math_experiments(config):
-    """Run experiments for math reasoning tasks."""
-    results = []
-    convergence_data = []
-    error_data = []
+def run_optimization_with_verification(sample, strategy, threshold, engine, max_iterations):
+    """Run optimization with a specific verification strategy and threshold"""
+    question, answer, test_time_objective, instance_eval_fn = sample
     
-    # Set up models
-    forward_model = config['general']['models']['forward_model']
-    backward_model = config['general']['models']['backward_model']
-    verification_model = config['general']['models']['verification_model']
+    # Get initial solution
+    zero_shot_response = get_zeroshot_answer(question, engine)
     
-    tg.set_backward_engine(backward_model)
+    # Create variable to optimize
+    instance_var = tg.Variable(
+        zero_shot_response.value,
+        requires_grad=True,
+        role_description="solution to the question"
+    )
     
-    # Run experiments for each math dataset
-    for dataset_config in config['tasks']['math_reasoning']['datasets']:
-        dataset_name = dataset_config['name']
-        split = dataset_config['split']
-        sample_size = dataset_config['sample_size']
+    # Record metrics
+    performance_history = []
+    verification_metrics = []
+    
+    # Initial evaluation
+    performance_history.append(int(instance_eval_fn(instance_var)))
+    
+    # Choose optimizer based on strategy
+    if strategy == "none":
+        optimizer = TextualGradientDescent(
+            parameters=[instance_var],
+            engine=engine
+        )
+    else:
+        optimizer = VerifiedTextualGradientDescent(
+            parameters=[instance_var],
+            verification_strategy=strategy,
+            verification_threshold=threshold,
+            engine=engine
+        )
+    
+    # Optimization loop
+    for _ in range(max_iterations):
+        optimizer.zero_grad()
+        loss = test_time_objective(instance_var)
+        loss.backward()
         
-        # Load dataset
-        dataset = load_dataset(dataset_name, split, sample_size)
+        # If using verification, capture metrics before step
+        if strategy != "none":
+            verification_applied = False
+            verification_confidence = 0.0
+            # Add logic to track verification metrics from the optimizer
         
-        # For each verification strategy
-        for strategy_config in config['verification_strategies']:
-            strategy_name = strategy_config['name']
-            strategy_type = strategy_config['type']
-            threshold = strategy_config['threshold']
-            
-            print(f"Running {dataset_name} with {strategy_name} verification...")
-            
-            # Process each example
-            for example_idx, example in enumerate(dataset):
-                question, answer = example
-                
-                # Initialize variables
-                question_var = tg.Variable(
-                    question, 
-                    requires_grad=False, 
-                    role_description="question to solve"
-                )
-                
-                # Get initial solution
-                model = tg.BlackboxLLM(forward_model)
-                initial_solution = model(question_var)
-                
-                # Set up optimizer based on verification strategy
-                if strategy_type is None:  # Baseline without verification
-                    optimizer = TextualGradientDescent(
-                        parameters=[initial_solution],
-                        engine=verification_model,
-                        verbose=1
-                    )
-                else:  # With verification
-                    optimizer = VerifiedTextualGradientDescent(
-                        parameters=[initial_solution],
-                        verification_strategy=strategy_type,
-                        verification_threshold=threshold,
-                        engine=verification_model,
-                        verbose=1
-                    )
-                
-                # Define loss function
-                loss_fn = tg.TextLoss(
-                    f"Evaluate this solution to the problem: {question}. "
-                    "Identify any errors or areas for improvement."
-                )
-                
-                # Run optimization loop
-                max_iterations = config['general']['max_iterations']
-                for i in range(max_iterations):
-                    # Calculate loss
-                    loss = loss_fn(initial_solution)
-                    
-                    # Record metrics for this iteration
-                    iter_data = {
-                        'task': dataset_name,
-                        'example_id': example_idx,
-                        'verification_strategy': strategy_name,
-                        'iteration': i,
-                        'loss': float(loss.value.split("\n")[0] if "\n" in loss.value else loss.value),
-                        'solution_length': len(initial_solution.value),
-                        'verification_applied': hasattr(optimizer, 'verification_applied') and optimizer.verification_applied,
-                        'verification_confidence': getattr(optimizer, 'verification_confidence', 0.0),
-                    }
-                    
-                    # Check accuracy (simplified - would need task-specific evaluation)
-                    correct = evaluate_solution(initial_solution.value, answer, dataset_name)
-                    iter_data['accuracy'] = 1.0 if correct else 0.0
-                    
-                    # Add to convergence data
-                    convergence_data.append(iter_data)
-                    
-                    # If solution is correct, break
-                    if correct:
-                        break
-                        
-                    # Backpropagate and update
-                    loss.backward()
-                    optimizer.step()
-                
-                # Record final results
-                result = {
-                    'task': dataset_name,
-                    'example_id': example_idx,
-                    'verification_strategy': strategy_name,
-                    'iterations': i + 1,
-                    'accuracy': 1.0 if correct else 0.0,
-                    'converged': correct,
-                }
-                results.append(result)
-                
-                # Analyze errors in the solution
-                error_types = analyze_errors(initial_solution.value, answer, dataset_name)
-                error_data.append({
-                    'task': dataset_name,
-                    'example_id': example_idx,
-                    'verification_strategy': strategy_name,
-                    **error_types
-                })
+        optimizer.step()
+        
+        # Record results
+        score = int(instance_eval_fn(instance_var))
+        performance_history.append(score)
+        
+        if strategy != "none":
+            verification_metrics.append({
+                "iteration": len(performance_history) - 1,
+                "verification_applied": verification_applied,
+                "verification_confidence": verification_confidence,
+                "score_after_update": score
+            })
     
-    # Save results
-    pd.DataFrame(results).to_csv(
-        f"{config['general']['results_dir']}/math_results.csv", 
-        index=False
-    )
-    
-    pd.DataFrame(convergence_data).to_csv(
-        f"{config['general']['results_dir']}/math_convergence.csv", 
-        index=False
-    )
-    
-    pd.DataFrame(error_data).to_csv(
-        f"{config['general']['results_dir']}/math_errors.csv", 
-        index=False
-    )
-    
-    return results, convergence_data, error_data
-
-# Helper functions - placeholders, would need to be implemented
-def load_dataset(dataset_name, split, sample_size):
-    """Load a dataset for experiments."""
-    # Implementation would depend on your dataset loading utilities
-    pass
-
-def evaluate_solution(solution, answer, dataset_name):
-    """Evaluate if a solution is correct."""
-    # Implementation would be task-specific
-    pass
-
-def analyze_errors(solution, answer, dataset_name):
-    """Analyze error types in a solution."""
-    # Implementation would be task-specific
-    pass
-
-# Similar functions would be needed for code_experiments and scientific_qa_experiments
+    return {
+        "performance_history": performance_history,
+        "verification_metrics": verification_metrics,
+        "final_solution": instance_var.value,
+        "answer": answer
+    }
 
 def main():
-    """Main entry point for running experiments."""
-    config_path = "experiments/configs/verification_config.yaml"
-    config = load_config(config_path)
-    setup_directories(config)
+    args = config()
     
-    # Run experiments
-    math_results, math_convergence, math_errors = run_math_experiments(config)
-    # Run code and scientific QA experiments similarly
+    # Parse arguments
+    strategies = args.verification_strategies.split(",")
+    thresholds = [float(t) for t in args.confidence_thresholds.split(",")]
     
-    # Combine results
-    # ...
+    # Setup output directory
+    os.makedirs(args.output_dir, exist_ok=True)
     
-    # Do Analysis
-    from analysis.accuracy_analysis import analyze_accuracy_improvements
-    from analysis.threshold_analysis import analyze_threshold_impact
-    from analysis.error_analysis import analyze_error_reduction
-    from analysis.convergence_analysis import analyze_convergence
+    # Setup engine
+    engine = tg.get_engine(args.engine)
+    tg.set_backward_engine(engine, override=True)
     
-    accuracy_summary = analyze_accuracy_improvements(config['general']['results_dir'])
-    threshold_summary = analyze_threshold_impact(config['general']['results_dir'])
-    error_summary = analyze_error_reduction(config['general']['results_dir'])
-    convergence_summary = analyze_convergence(config['general']['results_dir'])
+    # Load dataset
+    test_set = load_instance_task(args.task, evaluation_api=engine)
+    if args.test_size > 0:
+        test_subset = test_set[:args.test_size]
+    else:
+        test_subset = test_set
     
-    print("Experiments and analysis complete!")
+    # Store results
+    results = []
+    
+    # Run experiments for each strategy and threshold
+    for strategy in strategies:
+        for threshold in thresholds:
+            if strategy == "none" and threshold != thresholds[0]:
+                continue  # Skip redundant runs for baseline
+            
+            print(f"Running experiments with {strategy} verification (threshold={threshold})")
+            
+            for i, sample in enumerate(tqdm(test_subset)):
+                result = run_optimization_with_verification(
+                    sample, strategy, threshold, engine, args.max_iterations
+                )
+                
+                # Add metadata
+                result["sample_id"] = i
+                result["verification_strategy"] = strategy
+                result["verification_threshold"] = threshold
+                result["task"] = args.task
+                
+                results.append(result)
+                
+                # Save incremental results
+                if (i + 1) % 10 == 0:
+                    with open(f"{args.output_dir}/verification_results_partial.json", 'w') as f:
+                        json.dump(results, f, indent=2)
+    
+    # Save final results
+    with open(f"{args.output_dir}/verification_results.json", 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    # Generate summary statistics and visualizations
+    analyze_results(results, args.output_dir)
+
+def analyze_results(results, output_dir):
+    """Analyze verification results and generate visualizations"""
+    # Create summary dataframe
+    summary = []
+    
+    # Group results by strategy and threshold
+    results_df = pd.DataFrame(results)
+    groupby_cols = ['verification_strategy', 'verification_threshold', 'task']
+    grouped = results_df.groupby(groupby_cols)
+    
+    # Calculate metrics
+    for (strategy, threshold, task), group in grouped:
+        # Success rate by iteration
+        success_rates = []
+        for i in range(group['performance_history'].iloc[0] + 1):
+            success_rate = np.mean([row['performance_history'][i] for _, row in group.iterrows()])
+            success_rates.append(success_rate)
+        
+        # Verification metrics if applicable
+        verification_applied_rate = 0
+        avg_confidence = 0
+        correction_rate = 0
+        
+        if strategy != "none":
+            vm_all = []
+            for _, row in group.iterrows():
+                if 'verification_metrics' in row and row['verification_metrics']:
+                    vm_all.extend(row['verification_metrics'])
+            
+            if vm_all:
+                vm_df = pd.DataFrame(vm_all)
+                verification_applied_rate = vm_df['verification_applied'].mean()
+                avg_confidence = vm_df['verification_confidence'].mean()
+                # Add logic for correction rate calculation
+        
+        summary.append({
+            'verification_strategy': strategy,
+            'verification_threshold': threshold,
+            'task': task,
+            'initial_success_rate': success_rates[0],
+            'final_success_rate': success_rates[-1],
+            'improvement': success_rates[-1] - success_rates[0],
+            'verification_applied_rate': verification_applied_rate,
+            'avg_confidence': avg_confidence,
+            'correction_rate': correction_rate
+        })
+    
+    # Save summary statistics
+    summary_df = pd.DataFrame(summary)
+    summary_df.to_csv(f"{output_dir}/verification_summary.csv", index=False)
+    
+    # Generate visualizations
+    plot_success_rates_by_strategy(summary_df, output_dir)
+    plot_verification_metrics(summary_df, output_dir)
+
+def plot_success_rates_by_strategy(summary_df, output_dir):
+    """Plot success rates by verification strategy"""
+    plt.figure(figsize=(10, 6))
+    
+    # Group by strategy
+    strategies = summary_df['verification_strategy'].unique()
+    
+    for strategy in strategies:
+        strategy_data = summary_df[summary_df['verification_strategy'] == strategy]
+        plt.bar(
+            strategy, 
+            strategy_data['improvement'].mean(), 
+            yerr=strategy_data['improvement'].std(),
+            label=f"{strategy} (threshold={strategy_data['verification_threshold'].iloc[0]})"
+        )
+    
+    plt.axhline(y=0, color='r', linestyle='-', alpha=0.3)
+    plt.xlabel('Verification Strategy')
+    plt.ylabel('Average Improvement in Success Rate')
+    plt.title('Performance Improvement by Verification Strategy')
+    plt.legend()
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(f"{output_dir}/success_rates_by_strategy.png", dpi=300)
+
+def plot_verification_metrics(summary_df, output_dir):
+    """Plot verification metrics by strategy and threshold"""
+    # Filter out 'none' strategy
+    df = summary_df[summary_df['verification_strategy'] != 'none']
+    
+    if df.empty:
+        return
+    
+    plt.figure(figsize=(12, 8))
+    
+    # Create subplot for verification application rate
+    plt.subplot(2, 2, 1)
+    for strategy in df['verification_strategy'].unique():
+        strategy_data = df[df['verification_strategy'] == strategy]
+        plt.plot(
+            strategy_data['verification_threshold'], 
+            strategy_data['verification_applied_rate'],
+            marker='o',
+            label=strategy
+        )
+    plt.xlabel('Confidence Threshold')
+    plt.ylabel('Verification Application Rate')
+    plt.title('Verification Application Rate by Threshold')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Create subplot for average confidence
+    plt.subplot(2, 2, 2)
+    for strategy in df['verification_strategy'].unique():
+        strategy_data = df[df['verification_strategy'] == strategy]
+        plt.plot(
+            strategy_data['verification_threshold'], 
+            strategy_data['avg_confidence'],
+            marker='o',
+            label=strategy
+        )
+    plt.xlabel('Confidence Threshold')
+    plt.ylabel('Average Confidence')
+    plt.title('Average Verification Confidence by Threshold')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Create subplot for correction rate
+    plt.subplot(2, 2, 3)
+    for strategy in df['verification_strategy'].unique():
+        strategy_data = df[df['verification_strategy'] == strategy]
+        plt.plot(
+            strategy_data['verification_threshold'], 
+            strategy_data['correction_rate'],
+            marker='o',
+            label=strategy
+        )
+    plt.xlabel('Confidence Threshold')
+    plt.ylabel('Correction Rate')
+    plt.title('Correction Rate by Threshold')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Create subplot for improvement vs verification rate
+    plt.subplot(2, 2, 4)
+    for strategy in df['verification_strategy'].unique():
+        strategy_data = df[df['verification_strategy'] == strategy]
+        plt.scatter(
+            strategy_data['verification_applied_rate'],
+            strategy_data['improvement'],
+            alpha=0.7,
+            label=strategy
+        )
+    plt.xlabel('Verification Application Rate')
+    plt.ylabel('Performance Improvement')
+    plt.title('Improvement vs. Verification Rate')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(f"{output_dir}/verification_metrics.png", dpi=300)
 
 if __name__ == "__main__":
     main()
