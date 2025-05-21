@@ -4,8 +4,8 @@ import os
 import yaml
 import pandas as pd
 import textgrad as tg
-from textgrad.textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
-from textgrad.textgrad.verification.base import get_verifier
+from textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
+from textgrad.verification.base import get_verifier
 
 def load_config(config_path):
     """Load experiment configuration."""
