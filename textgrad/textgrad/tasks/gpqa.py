@@ -44,13 +44,13 @@ class GPQA(Dataset):
         row = self.data[index]
         
         choices = [row['Incorrect Answer 1'], row['Incorrect Answer 2'], row['Incorrect Answer 3'], row['Correct Answer']]
-        choices = [choice.strip() for choice in choices]
+        choices = [choice for choice in choices]
         random.seed(42)
         random.shuffle(choices)
         choices_dict = dict(
                 A=choices[0], B=choices[1], C=choices[2], D=choices[3], Question=row["Question"]
             ) 
-        correct_answer_idx = choices.index(row['Correct Answer'].strip())
+        correct_answer_idx = choices.index(row['Correct Answer'])
         
         # Choices will be a. Choice 1 b. Choice 2 ... etc
         question_prompt = QUERY_TEMPLATE_MULTICHOICE.format(**choices_dict)
@@ -116,13 +116,14 @@ class GPQAInstanceDataset(GPQA):
         row = self.data[index]
         
         choices = [row['Incorrect Answer 1'], row['Incorrect Answer 2'], row['Incorrect Answer 3'], row['Correct Answer']]
-        choices = [choice.strip() for choice in choices]
+        choices = [choice for choice in choices]
         random.seed(42)
         random.shuffle(choices)
         choices_dict = dict(
                 A=choices[0], B=choices[1], C=choices[2], D=choices[3], Question=row["Question"]
             ) 
-        correct_answer_idx = choices.index(row['Correct Answer'].strip())
+        # print(row['Correct Answer'])
+        correct_answer_idx = choices.index(row['Correct Answer'])
         
         # Choices will be a. Choice 1 b. Choice 2 ... etc
         question_prompt = QUERY_TEMPLATE_MULTICHOICE.format(**choices_dict)

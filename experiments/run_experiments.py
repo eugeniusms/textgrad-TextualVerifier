@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 import textgrad as tg
-from textgrad.textgrad.tasks import load_instance_task
-from textgrad.textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
+from textgrad.tasks import load_instance_task
+from textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
 
 def config():
     parser = argparse.ArgumentParser(description="Compare verification strategies for TextGrad optimization")
@@ -33,6 +33,18 @@ def config():
     parser.add_argument("--seed", type=int, default=42, 
                         help="Random seed for reproducibility")
     return parser.parse_args()
+
+def get_zeroshot_answer(question):
+    """Getting the zero-shot answer from an LLM without optimizing the response at test time."""
+    # The system prompt is from: https://github.com/openai/simple-evals/blob/main/sampler/chat_completion_sampler.py
+    STARTING_SYSTEM_PROMPT = (
+    "You are ChatGPT, a large language model trained by OpenAI, based on the GPT-4 architecture."
+    + "\nKnowledge cutoff: 2023-12\nCurrent date: 2024-04-01"
+)
+    system_prompt = tg.Variable(STARTING_SYSTEM_PROMPT, requires_grad=False, role_description="system prompt to the language model")
+    model = tg.BlackboxLLM(llm_engine, system_prompt)
+    response = model(tg.Variable(question, requires_grad=False, role_description="question to the language model"))
+    return response
 
 def run_optimization_with_verification(sample, strategy, threshold, engine, max_iterations):
     """Run optimization with a specific verification strategy and threshold"""
@@ -318,3 +330,6 @@ def plot_verification_metrics(summary_df, output_dir):
 
 if __name__ == "__main__":
     main()
+
+args = config()
+llm_engine = tg.get_engine(engine_name=args.engine)
