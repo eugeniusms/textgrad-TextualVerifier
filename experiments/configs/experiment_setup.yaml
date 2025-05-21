@@ -1,0 +1,75 @@
+# experiments/configs/experiment_setup.yaml
+
+# General settings
+general:
+  max_iterations: 5
+  batch_size: 3
+  seed: 42
+  log_dir: "logs/"
+  results_dir: "results/"
+  models:
+    forward_model: "gpt-3.5-turbo-0125"  # Model for doing the optimization
+    backward_model: "gpt-4o"             # Model for computing gradients
+    verification_model: "gpt-4o"         # Model for verification
+
+# Verification strategies
+verification_strategies:
+  - name: "none"                   # Baseline without verification
+    type: null
+    threshold: 0.0
+  
+  - name: "process"                # Process verification
+    type: "process"
+    threshold: 0.7
+  
+  - name: "outcome"                # Outcome verification
+    type: "outcome"
+    threshold: 0.7
+  
+  - name: "hybrid_sequential"      # Hybrid approach (sequential)
+    type: "hybrid_sequential"
+    threshold: 0.7
+  
+  - name: "process_high_threshold" # Process with higher threshold
+    type: "process"
+    threshold: 0.9
+
+# Task configurations
+tasks:
+  math_reasoning:
+    datasets:
+      - name: "gsm8k"
+        split: "test"
+        sample_size: 100
+      - name: "bbh_object_counting"
+        split: "test"
+        sample_size: 50
+    
+    metrics:
+      - "accuracy"
+      - "iterations_to_convergence"
+      - "error_reduction_rate"
+  
+  code_optimization:
+    datasets:
+      - name: "leetcode_hard"
+        sample_size: 20
+    
+    metrics:
+      - "completion_rate"
+      - "runtime_improvement"
+      - "error_detection_rate"
+  
+  scientific_qa:
+    datasets:
+      - name: "mmlu_physics"
+        split: "test"
+        sample_size: 50
+      - name: "gpqa_diamond"
+        split: "test"
+        sample_size: 50
+    
+    metrics:
+      - "accuracy"
+      - "hallucination_rate"
+      - "verification_precision"
