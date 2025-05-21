@@ -405,7 +405,7 @@ if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(description="Analyze verification impact")
-    parser.add_argument("--results_file", type=str, required=True, help="Path to verification results JSON file")
+    parser.add_argument("--results_file", type=str, default="results/verification/verification_results.json", help="Path to verification results JSON file")
     parser.add_argument("--output_dir", type=str, default="results/analysis", help="Directory to save analysis results")
     
     args = parser.parse_args()

@@ -1,0 +1,8 @@
+verification_strategy,verification_threshold,task,initial_success_rate,final_success_rate,improvement,verification_applied_rate,avg_confidence,correction_rate
+none,0.7,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
+outcome,0.7,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
+outcome,0.8,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
+outcome,0.9,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
+process,0.7,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
+process,0.8,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
+process,0.9,GPQA_diamond,0.5,0.5,0.0,0.0,0.0,0
