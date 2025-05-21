@@ -7,9 +7,9 @@ base:
   log_dir: "logs/verification"
   results_dir: "results/verification"
   models:
-    forward_model: "gpt-3.5-turbo-0125"  # Model for generating initial solutions
-    backward_model: "gpt-4o"             # Model for computing gradients and verification
-    evaluation_model: "gpt-4o"           # Model for evaluation
+    forward_model: "gemini-1.5-pro"              # Model for generating initial solutions
+    backward_model: "gemini-2.0-pro"             # Model for computing gradients and verification
+    evaluation_model: "gemini-2.0-pro"           # Model for evaluation
 
 # Tasks to evaluate
 tasks:

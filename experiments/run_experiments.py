@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 import textgrad as tg
-from textgrad.tasks import load_instance_task
-from textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
+from textgrad.textgrad.tasks import load_instance_task
+from textgrad.textgrad.optimizer import TextualGradientDescent, VerifiedTextualGradientDescent
 
 def config():
     parser = argparse.ArgumentParser(description="Compare verification strategies for TextGrad optimization")
     parser.add_argument("--task", type=str, default="GPQA_diamond", 
                         help="Task to evaluate optimization on")
-    parser.add_argument("--engine", type=str, default="gpt-4o", 
+    parser.add_argument("--engine", type=str, default="gemini-1.5-pro", 
                         help="Engine for evaluation and optimization")
     parser.add_argument("--max_iterations", type=int, default=3, 
                         help="Maximum iterations for optimization")
