@@ -1,5 +1,5 @@
 from engines.gemini import generate_llm_output
-from formatter.step_formatter import step_formatter
+from verification.formatter.step_formatter import step_formatter
 
 def verify_and_revise(question, 
                     reasoning_chain, 
