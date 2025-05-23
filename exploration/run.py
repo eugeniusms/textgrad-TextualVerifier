@@ -5,6 +5,7 @@ from verify_and_revise.verify_and_revise import verify_and_revise
 from extract_answer.extract_answer import extract_answer
 from verifiers.step_co import StepCo
 from verifiers.general_purpose import GeneralPurposeVerifier
+from utils.result_to_json import format_reasoning_to_json
 
 QUERY = """
 Answer the following multiple choice question. The last line of your response should be of the following format: 'Answer: $LETTER' (without quotes) where LETTER is one of ABCD. Think step by step before answering.
@@ -33,13 +34,12 @@ def process_verification(query, verifier, threshold=0.5, max_revisions=3):
     final_answer = extract_answer(final_steps, query)
     
     return {
-        "reasoning_steps": final_steps,
-        "answer": final_answer,
-        "initial_steps": initial_steps
+        "initial_steps": initial_steps,
+        "final_steps": final_steps,
+        "answer": final_answer
     }
 
 if __name__ == "__main__":
-    verifier = GeneralPurposeVerifier()
+    verifier = StepCo()
     result = process_verification(QUERY, verifier)
-    print(result)
-    print(result['answer'])
+    format_reasoning_to_json(result, "exploration/results/step_co/step_co_result_002.json")

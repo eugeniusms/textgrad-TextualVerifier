@@ -31,6 +31,7 @@ def verify_and_revise(question, reasoning_chain, verifier, threshold=0.5, max_re
             current_chain = verified_chain + [current_step]
             verification = verify_step(question, current_chain, verifier)
             
+            print(f"Current chain: {current_chain}")
             print(f"Step {i+1} (Revision {revision}) probability: {verification['probability']:.4f}")
             
             # If step meets threshold, accept it and move to next step
