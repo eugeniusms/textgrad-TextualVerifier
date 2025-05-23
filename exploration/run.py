@@ -17,122 +17,147 @@ C) 10^-8 eV
 D) 10^-9 eV
 """.strip()
 
-def process_verification(query, verifier, threshold=0.5, max_iterations=5):
+def process_verification(query, verifier, threshold=0.5, max_revisions=3):
     cot_prompt = cot_prompter(query)
     reasoning_path = generate_llm_output(cot_prompt)
-    current_steps = step_formatter(reasoning_path)
+    initial_steps = step_formatter(reasoning_path)
 
-    iterations = []
-
-    for iteration in range(max_iterations):
-        verification_result = verify_steps(query, current_steps, verifier, threshold)
-        print("VERIFICATION RESULT", verification_result)
-
-        iterations.append({
-            "iteration": iteration,
-            "steps": current_steps.copy(),
-            "verification": verification_result
-        })
-
-        if verification_result["all_correct"]:
-            print(f"All steps correct after iteration {iteration}")
-            break
-
-        incorrect_step_index = verification_result["first_incorrect_step_index"]
-        incorrect_step_prob = verification_result["step_probabilities"][incorrect_step_index]
-        
-        print(f"Iteration {iteration}: Found incorrect step at index {incorrect_step_index} with probability {incorrect_step_prob:.4f}")
-        
-        # Step 3.4: Revise incorrect steps
-        current_steps = revise_steps(
-            query, 
-            current_steps, 
-            incorrect_step_index, 
-            incorrect_step_prob,
-        )
-
-    # Step 4: Extract the final answer
-    final_answer = extract_answer(current_steps)
+    print(f"Initial reasoning path with {len(initial_steps)} steps")
+    for i, step in enumerate(initial_steps):
+        print(f"Step {i+1}: {step[:100]}...")
+    
+    # Verify and revise each step
+    final_steps = verify_and_revise(query, initial_steps, verifier, threshold, max_revisions)
+    
+    # Extract the final answer
+    final_answer = extract_answer(final_steps, query)
     
     return {
-        "reasoning_steps": current_steps,
+        "reasoning_steps": final_steps,
         "answer": final_answer,
-        "iterations": iterations
+        "initial_steps": initial_steps
     }
 
-def verify_steps(question, steps, verifier, threshold):
+def verify_and_revise(question, reasoning_chain, verifier, threshold=0.5, max_revisions=3):
     """
-    Verify each step in the reasoning path using the process-supervised verifier.
+    Verify and revise each step in the reasoning chain until all steps meet the threshold.
     
     Args:
         question (str): The original problem
-        steps (list): List of reasoning steps
-        verifier: The process-supervised verifier model
-        threshold (float): Probability threshold for determining incorrect steps
+        reasoning_chain (list): List of reasoning steps
+        verifier: The verifier model
+        threshold (float): Probability threshold for acceptable steps
+        max_revisions (int): Maximum number of revision attempts per step
         
     Returns:
-        dict: Verification results including step probabilities and first incorrect step
+        list: The final verified and revised reasoning chain
     """
-    step_probabilities = []
-    first_incorrect_step_index = -1
+    # Start with an empty verified chain
+    verified_chain = []
     
-    # Check each step with the verifier
-    for i, step in enumerate(steps):
-        # Create input for the verifier by combining question and steps up to current step
-        preceding_steps = "\n".join(steps[:i+1])
-        verifier_input = f"{question}\n{preceding_steps}"
+    # Process each step in the reasoning chain
+    for i, step in enumerate(reasoning_chain):
+        print(f"\nVerifying step {i+1}:")
         
+        # Current step to verify
+        current_step = step
+        
+        # Try to revise this step until it meets the threshold or max revisions reached
+        for revision in range(max_revisions):
+            # Verify current step
+            current_chain = verified_chain + [current_step]
+            verification = verify_step(question, current_chain, verifier)
+            
+            print(f"Step {i+1} (Revision {revision}) probability: {verification['probability']:.4f}")
+            
+            # If step meets threshold, accept it and move to next step
+            if verification['probability'] >= threshold:
+                print(f"Step {i+1} meets threshold, moving to next step")
+                verified_chain.append(current_step)
+                break
+                
+            # If step doesn't meet threshold and we haven't reached max revisions, revise it
+            if revision < max_revisions - 1:
+                print(f"Step {i+1} below threshold, revising...")
+                revised_step = revise_step(question, verified_chain, current_step, verification['probability'])
+                current_step = revised_step
+            else:
+                # If we've reached max revisions, accept the current step and move on
+                print(f"Warning: Step {i+1} still below threshold after {max_revisions} revisions. Accepting anyway.")
+                verified_chain.append(current_step)
+    
+    return verified_chain
+
+def verify_step(question, chain_so_far, verifier):
+    """
+    Verify a single step in the reasoning chain.
+    
+    Args:
+        question (str): The original problem
+        chain_so_far (list): The reasoning chain up to and including the current step
+        verifier: The verifier model
+        
+    Returns:
+        dict: Verification result with probability and revision decision
+    """
+    # Create input for the verifier
+    preceding_steps = "\n".join(chain_so_far)
+    verifier_input = f"{question}\n{preceding_steps}"
+    
+    try:
         # Get probability that this step leads to correct answer
         probability = verifier.predict(input_text=verifier_input)
-        step_probabilities.append(probability)
-        
-        # Check if this is the first step below the threshold
-        if probability < threshold and first_incorrect_step_index == -1:
-            first_incorrect_step_index = i
+    except Exception as e:
+        print(f"Error in verifier.predict(): {e}")
+        probability = 0.5
     
     return {
-        "step_probabilities": step_probabilities,
-        "first_incorrect_step_index": first_incorrect_step_index,
-        "all_correct": first_incorrect_step_index == -1
+        "probability": probability,
+        "revise": probability < 0.5
     }
 
-def revise_steps(question, steps, incorrect_step_index, incorrect_step_prob):
+def revise_step(question, previous_steps, current_step, probability):
     """
-    Revise the incorrect steps in the reasoning path.
+    Revise a single step in the reasoning chain.
     
     Args:
         question (str): The original problem
-        steps (list): List of reasoning steps
-        incorrect_step_index (int): Index of the first incorrect step
-        incorrect_step_prob (float): Probability of the incorrect step
-        llm: The language model to use for revision
+        previous_steps (list): All verified steps before the current step
+        current_step (str): The step to be revised
+        probability (float): The probability score of the current step
         
     Returns:
-        list: Revised list of reasoning steps
+        str: The revised step
     """
-    # Keep the correct steps (before the incorrect step)
-    correct_steps = steps[:incorrect_step_index]
+    # Format previous steps with tags
+    previous_formatted = ""
+    if previous_steps:
+        previous_formatted = "\n".join([f"<Step>{step}</Step>" for step in previous_steps])
+        previous_formatted = f"Previous steps:\n{previous_formatted}\n\n"
     
-    # Format all steps with tags for the prompt
-    all_steps_formatted = "\n".join([f"<Step>{step}</Step>" for step in steps])
+    # Create prompt for revising the step
+    prompt = f"""Q: {question}
     
-    # Create prompt for revising the incorrect steps
-    prompt = f"""Q: {question}. A: {all_steps_formatted}. 
-    The probability that step <Step>{steps[incorrect_step_index]}</Step> leads to the correct answer is {incorrect_step_prob:.4f}. 
-    Please revise steps {incorrect_step_index + 1} to {len(steps)} while keeping steps 1 to {incorrect_step_index} unchanged to increase the probability that the revised steps lead to the correct answer."""
+    {previous_formatted}Current step to revise:
+    <Step>{current_step}</Step>
+
+    The probability that this step leads to the correct answer is {probability:.4f}, which is below the acceptable threshold.
+    Please revise ONLY this step to increase the probability that it leads to the correct answer.
+    Your revision should be more accurate, clear, and logical. Make sure it follows directly from the previous steps.
+
+    Provide your revised step between <Step> and </Step> tags."""
     
-    # Generate revised steps
+    # Generate the revised step
     revised_output = generate_llm_output(prompt)
     
-    # Extract steps from the revised output
+    # Extract the revised step
     revised_steps = step_formatter(revised_output)
     
-    # Combine correct steps with revised steps
-    if incorrect_step_index < len(revised_steps):
-        return correct_steps + revised_steps[incorrect_step_index:]
+    # Return the revised step or the original if extraction failed
+    if revised_steps and len(revised_steps) > 0:
+        return revised_steps[0]
     else:
-        # Handle case where revised output has fewer steps
-        return correct_steps + revised_steps
+        return current_step
 
 if __name__ == "__main__":
     verifier = GeneralPurposeVerifier()
