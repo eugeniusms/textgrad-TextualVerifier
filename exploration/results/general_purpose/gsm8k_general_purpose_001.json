@@ -1,0 +1,13 @@
+{
+  "initial_steps": {
+    "Step 1": "James writes a 3-page letter to 2 friends, so that's 3 pages * 2 friends = 6 pages per letter-writing session.",
+    "Step 2": "He writes letters twice a week, so he writes 6 pages/session * 2 sessions/week = 12 pages per week.",
+    "Step 3": "There are 52 weeks in a year, so he writes 12 pages/week * 52 weeks/year = 624 pages per year."
+  },
+  "final_steps": {
+    "Step 1": "James writes a 3-page letter to each of his 2 friends, so he writes 3 pages/letter * 2 friends = 6 pages each time he writes letters.",
+    "Step 2": "He writes letters twice a week, so he writes 6 pages/session * 2 sessions/week = 12 pages per week.",
+    "Step 3": "There are 52 weeks in a year, so he writes 12 pages/week * 52 weeks/year = 624 pages per year."
+  },
+  "final_answer": "."
+}

@@ -30,9 +30,9 @@ def process_verification(query, verifier, threshold=0.5, max_revisions=3):
     }
 
 if __name__ == "__main__":
-    verifier = GeneralPurposeVerifier()
-    task = get_task("gpqa")
+    verifier = StepCo()
+    task = get_task("gsm8k")
     print("TASK: ", task)
     result = process_verification(task, verifier)
-    format_reasoning_to_json(result, "exploration/results/general_purpose/gpqa_general_purpose_002.json")
-    # format_reasoning_to_json(result, "exploration/results/step_co/step_co_result_002.json")
+    # format_reasoning_to_json(result, "exploration/results/general_purpose/gsm8k_general_purpose_001.json")
+    format_reasoning_to_json(result, "exploration/results/step_co/gsm8k_step_co_result_001.json")

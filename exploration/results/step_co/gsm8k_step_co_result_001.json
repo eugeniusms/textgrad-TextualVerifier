@@ -1,0 +1,13 @@
+{
+  "initial_steps": {
+    "Step 1": "James writes a 3-page letter to 2 friends, which means he writes 3 * 2 = 6 pages per letter instance.",
+    "Step 2": "He does this twice a week, so he writes 6 * 2 = 12 pages per week.",
+    "Step 3": "There are 52 weeks in a year, so he writes 12 * 52 = 624 pages per year."
+  },
+  "final_steps": {
+    "Step 1": "James writes a 3-page letter to 2 friends, which means he writes 3 * 2 = 6 pages per letter instance.",
+    "Step 2": "He does this twice a week, so he writes 6 * 2 = 12 pages per week.",
+    "Step 3": "There are 52 weeks in a year, so he writes 12 * 52 = 624 pages per year."
+  },
+  "final_answer": "."
+}
