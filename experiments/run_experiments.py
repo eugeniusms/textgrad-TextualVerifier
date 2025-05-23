@@ -41,7 +41,7 @@ llm_engine = tg.get_engine(engine_name=args.engine)
 tg.set_backward_engine(llm_engine, override=True)
 test_set = load_instance_task(args.task, evaluation_api=llm_engine)
 # test_subset = test_set[:args.test_size] if args.test_size < len(test_set) else test_set
-test_subset = [test_set[0], test_set[1]]
+test_subset = [test_set[0]]
 
 # Parse global arguments
 strategies = args.verification_strategies.split(",")
@@ -95,28 +95,39 @@ def run_optimization_with_verification(sample, strategy, threshold, engine, max_
         )
     
     # Optimization loop
-    for _ in range(max_iterations):
+    for iteration in range(max_iterations):
         optimizer.zero_grad()
         loss = test_time_objective(instance_var)
         loss.backward()
         
-        # If using verification, capture metrics before step
-        if strategy != "none":
-            verification_applied = False
-            verification_confidence = 0.0
-            # Add logic to track verification metrics from the optimizer
+        # Store the solution before update for comparison
+        solution_before = instance_var.value
         
+        # Perform the optimization step
         optimizer.step()
         
-        # Record results
+        # Record performance after update
         score = int(instance_eval_fn(instance_var))
         performance_history.append(score)
         
+        # If using verification, capture metrics about the verification process
         if strategy != "none":
+            # Check if the solution was changed or not
+            solution_changed = solution_before != instance_var.value
+            
+            # For VerifiedTextualGradientDescent, we can assume:
+            # - If solution remained the same despite the optimizer trying to change it,
+            #   verification was likely applied (rejected the update)
+            # - If solution changed dramatically, the change was likely accepted
+            
+            # Create a basic verification metric
+            # In a real implementation, you'd want to modify VerifiedTextualGradientDescent
+            # to expose its actual verification metrics
             verification_metrics.append({
-                "iteration": len(performance_history) - 1,
-                "verification_applied": verification_applied,
-                "verification_confidence": verification_confidence,
+                "iteration": iteration,
+                "solution_changed": solution_changed,
+                "verification_applied": not solution_changed,  # Simplified assumption
+                "verification_confidence": threshold,  # Default to threshold as we don't have the actual value
                 "score_after_update": score
             })
     
@@ -124,9 +135,10 @@ def run_optimization_with_verification(sample, strategy, threshold, engine, max_
         "performance_history": performance_history,
         "verification_metrics": verification_metrics,
         "final_solution": instance_var.value,
-        "answer": answer
+        "answer": answer,
+        "question": question
     }
-
+    
 def main():
     # Setup output directory
     os.makedirs(args.output_dir, exist_ok=True)
