@@ -225,7 +225,7 @@ class VerifiedTextualGradientDescent(TextualGradientDescent):
         """
         for parameter in self.parameters:
             # Extract reasoning steps using step tags
-            reasoning_path = parameter.value
+            reasoning_path = self.cot_prompter(parameter.value)
             initial_steps = self.step_formatter(reasoning_path)
             
             if not initial_steps:
