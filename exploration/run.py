@@ -2,7 +2,9 @@ import re
 from engines.gemini import generate_llm_output
 from prompter.cot_prompter import cot_prompter
 from formatter.step_formatter import step_formatter
+from extract_answer.extract_answer import extract_answer
 from verifiers.step_co import StepCo
+from verifiers.general_purpose import GeneralPurposeVerifier
 
 QUERY = """
 Answer the following multiple choice question. The last line of your response should be of the following format: 'Answer: $LETTER' (without quotes) where LETTER is one of ABCD. Think step by step before answering.
@@ -24,6 +26,7 @@ def process_verification(query, verifier, threshold=0.5, max_iterations=5):
 
     for iteration in range(max_iterations):
         verification_result = verify_steps(query, current_steps, verifier, threshold)
+        print("VERIFICATION RESULT", verification_result)
 
         iterations.append({
             "iteration": iteration,
@@ -93,7 +96,7 @@ def verify_steps(question, steps, verifier, threshold):
         "all_correct": first_incorrect_step_index == -1
     }
 
-def revise_steps(question, steps, incorrect_step_index, incorrect_step_prob, llm):
+def revise_steps(question, steps, incorrect_step_index, incorrect_step_prob):
     """
     Revise the incorrect steps in the reasoning path.
     
@@ -131,31 +134,8 @@ def revise_steps(question, steps, incorrect_step_index, incorrect_step_prob, llm
         # Handle case where revised output has fewer steps
         return correct_steps + revised_steps
 
-def extract_answer(steps):
-    """
-    Extract the final answer from the reasoning path.
-    
-    Args:
-        steps (list): List of reasoning steps
-        
-    Returns:
-        str: The final answer
-    """
-    # In most cases, the final answer is in the last step
-    last_step = steps[-1]
-    
-    # Simple extraction - look for numeric answer or final statement
-    # In practice, you might need more sophisticated parsing
-    
-    # Try to find a numeric answer
-    number_match = re.search(r'(\d+(\.\d+)?)', last_step)
-    if number_match:
-        return number_match.group(1)
-    
-    # If no clear numeric answer, return the last step
-    return last_step
-
 if __name__ == "__main__":
-    verifier = StepCo()
+    verifier = GeneralPurposeVerifier()
     result = process_verification(QUERY, verifier)
     print(result)
+    print(result['answer'])
