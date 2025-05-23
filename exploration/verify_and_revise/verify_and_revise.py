@@ -1,7 +1,11 @@
 from engines.gemini import generate_llm_output
 from formatter.step_formatter import step_formatter
 
-def verify_and_revise(question, reasoning_chain, verifier, threshold=0.5, max_revisions=3):
+def verify_and_revise(question, 
+                    reasoning_chain, 
+                    verifier, 
+                    threshold=0.5, 
+                    max_revisions=3):
     """
     Verify and revise each step in the reasoning chain until all steps meet the threshold.
     
@@ -15,19 +19,16 @@ def verify_and_revise(question, reasoning_chain, verifier, threshold=0.5, max_re
     Returns:
         list: The final verified and revised reasoning chain
     """
-    # Start with an empty verified chain
     verified_chain = []
     
     # Process each step in the reasoning chain
     for i, step in enumerate(reasoning_chain):
         print(f"\nVerifying step {i+1}:")
         
-        # Current step to verify
         current_step = step
         
         # Try to revise this step until it meets the threshold or max revisions reached
         for revision in range(max_revisions):
-            # Verify current step
             current_chain = verified_chain + [current_step]
             verification = verify_step(question, current_chain, verifier)
             
@@ -52,7 +53,9 @@ def verify_and_revise(question, reasoning_chain, verifier, threshold=0.5, max_re
     
     return verified_chain
 
-def verify_step(question, chain_so_far, verifier):
+def verify_step(question, 
+                chain_so_far, 
+                verifier):
     """
     Verify a single step in the reasoning chain.
     
@@ -64,7 +67,6 @@ def verify_step(question, chain_so_far, verifier):
     Returns:
         dict: Verification result with probability and revision decision
     """
-    # Create input for the verifier
     preceding_steps = "\n".join(chain_so_far)
     verifier_input = f"{question}\n{preceding_steps}"
     
@@ -80,7 +82,10 @@ def verify_step(question, chain_so_far, verifier):
         "revise": probability < 0.5
     }
 
-def revise_step(question, previous_steps, current_step, probability):
+def revise_step(question, 
+                previous_steps, 
+                current_step, 
+                probability):
     """
     Revise a single step in the reasoning chain.
     
@@ -111,10 +116,8 @@ def revise_step(question, previous_steps, current_step, probability):
 
     Provide your revised step between <Step> and </Step> tags."""
     
-    # Generate the revised step
+    # Generate & extract the revised step
     revised_output = generate_llm_output(prompt)
-    
-    # Extract the revised step
     revised_steps = step_formatter(revised_output)
     
     # Return the revised step or the original if extraction failed
