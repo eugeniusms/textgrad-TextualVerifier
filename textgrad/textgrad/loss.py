@@ -277,28 +277,24 @@ class VerifiedLoss(Module):
         if isinstance(engine, str):
             engine = get_engine(engine)
         self.engine = engine
+
+        # Basic parameter
+        self.llm_call = LLMCall(self.engine, self.eval_system_prompt)
         
         # Setup verifier
         verifier_engine = verifier_engine or engine
         self.verifier = verifier(engine=verifier_engine, 
                                 eval_system_prompt=eval_system_prompt,
                                 step_eval_iterations=step_eval_iterations)
-        
-        # Verification parameters
-        self.step_eval_iterations = step_eval_iterations
 
-    def forward(self, question: Variable) -> Variable:
+    def forward(self, instance: Variable) -> Variable:
         """
-        Verify and revise reasoning steps, then evaluate the final result.
+        Verify loss value, then evaluate the final result.
         
-        This is where your verify_and_revise logic is implemented.
-        
-        :param question: The question being answered
-        :type question: Variable
-        :param reasoning_steps: The initial reasoning steps
-        :type reasoning_steps: Variable
-        :return: The evaluation of the verified reasoning
-        :rtype: Variable
+        :param instance: The instance variable.
+        :type instance: Variable
+        :return: The result of the evaluation
         """
-        loss = self.verifier.verify(question)
-        return loss
+        text_loss = self.llm_call(instance)
+        verified_loss = self.verifier.verify(text_loss)
+        return verified_loss

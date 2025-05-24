@@ -41,7 +41,7 @@ loss2 = VerifiedLoss(eval_system_prompt=loss_system_prompt,
                         verifier=TextualVerifier,
                         step_eval_iterations=3)
 result2 = loss2(solution)
-print(result2)
+print("LOSS FINAL:", result2)
 
 result2.backward()
 optimizer.step()
