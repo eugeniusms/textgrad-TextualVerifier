@@ -35,7 +35,7 @@ result = loss(solution) # Forward method in Loss Function
 print("INITIAL LOSS:", result)
 
 # Verify Loss
-verifier = TextualVerifier(verifier_engine=engine, step_eval_iterations=3)
+verifier = TextualVerifier(verifier_engine=engine, step_eval_iterations=3, logger=True)
 verified_result = verifier.verify(instance=solution, 
                                     prompt=loss_system_prompt,
                                     calculation=result)
@@ -45,4 +45,4 @@ print("FINAL LOSS:", verified_result)
 # Optimize
 verified_result.backward()
 optimizer.step()
-print(solution.value)
+print("SOLUTION:", solution.value)
