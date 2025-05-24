@@ -17,7 +17,7 @@ def generate_llm_output(your_question, model_version="gemini-1.5-pro"):
     # Make sure you've set an environment variable named GOOGLE_API_KEY
     # (e.g., export GOOGLE_API_KEY="YOUR_KEY_HERE" in your terminal)
     # api_key = os.getenv("GOOGLE_API_KEY")
-    api_key = "AIzaSyD-1U1Hz6MShCJ3DQJEqJrco99bVQ_AIKs"
+    api_key = os.getenv("GOOGLE_API_KEY")
 
     if not api_key:
         return "Oops! I can't find your Google API Key. Please set it as an environment variable named GOOGLE_API_KEY."
