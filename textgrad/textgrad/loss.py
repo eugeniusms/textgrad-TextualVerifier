@@ -5,7 +5,7 @@ from typing import List, Union
 from textgrad.autograd import LLMCall, FormattedLLMCall, OrderedFieldsMultimodalLLMCall
 from textgrad.autograd import Module
 from .config import SingletonBackwardEngine
-from textgrad.verification import Verifier, GeneralPurposeVerifier # NEW VERIFICATION
+from textgrad.verification import Verifier, TextualVerifier # NEW VERIFICATION
 
 
 class TextLoss(Module):
@@ -237,7 +237,7 @@ class VerifiedLoss(Module):
                  eval_system_prompt: Union[Variable, str],
                  engine: Union[EngineLM, str] = None,
                  verifier_engine: Union[EngineLM, str] = None,
-                 verifier: Verifier = GeneralPurposeVerifier,
+                 verifier: Verifier = TextualVerifier,
                  threshold: float = 0.5,
                  max_revisions: int = 3):
         """

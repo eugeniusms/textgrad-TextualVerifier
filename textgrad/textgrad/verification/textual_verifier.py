@@ -4,7 +4,7 @@ from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from textgrad.verification.verifier import Verifier
 
-class GeneralPurposeVerifier(Verifier):
+class TextualVerifier(Verifier):
     """
     A verifier that uses an LLM to evaluate reasoning steps and 
     converts the textual evaluation to a probability score.

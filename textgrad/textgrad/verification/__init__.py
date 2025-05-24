@@ -1,9 +1,9 @@
 from .verifier import Verifier
-from .general_purpose_verifier import GeneralPurposeVerifier
-from .step_co_verifier import StepCoVerifier
+from .textual_verifier import TextualVerifier
+from .stepco_verifier import StepCoVerifier
 
 __all__ = [
     'Verifier',
-    'GeneralPurposeVerifier',
+    'TextualVerifier',
     'StepCoVerifier',
 ]

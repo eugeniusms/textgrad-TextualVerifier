@@ -12,3 +12,5 @@ class Verifier:
             float: Probability that the step leads to the correct answer
         """
         raise NotImplementedError("Subclasses must implement predict()")
+
+    
