@@ -37,7 +37,10 @@ print(solution.value)
 # Verification Loss
 optimizer.zero_grad()
 
-loss2 = VerifiedLoss(loss_system_prompt)
+loss2 = VerifiedLoss(eval_system_prompt=loss_system_prompt, 
+                        verifier=GeneralPurposeVerifier,
+                        threshold=0.7,
+                        max_revisions=3)
 result2 = loss2(solution)
 print(result2)
 
