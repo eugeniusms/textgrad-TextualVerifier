@@ -24,7 +24,7 @@ class StepCoVerifier(Verifier):
         """
         self.engine = validate_engine_or_get_default(engine)
     
-    def predict(self, input_text: str) -> float:
+    def verify(self, input_text: str) -> float:
         """
         Predict the probability that a step leads to the correct answer.
         

@@ -1,7 +1,7 @@
 class Verifier:
     """Base class for verification models that evaluate reasoning steps."""
     
-    def predict(self, input_text: str) -> float:
+    def verify(self, input_text: str) -> float:
         """
         Predict the probability that a step leads to the correct answer.
         

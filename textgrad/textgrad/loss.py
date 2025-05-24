@@ -238,8 +238,7 @@ class VerifiedLoss(Module):
                  engine: Union[EngineLM, str] = None,
                  verifier_engine: Union[EngineLM, str] = None,
                  verifier: Verifier = TextualVerifier,
-                 threshold: float = 0.5,
-                 max_revisions: int = 3):
+                 step_eval_iterations: int = 3):
         """
         A loss function that verifies and revises reasoning steps before evaluation.
         
@@ -249,8 +248,6 @@ class VerifiedLoss(Module):
         :type engine: Union[EngineLM, str]
         :param verifier_engine: Engine for verification (defaults to main engine)
         :type verifier_engine: Union[EngineLM, str]
-        :param threshold: Probability threshold for accepting steps
-        :type threshold: float
         :param max_revisions: Maximum revisions per step
         :type max_revisions: int
         
@@ -259,7 +256,7 @@ class VerifiedLoss(Module):
         >>> from textgrad.loss import VerificationLoss
         >>> engine = get_engine("gpt-4o")
         >>> eval_prompt = "Evaluate the quality of this reasoning"
-        >>> verification_loss = VerificationLoss(eval_prompt, engine, threshold=0.7)
+        >>> verification_loss = VerificationLoss(eval_prompt, engine)
         >>> question = Variable("What is 2+2?", requires_grad=False)
         >>> reasoning = Variable("<Step>2+2=4</Step>", requires_grad=True)
         >>> result = verification_loss(question, reasoning)
@@ -286,8 +283,7 @@ class VerifiedLoss(Module):
         self.verifier = verifier(verifier_engine)
         
         # Verification parameters
-        self.threshold = threshold
-        self.max_revisions = max_revisions
+        self.step_eval_iterations = step_eval_iterations
 
     def forward(self, question: Variable) -> Variable:
         """
@@ -315,8 +311,8 @@ class VerifiedLoss(Module):
         for i, step in enumerate(initial_steps):
             print(f"Step {i+1}: {step[:100]}...")
         
-        # Step 2: Verify and revise each step (using your verify_and_revise logic)
-        final_steps = self._verify_and_revise(question.value, initial_steps)
+        # Step 2: Verify and revise each step (using your verify_loss logic)
+        final_steps = self._verify_loss(question.value, initial_steps)
         
         # Step 3: Create verified reasoning text
         verified_reasoning_text = "\n".join([f"<Step>{step}</Step>" for step in final_steps])
@@ -326,6 +322,8 @@ class VerifiedLoss(Module):
         
         # Create a formatted call for evaluation
         final_evaluation = self.engine(f"{self.eval_system_prompt.value}\n\n{evaluation_input}")
+
+        print("FINAL EVALUATION: ", final_evaluation)
         
         return Variable(final_evaluation, requires_grad=True, 
                        role_description="evaluation of verified reasoning")
@@ -351,10 +349,38 @@ class VerifiedLoss(Module):
         # Clean up extracted steps
         return [step.strip() for step in steps]
 
-    def _verify_and_revise(self, question: str, reasoning_chain: List[str]) -> List[str]:
+    def _find_step_loss(self, question: str, chain_so_far: List[str]) -> str:
+        """
+        Find a single step loss in the reasoning chain.
+        This implements your find_step_loss function.
+        """
+        preceding_steps = "\n".join(chain_so_far)
+        newest_step = chain_so_far[-1]
+        
+        loss_order = Variable("""Evaluate whether this step is correct given the question and previous steps. 
+                                    Consider mathematical accuracy, logical consistency, and relevance to solving the question.
+                                    Create a textual feedback that represents error and correction for evaluated step. 
+                                    Please concise one sentence.
+        """, requires_grad=False, role_description="system prompt for the evaluation")
+        step = Variable(f"""
+                QUESTION:
+                {question}
+
+                PREVIOUS STEPS:
+                {preceding_steps}
+
+                STEP TO EVALUATE:
+                {newest_step}                
+                """, requires_grad=False, role_description="step")
+        loss = LLMCall(self.engine, loss_order)
+        result = loss(step)
+
+        return result
+
+    def _verify_loss(self, question: str, reasoning_chain: List[str]) -> List[str]:
         """
         Verify and revise each step in the reasoning chain.
-        This implements your verify_and_revise function.
+        This implements your verify_loss function.
         """
         verified_chain = []
         
@@ -364,81 +390,12 @@ class VerifiedLoss(Module):
             
             current_step = step
             
-            # Try to revise this step until it meets the threshold or max revisions reached
-            for revision in range(self.max_revisions):
+            # Running to prepare consensus/voting
+            for step_eval in range(self.step_eval_iterations):
                 current_chain = verified_chain + [current_step]
-                verification = self._verify_step(question, current_chain)
-                
-                print(f"Step {i+1} (Revision {revision}) probability: {verification['probability']:.4f}")
-                
-                # If step meets threshold, accept it and move to next step
-                if verification['probability'] >= self.threshold:
-                    print(f"Step {i+1} meets threshold, moving to next step")
-                    verified_chain.append(current_step)
-                    break
-                    
-                # If step doesn't meet threshold and we haven't reached max revisions, revise it
-                if revision < self.max_revisions - 1:
-                    print(f"Step {i+1} below threshold, revising...")
-                    revised_step = self._revise_step(question, verified_chain, current_step, verification['probability'])
-                    current_step = revised_step
-                else:
-                    # If we've reached max revisions, accept the current step and move on
-                    print(f"Warning: Step {i+1} still below threshold after {self.max_revisions} revisions. Accepting anyway.")
-                    verified_chain.append(current_step)
+                loss = self._find_step_loss(question, current_chain)
+                verified_chain.append(current_step)
+
+                print(f"Step {i+1} (Eval {step_eval}) Loss: {loss}")
         
         return verified_chain
-
-    def _verify_step(self, question: str, chain_so_far: List[str]) -> dict:
-        """
-        Verify a single step in the reasoning chain.
-        This implements your verify_step function.
-        """
-        preceding_steps = "\n".join(chain_so_far)
-        verifier_input = f"{question}\n{preceding_steps}"
-        
-        try:
-            # Get probability that this step leads to correct answer
-            probability = self.verifier.predict(verifier_input)
-        except Exception as e:
-            print(f"Error in verifier.predict(): {e}")
-            probability = 0.5
-        
-        return {
-            "probability": probability,
-            "revise": probability < self.threshold
-        }
-
-    def _revise_step(self, question: str, previous_steps: List[str], 
-                     current_step: str, probability: float) -> str:
-        """
-        Revise a single step in the reasoning chain.
-        This implements your revise_step function.
-        """
-        # Format previous steps with tags
-        previous_formatted = ""
-        if previous_steps:
-            previous_formatted = "\n".join([f"<Step>{step}</Step>" for step in previous_steps])
-            previous_formatted = f"Previous steps:\n{previous_formatted}\n\n"
-        
-        # Create prompt for revising the step
-        prompt = f"""Q: {question}
-        
-        {previous_formatted}Current step to revise:
-        <Step>{current_step}</Step>
-
-        The probability that this step leads to the correct answer is {probability:.4f}, which is below the acceptable threshold.
-        Please revise ONLY this step to increase the probability that it leads to the correct answer.
-        Your revision should be more accurate, clear, and logical. Make sure it follows directly from the previous steps.
-
-        Provide your revised step between <Step> and </Step> tags."""
-        
-        # Generate & extract the revised step using the engine
-        revised_output = self.engine(prompt)
-        revised_steps = self._step_formatter(revised_output)
-        
-        # Return the revised step or the original if extraction failed
-        if revised_steps and len(revised_steps) > 0:
-            return revised_steps[0]
-        else:
-            return current_step
