@@ -1,16 +1,19 @@
+from textgrad.variable import Variable
+
 class Verifier:
-    """Base class for verification models that evaluate reasoning steps."""
+    """Base class for verification models that evaluate the calculation for instance."""
     
-    def verify(self, input_text: str) -> float:
+    def verify(self, instance: Variable, calculation: Variable) -> str:
         """
-        Predict the probability that a step leads to the correct answer.
+        Verify the calculation of instance.
         
         Args:
-            input_text (str): The input text to evaluate (question + steps)
+            instance: The variable to evaluate (ex: solution/prompt)
+            calculation: Result calculated by loss/optimizer function
             
         Returns:
-            float: Probability that the step leads to the correct answer
+            str: Verification result (updated calculation)
         """
-        raise NotImplementedError("Subclasses must implement predict()")
+        raise NotImplementedError("Subclasses must implement verify()")
 
     

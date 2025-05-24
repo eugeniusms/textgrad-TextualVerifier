@@ -248,8 +248,8 @@ class VerifiedLoss(Module):
         :type engine: Union[EngineLM, str]
         :param verifier_engine: Engine for verification (defaults to main engine)
         :type verifier_engine: Union[EngineLM, str]
-        :param max_revisions: Maximum revisions per step
-        :type max_revisions: int
+        :param step_eval_iterations: Eval iterations per step
+        :type step_eval_iterations: int
         
         :example:
         >>> from textgrad import get_engine, Variable
@@ -284,10 +284,9 @@ class VerifiedLoss(Module):
         # Setup verifier
         verifier_engine = verifier_engine or engine
         self.verifier = verifier(engine=verifier_engine, 
-                                eval_system_prompt=eval_system_prompt,
                                 step_eval_iterations=step_eval_iterations)
 
-    def forward(self, instance: Variable) -> Variable:
+    def forward(self, instance: Variable) -> Variable: 
         """
         Verify loss value, then evaluate the final result.
         
@@ -296,5 +295,10 @@ class VerifiedLoss(Module):
         :return: The result of the evaluation
         """
         text_loss = self.llm_call(instance)
-        verified_loss = self.verifier.verify(text_loss)
+        
+        # Instance -> what to evaluate
+        # Text Loss -> basic loss on instance
+        # Verified Loss -> loss to instance verified by verify function
+        verified_loss = self.verifier.verify(instance, text_loss)
+
         return verified_loss

@@ -26,15 +26,16 @@ class TextualVerifier(Verifier):
         self.eval_system_prompt = eval_system_prompt
         self.step_eval_iterations = step_eval_iterations
     
-    def verify(self, question: str) -> float:
+    def verify(self, instance: Variable, calculation: Variable) -> str:
         """
-        Predict the probability that a step leads to the correct answer.
+        Verify the calculation of instance.
         
         Args:
-            input_text (str): The input text to evaluate (question + steps)
+            instance: The variable to evaluate (ex: solution/prompt)
+            calculation: Result calculated by loss/optimizer function
             
         Returns:
-            float: Probability that the step leads to the correct answer
+            str: Verification result (updated calculation)
         """
         print("Verifier: Textual")
         # Step 1: Extract steps from reasoning (using your step_formatter logic)
