@@ -1,6 +1,18 @@
-# VerifiedLoss - Verify Loss in TextGrad
+# TextualVerifier - Verify Step by Step in TextGrad
 
 ## Introduction
+1. I want to verify calculation, basically calculation is a result from instance + prompt
+2. So, I want to verify calculation only (add & revise if anything need to add/wrong) in calculation only, no need to find the solution, just focus on calculation (based on instance + prompt)
+3. The idea is: instance, prompt, calculation going to verify function
+4. Then need to CoT prompt (instance) & step formatter (instance)
+5. After formatted, I want to each step iteratively as step_eval_iterations running new function to get new variant of calculation, so the input are (instance + prompt) the result is variant of calculation (total as step_eval_iterations)
+6. Then, in every end of iterations in step, we vote on the most significant calculation, and save it to use later
+7. After all step iterated, then we merge all of vote result in every step into one
+8. Then we verify the early calculation from verify function to this one
+9. The decision are: 3 classification
+10. If the early calculation is not correct -> then update and revise it
+11. If the early calculation is correct and some of variant calculation still not in the early calculation -> then update it
+12. If the early calculcation is correct and no variant calculation needed to merge -> pass it
 
 ## Main References
 | Type | Title | Link |

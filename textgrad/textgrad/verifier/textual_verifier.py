@@ -9,130 +9,200 @@ class TextualVerifier(Verifier):
     """
     A verifier that uses an LLM to evaluate and improve reasoning steps.
     """
-    
-    def __init__(self, 
-                verifier_engine: Union[str, EngineLM],
-                step_eval_iterations: int = 3):
+
+    def __init__(self, verifier_engine: Union[str, EngineLM], step_eval_iterations: int = 3):
         """
-        Initialize the TextualVerifier.
+        Initialize the verifier.
         
         Args:
-            engine: The engine to use for evaluation
-            eval_system_prompt: Custom evaluation prompt (optional)
-            step_eval_iterations: Number of verification iterations per step
+            verifier_engine: The LLM engine for verification
+            step_eval_iterations: How many variants to generate per step
         """
         self.engine = validate_engine_or_get_default(verifier_engine)
         self.step_eval_iterations = step_eval_iterations
-    
+        
     def verify(self, instance: Variable, prompt: Variable, calculation: Variable) -> Variable:
         """
-        Verify and improve the calculation through step-by-step analysis.
+        Main verification function.
         
         Args:
-            instance: The original problem/question
-            prompt: The loss/optimizer prompt
-            calculation: The result of prompt(instance) that needs verification
+            instance: Original problem/question
+            prompt: The instruction/prompt used
+            calculation: Result from instance + prompt (what we want to verify)
             
         Returns:
-            Variable: Improved and verified calculation
+            Variable: Verified/improved calculation
         """
-        print("🔍 Starting TextualVerifier...")
-        # Step 1: Combine problem and solution for analysis
-        full_context = f"Problem: {instance.value}\n\nSolution: {calculation.value}"
+        print("🔍 Starting Basic Calculation Verification...")
         
-        # Step 2: Generate step-by-step reasoning
-        reasoning_steps = self._generate_reasoning_steps(full_context)
+        # Step 1: Generate reasoning steps from instance
+        reasoning_steps = self._generate_cot_steps(instance.value)
         
-        # Step 3: Verify each step
-        verified_steps = self._verify_steps(instance.value, reasoning_steps)
+        # Step 2: Format steps properly
+        formatted_steps = self._format_steps(reasoning_steps)
         
-        # Step 4: Create final improved solution
-        improved_solution = self._create_final_solution(instance.value, verified_steps)
+        # Step 3: Verify each step iteratively
+        verified_steps = self._verify_each_step(instance.value, prompt.value, formatted_steps)
+        
+        # Step 4: Merge all verified steps
+        merged_calculation = self._merge_verified_steps(verified_steps)
+        
+        # Step 5: Make final decision
+        final_result = self._make_decision(calculation.value, merged_calculation)
         
         print("✅ Verification complete!")
-        return improved_solution
+        return Variable(final_result, requires_grad=True, role_description="verified calculation")
     
-    def _generate_reasoning_steps(self, context: str) -> List[str]:
-        """Generate step-by-step reasoning from the context."""
+    def _generate_cot_steps(self, instance: str) -> List[str]:
+        """Generate Chain of Thought steps from the instance."""
+        print("📋 Generating CoT steps...")
         
         cot_prompt = f"""
-        Break down this solution into clear, logical steps. 
+        Break down this problem into clear calculation steps.
+        Focus only on the mathematical/logical steps needed.
         Mark each step with <Step> and </Step> tags.
         
-        {context}
+        Problem: {instance}
         
         Let's think step by step:
         """
         
-        reasoning_response = self.engine(cot_prompt)
-        steps = self._extract_steps(reasoning_response)
+        response = self.engine(cot_prompt)
+        steps = self._extract_steps_from_response(response)
         
-        print(f"📋 Generated {len(steps)} reasoning steps")
+        print(f"Generated {len(steps)} steps")
         return steps
     
-    def _extract_steps(self, reasoning_text: str) -> List[str]:
-        """Extract steps from reasoning text using regex."""
-        
+    def _extract_steps_from_response(self, response: str) -> List[str]:
+        """Extract steps from LLM response."""
         # Look for <Step>...</Step> patterns
         step_pattern = r"<Step>(.*?)</Step>"
-        steps = re.findall(step_pattern, reasoning_text, re.DOTALL)
+        steps = re.findall(step_pattern, response, re.DOTALL)
         
         # Clean up steps
         cleaned_steps = [step.strip() for step in steps if step.strip()]
         
-        # If no tagged steps found, split by common patterns
+        # Fallback if no tags found
         if not cleaned_steps:
-            # Fallback: split by numbers or bullet points
-            lines = reasoning_text.split('\n')
+            lines = response.split('\n')
             cleaned_steps = [line.strip() for line in lines 
                            if line.strip() and len(line.strip()) > 10]
         
-        return cleaned_steps[:5] if cleaned_steps else [reasoning_text]  # Limit to 5 steps
+        return cleaned_steps[:5]  # Limit to 5 steps max
     
-    def _verify_steps(self, question: str, steps: List[str]) -> List[str]:
-        """Verify and improve each step."""
+    def _format_steps(self, steps: List[str]) -> List[str]:
+        """Format steps for better processing."""
+        print("📝 Formatting steps...")
+        
+        formatted = []
+        for i, step in enumerate(steps):
+            formatted_step = f"Step {i+1}: {step}"
+            formatted.append(formatted_step)
+        
+        return formatted
+    
+    def _verify_each_step(self, instance: str, prompt: str, formatted_steps: List[str]) -> List[str]:
+        """Verify each step by generating variants and voting."""
+        print("🔧 Verifying each step...")
         
         verified_steps = []
         
-        for i, step in enumerate(steps):
-            print(f"🔧 Verifying step {i+1}/{len(steps)}")
+        for i, step in enumerate(formatted_steps):
+            print(f"  Verifying step {i+1}/{len(formatted_steps)}")
             
-            # Create verification prompt
-            verification_prompt = f"""
-            Question: {question}
+            # Generate variants for this step
+            variants = self._generate_step_variants(instance, prompt, step)
             
-            Previous steps: {' '.join(verified_steps)}
+            # Vote on best variant
+            best_variant = self._vote_on_variants(step, variants)
             
-            Current step to verify: {step}
-            
-            Is this step correct? If not, provide a corrected version.
-            Be concise and focus on accuracy.
-            """
-            
-            # Get verification feedback
-            verification_result = self.engine(verification_prompt)
-            
-            # For simplicity, use the verification result as the improved step
-            verified_steps.append(verification_result)
+            verified_steps.append(best_variant)
         
         return verified_steps
     
-    def _create_final_solution(self, question: str, verified_steps: List[str]) -> Variable:
-        """Create the final improved solution from verified steps."""
+    def _generate_step_variants(self, instance: str, prompt: str, step: str) -> List[str]:
+        """Generate multiple variants of a calculation step."""
+        variants = []
         
-        final_prompt = f"""
-        Question: {question}
+        for iteration in range(self.step_eval_iterations):
+            variant_prompt = f"""
+            Original problem: {instance}
+            Instruction: {prompt}
+            Current step: {step}
+            
+            Provide an alternative calculation approach for this step.
+            Focus only on the calculation, not the final answer.
+            Variant {iteration + 1}:
+            """
+            
+            variant = self.engine(variant_prompt)
+            variants.append(variant.strip())
         
-        Verified reasoning steps:
-        {chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))}
+        return variants
+    
+    def _vote_on_variants(self, original_step: str, variants: List[str]) -> str:
+        """Vote on the most significant/correct variant."""
+        all_options = [original_step] + variants
         
-        Based on these verified steps, provide a clear, final solution:
+        voting_prompt = f"""
+        Original step: {original_step}
+        
+        Alternative variants:
+        {chr(10).join(f"{i+1}. {var}" for i, var in enumerate(variants))}
+        
+        Which calculation approach is most accurate and significant?
+        Return only the best calculation step:
         """
         
-        final_solution = self.engine(final_prompt)
+        best_step = self.engine(voting_prompt)
+        return best_step.strip()
+    
+    def _merge_verified_steps(self, verified_steps: List[str]) -> str:
+        """Merge all verified steps into one coherent calculation."""
+        print("🔄 Merging verified steps...")
         
-        return Variable(
-            final_solution,
-            requires_grad=True,
-            role_description="verified and improved solution"
-        )
+        merge_prompt = f"""
+        Merge these verified calculation steps into one coherent calculation:
+        
+        {chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))}
+        
+        Provide the complete merged calculation:
+        """
+        
+        merged = self.engine(merge_prompt)
+        return merged.strip()
+    
+    def _make_decision(self, original_calculation: str, merged_calculation: str) -> str:
+        """Make final decision: update, merge, or pass."""
+        print("⚖️ Making final decision...")
+        
+        decision_prompt = f"""
+        Compare these two calculations:
+        
+        Original calculation: {original_calculation}
+        
+        Verified calculation: {merged_calculation}
+        
+        Classify the decision:
+        1. INCORRECT - Original is wrong, use verified version
+        2. INCOMPLETE - Original is correct but missing parts from verified
+        3. CORRECT - Original is fine, no changes needed
+        
+        Respond with: [DECISION]: [FINAL_CALCULATION]
+        """
+        
+        decision_response = self.engine(decision_prompt)
+        
+        # Parse decision
+        if "INCORRECT" in decision_response:
+            print("[X] Original calculation was incorrect - using verified version")
+            return merged_calculation
+        elif "INCOMPLETE" in decision_response:
+            print("[-] Original calculation incomplete - merging with verified")
+            # Extract final calculation after the decision
+            final_calc = decision_response.split(":", 1)[-1].strip()
+            return final_calc if final_calc else merged_calculation
+        else:
+            print("[V] Original calculation is correct - no changes needed")
+            return original_calculation
+
