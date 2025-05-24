@@ -33,7 +33,7 @@ class TextualVerifier(Verifier):
         Returns:
             Variable: Verified/improved calculation
         """
-        print("Starting Textual Verification...")
+        print("INFO:textgrad:TextualVerifier:verify Starting Textual Verification...")
         
         # Step 1: Generate reasoning steps from instance
         reasoning_steps = self._generate_cot_steps(instance.value)
@@ -55,7 +55,7 @@ class TextualVerifier(Verifier):
     
     def _generate_cot_steps(self, instance: str) -> List[str]:
         """Generate Chain of Thought steps from the instance."""
-        print("Generating CoT steps...")
+        print("INFO:textgrad:TextualVerifier:generate_cot_steps Generating CoT steps...")
         
         cot_prompt = f"""
         Break down this problem into clear calculation steps.
@@ -70,7 +70,7 @@ class TextualVerifier(Verifier):
         response = self.engine(cot_prompt)
         steps = self._extract_steps_from_response(response)
         
-        print(f"Generated {len(steps)} steps")
+        print(f"INFO:textgrad:TextualVerifier:generate_cot_steps Generated {len(steps)} steps")
         return steps
     
     def _extract_steps_from_response(self, response: str) -> List[str]:
@@ -92,7 +92,7 @@ class TextualVerifier(Verifier):
     
     def _format_steps(self, steps: List[str]) -> List[str]:
         """Format steps for better processing."""
-        print("Formatting steps...")
+        print("INFO:textgrad:TextualVerifier:format_steps Formatting steps...")
         
         formatted = []
         for i, step in enumerate(steps):
@@ -103,7 +103,7 @@ class TextualVerifier(Verifier):
     
     def _verify_each_step(self, instance: str, prompt: str, formatted_steps: List[str]) -> List[str]:
         """Verify each step by generating variants and voting."""
-        print("Verifying each step...")
+        print("INFO:textgrad:TextualVerifier:verify_each_step Verifying each step...")
         
         verified_steps = []
         
@@ -159,7 +159,7 @@ class TextualVerifier(Verifier):
     
     def _merge_verified_steps(self, prompt, verified_steps: List[str]) -> str:
         """Merge all verified steps into one coherent calculation."""
-        print("Merging verified steps...")
+        print("INFO:textgrad:TextualVerifier:merge_verified_steps Merging verified steps...")
         
         merge_prompt = f"""
         Instruction: Merge these verified calculation steps into one coherent calculation. {prompt}
@@ -174,7 +174,7 @@ class TextualVerifier(Verifier):
     
     def _make_decision(self, original_calculation: str, merged_calculation: str) -> str:
         """Make final decision: update, merge, or pass."""
-        print("⚖️ Making final decision...")
+        print("INFO:textgrad:TextualVerifier:make_decision Making final decision...")
         
         decision_prompt = f"""
         Compare these two calculations:
