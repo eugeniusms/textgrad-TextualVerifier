@@ -23,13 +23,9 @@ def process_verification(query, verifier, threshold=0.5, max_revisions=3):
     # Verify and revise each step
     final_steps = verify_and_revise(query, initial_steps, verifier, threshold, max_revisions)
     
-    # Extract the final answer
-    final_answer = extract_answer(final_steps, query)
-    
     return {
         "initial_steps": initial_steps,
         "final_steps": final_steps,
-        "answer": final_answer
     }
 
 if __name__ == "__main__":

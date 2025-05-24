@@ -27,9 +27,9 @@ from .variable import Variable
 from .loss import TextLoss
 from .model import BlackboxLLM
 from .engine import EngineLM, get_engine
-from .optimizer import TextualGradientDescent, TGD
+from .optimizer import TextualGradientDescent, TGD, VTGD
 from .config import set_backward_engine, SingletonBackwardEngine
 from .autograd import sum, aggregate
-from .verification import get_verifier
+from .verification import GeneralPurposeVerifier
 
 singleton_backward_engine = SingletonBackwardEngine()

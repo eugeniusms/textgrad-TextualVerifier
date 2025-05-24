@@ -4,6 +4,7 @@ from textgrad.variable import Variable
 from textgrad.engine import EngineLM
 from textgrad.optimizer import TextualGradientDescent
 from textgrad.verification.general_purpose_verifier import Verifier
+from .optimizer_prompts import OPTIMIZER_SYSTEM_PROMPT
 
 class VerifiedTextualGradientDescent(TextualGradientDescent):
     """
@@ -20,7 +21,7 @@ class VerifiedTextualGradientDescent(TextualGradientDescent):
                  engine: Union[EngineLM, str] = None,
                  constraints: List[str] = None,
                  new_variable_tags: List[str] = None,
-                 optimizer_system_prompt: str = None,
+                 optimizer_system_prompt: str = OPTIMIZER_SYSTEM_PROMPT,
                  in_context_examples: List[str] = None,
                  gradient_memory: int = 0):
         """
@@ -56,7 +57,7 @@ class VerifiedTextualGradientDescent(TextualGradientDescent):
         self.threshold = threshold
         self.max_revisions = max_revisions
 
-    def cot_prompter(query: str) -> str:
+    def cot_prompter(self, query: str) -> str:
         """
         Create a Chain-of-Thought prompt for the given query.
         
@@ -74,7 +75,7 @@ class VerifiedTextualGradientDescent(TextualGradientDescent):
         """
         return prompt
 
-    def step_formatter(reasoning_path: str) -> list:
+    def step_formatter(self, reasoning_path: str) -> list:
         """
         Extract individual steps from a reasoning path.
         
@@ -244,6 +245,8 @@ class VerifiedTextualGradientDescent(TextualGradientDescent):
                 for i, step in enumerate(initial_steps):
                     print(f"Step {i+1}: {step[:100]}...")
             
+
+            print("QUESTION", question)            
             # Verify and revise each step
             verified_steps = self.verify_and_revise(question, initial_steps)
             
