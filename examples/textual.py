@@ -36,7 +36,9 @@ print("INITIAL LOSS:", result)
 
 # Verify Loss
 verifier = TextualVerifier(verifier_engine=engine, step_eval_iterations=3)
-verified_result = verifier.verify(solution, result)
+verified_result = verifier.verify(instance=solution, 
+                                    prompt=loss_system_prompt,
+                                    calculation=result)
 
 print("FINAL LOSS:", verified_result)
 

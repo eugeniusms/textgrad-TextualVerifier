@@ -24,16 +24,17 @@ class TextualVerifier(Verifier):
         self.engine = validate_engine_or_get_default(verifier_engine)
         self.step_eval_iterations = step_eval_iterations
     
-    def verify(self, instance: Variable, calculation: Variable) -> Variable:
+    def verify(self, instance: Variable, prompt: Variable, calculation: Variable) -> Variable:
         """
         Verify and improve the calculation through step-by-step analysis.
         
         Args:
             instance: The original problem/question
-            calculation: The solution that needs verification
+            prompt: The loss/optimizer prompt
+            calculation: The result of prompt(instance) that needs verification
             
         Returns:
-            Variable: Improved and verified solution
+            Variable: Improved and verified calculation
         """
         print("🔍 Starting TextualVerifier...")
         # Step 1: Combine problem and solution for analysis
