@@ -40,8 +40,10 @@ def get_gradient_and_context_text(variable) -> Union[str, List[Union[str, bytes]
     
     # Check if all instances are string
     if all(isinstance(i, str) for i in gradient_content):
+        print(gradient_content)
         return "\n".join(gradient_content)
     else:
+        print(gradient_content)
         return gradient_content
 
 
