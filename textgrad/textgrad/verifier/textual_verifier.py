@@ -36,7 +36,6 @@ class TextualVerifier(Verifier):
             Variable: Improved and verified solution
         """
         print("🔍 Starting TextualVerifier...")
-        
         # Step 1: Combine problem and solution for analysis
         full_context = f"Problem: {instance.value}\n\nSolution: {calculation.value}"
         

@@ -27,27 +27,20 @@ Do not attempt to solve it yourself, do not give a solution, only identify error
                               role_description="system prompt")
 
 optimizer = TextualGradientDescent([solution])
-
-# TextLoss Basic
-loss1 = TextLoss(loss_system_prompt)
-result1 = loss1(solution)
-print(result1)
-
-result1.backward()
-optimizer.step()
-print(solution.value)
-
-# Verify Loss
 optimizer.zero_grad()
 
-loss2 = TextLoss(loss_system_prompt, engine=engine)
-result2 = loss2(solution) # Forward method in Loss Function
+loss = TextLoss(loss_system_prompt, engine=engine)
+result = loss(solution) # Forward method in Loss Function
 
+print("INITIAL LOSS:", result)
+
+# Verify Loss
 verifier = TextualVerifier(verifier_engine=engine, step_eval_iterations=3)
-verified_result = verifier.verify(solution, result2)
+verified_result = verifier.verify(solution, result)
 
-print("LOSS FINAL:", verified_result)
+print("FINAL LOSS:", verified_result)
 
+# Optimize
 verified_result.backward()
 optimizer.step()
 print(solution.value)
