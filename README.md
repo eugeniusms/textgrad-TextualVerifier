@@ -1,4 +1,4 @@
-# VTGD - Verified Textual Gradient Descent
+# VerifiedLoss - Verify Loss in TextGrad
 
 ## Introduction
 
