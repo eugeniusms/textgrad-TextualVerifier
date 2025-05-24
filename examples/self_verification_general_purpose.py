@@ -1,7 +1,7 @@
 import textgrad as tg
 from textgrad.variable import Variable
 from textgrad.verification import GeneralPurposeVerifier
-from textgrad.optimizer import VerifiedTextualGradientDescent
+from textgrad.loss import VerificationLoss
 
 # Set up the engines for verification and optimization
 tg.set_backward_engine("gemini-1.5-pro")
@@ -29,30 +29,8 @@ Do not attempt to solve it yourself, do not give a solution, only identify error
                               role_description="system prompt")
 
 # Create the loss function
-loss_fn = tg.TextLoss(loss_system_prompt, engine=verification_engine)
+loss = VerificationLoss(loss_system_prompt)
+print(loss)
 
-# Create a verifier
-verifier = GeneralPurposeVerifier(verification_engine)
-
-# Create the verified optimizer with explicitly provided parameters
-optimizer = VerifiedTextualGradientDescent(
-    parameters=[solution],
-    verifier=verifier,
-    threshold=0.7,
-    max_revisions=3,
-    engine=reasoning_engine,
-    verbose=1,
-)
-
-# Compute the loss
-loss = loss_fn(solution)
-
-# Backpropagate the gradients
-loss.backward()
-
-# Apply the optimization
-optimizer.step()
-
-# Print the optimized solution
-print("Optimized solution:")
-print(solution.value)
+result = loss(solution)
+print(result)

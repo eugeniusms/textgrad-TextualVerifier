@@ -1,9 +1,11 @@
+import re
 from textgrad.engine import EngineLM, get_engine
 from textgrad.variable import Variable
 from typing import List, Union
 from textgrad.autograd import LLMCall, FormattedLLMCall, OrderedFieldsMultimodalLLMCall
 from textgrad.autograd import Module
 from .config import SingletonBackwardEngine
+from textgrad.verification import GeneralPurposeVerifier # NEW VERIFICATION
 
 
 class TextLoss(Module):
@@ -227,3 +229,214 @@ class ImageQALoss(Module):
         }
         return self.multimodal_llm_call(inputs=inputs,
                                         response_role_description=f"evaluation of the {response.get_role_description()}")
+
+
+# NEW VERIFICATION
+class VerificationLoss(Module):
+    def __init__(self, 
+                 eval_system_prompt: Union[Variable, str],
+                 engine: Union[EngineLM, str] = None,
+                 verifier_engine: Union[EngineLM, str] = None,
+                 threshold: float = 0.5,
+                 max_revisions: int = 3):
+        """
+        A loss function that verifies and revises reasoning steps before evaluation.
+        
+        :param eval_system_prompt: System prompt for final evaluation
+        :type eval_system_prompt: Union[Variable, str]
+        :param engine: Engine for final evaluation and revision
+        :type engine: Union[EngineLM, str]
+        :param verifier_engine: Engine for verification (defaults to main engine)
+        :type verifier_engine: Union[EngineLM, str]
+        :param threshold: Probability threshold for accepting steps
+        :type threshold: float
+        :param max_revisions: Maximum revisions per step
+        :type max_revisions: int
+        
+        :example:
+        >>> from textgrad import get_engine, Variable
+        >>> from textgrad.loss import VerificationLoss
+        >>> engine = get_engine("gpt-4o")
+        >>> eval_prompt = "Evaluate the quality of this reasoning"
+        >>> verification_loss = VerificationLoss(eval_prompt, engine, threshold=0.7)
+        >>> question = Variable("What is 2+2?", requires_grad=False)
+        >>> reasoning = Variable("<Step>2+2=4</Step>", requires_grad=True)
+        >>> result = verification_loss(question, reasoning)
+        """
+        super().__init__()
+        
+        # Setup evaluation prompt (following TextLoss pattern)
+        if isinstance(eval_system_prompt, str):
+            eval_system_prompt = Variable(eval_system_prompt, requires_grad=False, 
+                                        role_description="system prompt for evaluation")
+        self.eval_system_prompt = eval_system_prompt
+        
+        # Setup engines (following existing pattern)
+        if ((engine is None) and (SingletonBackwardEngine().get_engine() is None)):
+            raise Exception("No engine provided. Either provide an engine as the argument to this call, or use `textgrad.set_backward_engine(engine)` to set the backward engine.")
+        elif engine is None:
+            engine = SingletonBackwardEngine().get_engine()
+        if isinstance(engine, str):
+            engine = get_engine(engine)
+        self.engine = engine
+        
+        # Setup verifier
+        verifier_engine = verifier_engine or engine
+        self.verifier = GeneralPurposeVerifier(verifier_engine)
+        
+        # Verification parameters
+        self.threshold = threshold
+        self.max_revisions = max_revisions
+
+    def forward(self, question: Variable) -> Variable:
+        """
+        Verify and revise reasoning steps, then evaluate the final result.
+        
+        This is where your verify_and_revise logic is implemented.
+        
+        :param question: The question being answered
+        :type question: Variable
+        :param reasoning_steps: The initial reasoning steps
+        :type reasoning_steps: Variable
+        :return: The evaluation of the verified reasoning
+        :rtype: Variable
+        """
+        # Step 1: Extract steps from reasoning (using your step_formatter logic)
+        reasoning_steps = self.cot_prompter(question)
+        initial_steps = self._step_formatter(reasoning_steps)
+        
+        if not initial_steps:
+            # If no steps found, treat the whole text as one step
+            initial_steps = [reasoning_steps.value]
+        
+        print(f"Initial reasoning path with {len(initial_steps)} steps")
+        for i, step in enumerate(initial_steps):
+            print(f"Step {i+1}: {step[:100]}...")
+        
+        # Step 2: Verify and revise each step (using your verify_and_revise logic)
+        final_steps = self._verify_and_revise(question.value, initial_steps)
+        
+        # Step 3: Create verified reasoning text
+        verified_reasoning_text = "\n".join([f"<Step>{step}</Step>" for step in final_steps])
+        
+        # Step 4: Final evaluation using the eval_system_prompt
+        evaluation_input = f"Question: {question.value}\n\nVerified Reasoning:\n{verified_reasoning_text}"
+        
+        # Create a formatted call for evaluation
+        final_evaluation = self.engine(f"{self.eval_system_prompt.value}\n\n{evaluation_input}")
+        
+        return Variable(final_evaluation, requires_grad=True, 
+                       role_description="evaluation of verified reasoning")
+
+    def cot_prompter(self, query):
+        initial_reasoning_path = f"""
+            Mark the beginning and end of each reasoning step with <Step> 
+            and </Step> tags. Q: q. A: Let's think step by step.
+
+            {query}
+        """
+        return initial_reasoning_path
+    
+    def _step_formatter(self, reasoning_path: str) -> List[str]:
+        """
+        Extract individual steps from a reasoning path.
+        This implements your step_formatter function.
+        """
+        # Use regex to extract content between <Step> and </Step> tags
+        step_pattern = r"<Step>(.*?)</Step>"
+        steps = re.findall(step_pattern, reasoning_path, re.DOTALL)
+        
+        # Clean up extracted steps
+        return [step.strip() for step in steps]
+
+    def _verify_and_revise(self, question: str, reasoning_chain: List[str]) -> List[str]:
+        """
+        Verify and revise each step in the reasoning chain.
+        This implements your verify_and_revise function.
+        """
+        verified_chain = []
+        
+        # Process each step in the reasoning chain
+        for i, step in enumerate(reasoning_chain):
+            print(f"\nVerifying step {i+1}:")
+            
+            current_step = step
+            
+            # Try to revise this step until it meets the threshold or max revisions reached
+            for revision in range(self.max_revisions):
+                current_chain = verified_chain + [current_step]
+                verification = self._verify_step(question, current_chain)
+                
+                print(f"Step {i+1} (Revision {revision}) probability: {verification['probability']:.4f}")
+                
+                # If step meets threshold, accept it and move to next step
+                if verification['probability'] >= self.threshold:
+                    print(f"Step {i+1} meets threshold, moving to next step")
+                    verified_chain.append(current_step)
+                    break
+                    
+                # If step doesn't meet threshold and we haven't reached max revisions, revise it
+                if revision < self.max_revisions - 1:
+                    print(f"Step {i+1} below threshold, revising...")
+                    revised_step = self._revise_step(question, verified_chain, current_step, verification['probability'])
+                    current_step = revised_step
+                else:
+                    # If we've reached max revisions, accept the current step and move on
+                    print(f"Warning: Step {i+1} still below threshold after {self.max_revisions} revisions. Accepting anyway.")
+                    verified_chain.append(current_step)
+        
+        return verified_chain
+
+    def _verify_step(self, question: str, chain_so_far: List[str]) -> dict:
+        """
+        Verify a single step in the reasoning chain.
+        This implements your verify_step function.
+        """
+        preceding_steps = "\n".join(chain_so_far)
+        verifier_input = f"{question}\n{preceding_steps}"
+        
+        try:
+            # Get probability that this step leads to correct answer
+            probability = self.verifier.predict(verifier_input)
+        except Exception as e:
+            print(f"Error in verifier.predict(): {e}")
+            probability = 0.5
+        
+        return {
+            "probability": probability,
+            "revise": probability < self.threshold
+        }
+
+    def _revise_step(self, question: str, previous_steps: List[str], 
+                     current_step: str, probability: float) -> str:
+        """
+        Revise a single step in the reasoning chain.
+        This implements your revise_step function.
+        """
+        # Format previous steps with tags
+        previous_formatted = ""
+        if previous_steps:
+            previous_formatted = "\n".join([f"<Step>{step}</Step>" for step in previous_steps])
+            previous_formatted = f"Previous steps:\n{previous_formatted}\n\n"
+        
+        # Create prompt for revising the step
+        prompt = f"""Q: {question}
+        
+        {previous_formatted}Current step to revise:
+        <Step>{current_step}</Step>
+
+        The probability that this step leads to the correct answer is {probability:.4f}, which is below the acceptable threshold.
+        Please revise ONLY this step to increase the probability that it leads to the correct answer.
+        Your revision should be more accurate, clear, and logical. Make sure it follows directly from the previous steps.
+
+        Provide your revised step between <Step> and </Step> tags."""
+        
+        # Generate & extract the revised step using the engine
+        revised_output = self.engine(prompt)
+        revised_steps = self._step_formatter(revised_output)
+        
+        # Return the revised step or the original if extraction failed
+        if revised_steps and len(revised_steps) > 0:
+            return revised_steps[0]
+        else:
+            return current_step
