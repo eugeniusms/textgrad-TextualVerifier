@@ -2,7 +2,7 @@ import textgrad as tg
 from textgrad.engine import get_engine
 from textgrad.variable import Variable
 from textgrad.optimizer import TextualGradientDescent
-from textgrad.verification import verify, TextualVerifier
+from textgrad.verifier import TextualVerifier
 from textgrad.loss import TextLoss
 
 engine = get_engine("gemini-1.5-pro")
@@ -37,19 +37,17 @@ result1.backward()
 optimizer.step()
 print(solution.value)
 
-# Verification Loss
+# Verify Loss
 optimizer.zero_grad()
 
 loss2 = TextLoss(loss_system_prompt, engine=engine)
 result2 = loss2(solution) # Forward method in Loss Function
-verified_result2 = verify(instance=solution, 
-                            calculation=result2,
-                            verifier=TextualVerifier,
-                            verifier_engine=engine,
-                            step_eval_iterations=3)
 
-print("LOSS FINAL:", verified_result2)
+verifier = TextualVerifier(verifier_engine=engine, step_eval_iterations=3)
+verified_result = verifier.verify(solution, result2)
 
-result2.backward()
+print("LOSS FINAL:", verified_result)
+
+verified_result.backward()
 optimizer.step()
 print(solution.value)
