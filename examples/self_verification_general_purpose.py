@@ -1,7 +1,7 @@
 import textgrad as tg
 from textgrad.variable import Variable
 from textgrad.verification import GeneralPurposeVerifier
-from textgrad.loss import TextLoss, VerificationLoss
+from textgrad.loss import TextLoss, VerifiedLoss
 
 tg.set_backward_engine("gemini-1.5-pro")
 
@@ -37,7 +37,7 @@ print(solution.value)
 # Verification Loss
 optimizer.zero_grad()
 
-loss2 = VerificationLoss(loss_system_prompt)
+loss2 = VerifiedLoss(loss_system_prompt)
 result2 = loss2(solution)
 print(result2)
 

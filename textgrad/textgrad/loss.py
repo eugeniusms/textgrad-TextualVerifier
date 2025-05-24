@@ -5,7 +5,7 @@ from typing import List, Union
 from textgrad.autograd import LLMCall, FormattedLLMCall, OrderedFieldsMultimodalLLMCall
 from textgrad.autograd import Module
 from .config import SingletonBackwardEngine
-from textgrad.verification import GeneralPurposeVerifier # NEW VERIFICATION
+from textgrad.verification import Verifier, GeneralPurposeVerifier # NEW VERIFICATION
 
 
 class TextLoss(Module):
@@ -232,11 +232,12 @@ class ImageQALoss(Module):
 
 
 # NEW VERIFICATION
-class VerificationLoss(Module):
+class VerifiedLoss(Module):
     def __init__(self, 
                  eval_system_prompt: Union[Variable, str],
                  engine: Union[EngineLM, str] = None,
                  verifier_engine: Union[EngineLM, str] = None,
+                 verifier: Verifier = GeneralPurposeVerifier,
                  threshold: float = 0.5,
                  max_revisions: int = 3):
         """
@@ -282,7 +283,7 @@ class VerificationLoss(Module):
         
         # Setup verifier
         verifier_engine = verifier_engine or engine
-        self.verifier = GeneralPurposeVerifier(verifier_engine)
+        self.verifier = verifier(verifier_engine)
         
         # Verification parameters
         self.threshold = threshold

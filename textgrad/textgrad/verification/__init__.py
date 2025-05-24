@@ -1,7 +1,6 @@
-from .general_purpose_verifier import GeneralPurposeVerifier
+from .general_purpose_verifier import Verifier, GeneralPurposeVerifier
 
 __all__ = [
+    'Verifier',
     'GeneralPurposeVerifier',
 ]
-
-# Integrate exploration to verify TextGrad with create new Loss Function, I want the verifier can used generic like verifier=GeneralPurposeVerifier
