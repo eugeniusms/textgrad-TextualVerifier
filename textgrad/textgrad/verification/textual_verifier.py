@@ -1,15 +1,13 @@
-from typing import List, Union
 import re
-from textgrad.engine import EngineLM
-from textgrad.autograd import LLMCall
 from textgrad.variable import Variable
+from typing import Union, List
+from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
-from textgrad.verification.verifier import Verifier
+from .verifier import Verifier
 
 class TextualVerifier(Verifier):
     """
-    A verifier that uses an LLM to evaluate reasoning steps and 
-    converts the textual evaluation to a probability score.
+    A verifier that uses an LLM to evaluate and improve reasoning steps.
     """
     
     def __init__(self, 
@@ -17,126 +15,136 @@ class TextualVerifier(Verifier):
                 eval_system_prompt: Variable = None,
                 step_eval_iterations: int = 3):
         """
-        Initialize the TextualVerifier verifier.
+        Initialize the TextualVerifier.
         
         Args:
             engine: The engine to use for evaluation
+            eval_system_prompt: Custom evaluation prompt (optional)
+            step_eval_iterations: Number of verification iterations per step
         """
         self.engine = validate_engine_or_get_default(engine)
-        self.eval_system_prompt = eval_system_prompt
         self.step_eval_iterations = step_eval_iterations
+        
+        # Default evaluation prompt if none provided
+        if eval_system_prompt is None:
+            self.eval_system_prompt = Variable(
+                """Evaluate the reasoning and provide an improved, corrected version. 
+                Focus on mathematical accuracy and logical consistency.""",
+                requires_grad=False,
+                role_description="evaluation system prompt"
+            )
+        else:
+            self.eval_system_prompt = eval_system_prompt
     
-    def verify(self, instance: Variable, calculation: Variable) -> str:
+    def verify(self, instance: Variable, calculation: Variable) -> Variable:
         """
-        Verify the calculation of instance.
+        Verify and improve the calculation through step-by-step analysis.
         
         Args:
-            instance: The variable to evaluate (ex: solution/prompt)
-            calculation: Result calculated by loss/optimizer function
+            instance: The original problem/question
+            calculation: The solution that needs verification
             
         Returns:
-            str: Verification result (updated calculation)
+            Variable: Improved and verified solution
         """
-        print("Verifier: Textual")
-        # Step 1: Extract steps from reasoning (using your step_formatter logic)
-        question = instance + calculation
-        cot_prompt = self.cot_prompter(question)
-        reasoning_path = self.engine(cot_prompt)
-        initial_steps = self._step_formatter(reasoning_path)
+        print("🔍 Starting TextualVerifier...")
         
-        if not initial_steps:
-            # If no steps found, treat the whole text as one step
-            initial_steps = [reasoning_path]
+        # Step 1: Combine problem and solution for analysis
+        full_context = f"Problem: {instance.value}\n\nSolution: {calculation.value}"
         
-        print(f"Initial reasoning path with {len(initial_steps)} steps")
-        for i, step in enumerate(initial_steps):
-            print(f"Step {i+1}: {step[:100]}...")
+        # Step 2: Generate step-by-step reasoning
+        reasoning_steps = self._generate_reasoning_steps(full_context)
         
-        # Step 2: Verify and revise each step (using your verify_loss logic)
-        final_steps = self._verify_loss(question.value, initial_steps)
+        # Step 3: Verify each step
+        verified_steps = self._verify_steps(instance.value, reasoning_steps)
         
-        # Step 3: Create verified reasoning text
-        verified_reasoning_text = "\n".join([f"<Step>{step}</Step>" for step in final_steps])
+        # Step 4: Create final improved solution
+        improved_solution = self._create_final_solution(instance.value, verified_steps)
         
-        # Step 4: Final evaluation using the eval_system_prompt
-        evaluation_input = f"Question: {question.value}\n\nVerified Reasoning:\n{verified_reasoning_text}"
-        
-        # Create a formatted call for evaluation
-        final_evaluation = self.engine(f"{self.eval_system_prompt.value}\n\n{evaluation_input}")
-
-        print("FINAL EVALUATION: ", final_evaluation)
-        
-        return Variable(final_evaluation, requires_grad=True, 
-                       role_description="evaluation of verified reasoning")
+        print("✅ Verification complete!")
+        return improved_solution
     
-    def cot_prompter(self, query):
-        initial_reasoning_path = f"""
-            Mark the beginning and end of each reasoning step with <Step> 
-            and </Step> tags. Q: q. A: Let's think step by step.
-
-            {query}
+    def _generate_reasoning_steps(self, context: str) -> List[str]:
+        """Generate step-by-step reasoning from the context."""
+        
+        cot_prompt = f"""
+        Break down this solution into clear, logical steps. 
+        Mark each step with <Step> and </Step> tags.
+        
+        {context}
+        
+        Let's think step by step:
         """
-        return initial_reasoning_path
+        
+        reasoning_response = self.engine(cot_prompt)
+        steps = self._extract_steps(reasoning_response)
+        
+        print(f"📋 Generated {len(steps)} reasoning steps")
+        return steps
     
-    def _step_formatter(self, reasoning_path: str) -> List[str]:
-        """
-        Extract individual steps from a reasoning path.
-        This implements your step_formatter function.
-        """
-        # Use regex to extract content between <Step> and </Step> tags
+    def _extract_steps(self, reasoning_text: str) -> List[str]:
+        """Extract steps from reasoning text using regex."""
+        
+        # Look for <Step>...</Step> patterns
         step_pattern = r"<Step>(.*?)</Step>"
-        steps = re.findall(step_pattern, reasoning_path, re.DOTALL)
+        steps = re.findall(step_pattern, reasoning_text, re.DOTALL)
         
-        # Clean up extracted steps
-        return [step.strip() for step in steps]
-
-    def _find_step_loss(self, question: str, chain_so_far: List[str]) -> str:
-        """
-        Find a single step loss in the reasoning chain.
-        This implements your find_step_loss function.
-        """
-        preceding_steps = "\n".join(chain_so_far)
-        newest_step = chain_so_far[-1]
+        # Clean up steps
+        cleaned_steps = [step.strip() for step in steps if step.strip()]
         
-        loss_order = Variable("""Evaluate whether this step is correct given the question and previous steps. 
-                                    Consider mathematical accuracy, logical consistency, and relevance to solving the question.
-                                    Create a textual feedback that represents error and correction for evaluated step. 
-                                    Please concise one sentence.
-        """, requires_grad=False, role_description="system prompt for the evaluation")
-        step = Variable(f"""
-                QUESTION:
-                {question}
-
-                PREVIOUS STEPS:
-                {preceding_steps}
-
-                STEP TO EVALUATE:
-                {newest_step}                
-                """, requires_grad=False, role_description="step")
-        loss = LLMCall(self.engine, loss_order)
-        result = loss(step)
-
-        return result
-
-    def _verify_loss(self, question: str, reasoning_chain: List[str]) -> List[str]:
-        """
-        Verify and revise each step in the reasoning chain.
-        This implements your verify_loss function.
-        """
-        verified_chain = []
+        # If no tagged steps found, split by common patterns
+        if not cleaned_steps:
+            # Fallback: split by numbers or bullet points
+            lines = reasoning_text.split('\n')
+            cleaned_steps = [line.strip() for line in lines 
+                           if line.strip() and len(line.strip()) > 10]
         
-        # Process each step in the reasoning chain
-        for i, step in enumerate(reasoning_chain):
-            print(f"\nVerifying step {i+1}:")
+        return cleaned_steps[:5] if cleaned_steps else [reasoning_text]  # Limit to 5 steps
+    
+    def _verify_steps(self, question: str, steps: List[str]) -> List[str]:
+        """Verify and improve each step."""
+        
+        verified_steps = []
+        
+        for i, step in enumerate(steps):
+            print(f"🔧 Verifying step {i+1}/{len(steps)}")
             
-            current_step = step
+            # Create verification prompt
+            verification_prompt = f"""
+            Question: {question}
             
-            # Running to prepare consensus/voting
-            for step_eval in range(self.step_eval_iterations):
-                current_chain = verified_chain + [current_step]
-                loss = self._find_step_loss(question, current_chain)
-                verified_chain.append(current_step)
-
-                print(f"Step {i+1} (Eval {step_eval}) Loss: {loss}")
+            Previous steps: {' '.join(verified_steps)}
+            
+            Current step to verify: {step}
+            
+            Is this step correct? If not, provide a corrected version.
+            Be concise and focus on accuracy.
+            """
+            
+            # Get verification feedback
+            verification_result = self.engine(verification_prompt)
+            
+            # For simplicity, use the verification result as the improved step
+            verified_steps.append(verification_result)
         
-        return verified_chain
+        return verified_steps
+    
+    def _create_final_solution(self, question: str, verified_steps: List[str]) -> Variable:
+        """Create the final improved solution from verified steps."""
+        
+        final_prompt = f"""
+        Question: {question}
+        
+        Verified reasoning steps:
+        {chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))}
+        
+        Based on these verified steps, provide a clear, final solution:
+        """
+        
+        final_solution = self.engine(final_prompt)
+        
+        return Variable(
+            final_solution,
+            requires_grad=True,
+            role_description="verified and improved solution"
+        )

@@ -1,3 +1,4 @@
+import textgrad as tg
 from textgrad.engine import get_engine
 from textgrad.variable import Variable
 from textgrad.optimizer import TextualGradientDescent
@@ -5,6 +6,7 @@ from textgrad.verification import verify, TextualVerifier
 from textgrad.loss import TextLoss
 
 engine = get_engine("gemini-1.5-pro")
+tg.set_backward_engine("gemini-1.5-pro")
 
 initial_solution = """To solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:
 x = (-b ± √(b^2 - 4ac)) / 2a
