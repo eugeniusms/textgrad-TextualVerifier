@@ -12,7 +12,7 @@ class TextualVerifier(Verifier):
     
     def __init__(self, engine: Union[str, EngineLM]):
         """
-        Initialize the GeneralPurpose verifier.
+        Initialize the TextualVerifier verifier.
         
         Args:
             engine: The engine to use for evaluation
@@ -29,7 +29,7 @@ class TextualVerifier(Verifier):
         Returns:
             float: Probability that the step leads to the correct answer
         """
-        print("Verifier: GeneralPurpose")
+        print("Verifier: Textual")
         # Create a prompt for the LLM to evaluate the reasoning
         evaluation_prompt = self._create_evaluation_prompt(input_text)
         

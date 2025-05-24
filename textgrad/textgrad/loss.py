@@ -303,12 +303,13 @@ class VerifiedLoss(Module):
         :rtype: Variable
         """
         # Step 1: Extract steps from reasoning (using your step_formatter logic)
-        reasoning_steps = self.cot_prompter(question)
-        initial_steps = self._step_formatter(reasoning_steps)
+        cot_prompt = self.cot_prompter(question)
+        reasoning_path = self.engine(cot_prompt)
+        initial_steps = self._step_formatter(reasoning_path)
         
         if not initial_steps:
             # If no steps found, treat the whole text as one step
-            initial_steps = [reasoning_steps.value]
+            initial_steps = [reasoning_path]
         
         print(f"Initial reasoning path with {len(initial_steps)} steps")
         for i, step in enumerate(initial_steps):
