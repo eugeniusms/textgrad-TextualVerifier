@@ -33,7 +33,7 @@ class TextualVerifier(Verifier):
         Returns:
             Variable: Verified/improved calculation
         """
-        print("🔍 Starting Basic Calculation Verification...")
+        print("Starting Textual Verification...")
         
         # Step 1: Generate reasoning steps from instance
         reasoning_steps = self._generate_cot_steps(instance.value)
@@ -45,17 +45,17 @@ class TextualVerifier(Verifier):
         verified_steps = self._verify_each_step(instance.value, prompt.value, formatted_steps)
         
         # Step 4: Merge all verified steps
-        merged_calculation = self._merge_verified_steps(verified_steps)
+        merged_calculation = self._merge_verified_steps(prompt.value, verified_steps)
         
         # Step 5: Make final decision
         final_result = self._make_decision(calculation.value, merged_calculation)
         
-        print("✅ Verification complete!")
+        print("[V] Verification complete!")
         return Variable(final_result, requires_grad=True, role_description="verified calculation")
     
     def _generate_cot_steps(self, instance: str) -> List[str]:
         """Generate Chain of Thought steps from the instance."""
-        print("📋 Generating CoT steps...")
+        print("Generating CoT steps...")
         
         cot_prompt = f"""
         Break down this problem into clear calculation steps.
@@ -92,7 +92,7 @@ class TextualVerifier(Verifier):
     
     def _format_steps(self, steps: List[str]) -> List[str]:
         """Format steps for better processing."""
-        print("📝 Formatting steps...")
+        print("Formatting steps...")
         
         formatted = []
         for i, step in enumerate(steps):
@@ -103,7 +103,7 @@ class TextualVerifier(Verifier):
     
     def _verify_each_step(self, instance: str, prompt: str, formatted_steps: List[str]) -> List[str]:
         """Verify each step by generating variants and voting."""
-        print("🔧 Verifying each step...")
+        print("Verifying each step...")
         
         verified_steps = []
         
@@ -157,12 +157,12 @@ class TextualVerifier(Verifier):
         best_step = self.engine(voting_prompt)
         return best_step.strip()
     
-    def _merge_verified_steps(self, verified_steps: List[str]) -> str:
+    def _merge_verified_steps(self, prompt, verified_steps: List[str]) -> str:
         """Merge all verified steps into one coherent calculation."""
-        print("🔄 Merging verified steps...")
+        print("Merging verified steps...")
         
         merge_prompt = f"""
-        Merge these verified calculation steps into one coherent calculation:
+        Instruction: Merge these verified calculation steps into one coherent calculation. {prompt}
         
         {chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))}
         
