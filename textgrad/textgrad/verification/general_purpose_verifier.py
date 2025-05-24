@@ -29,6 +29,7 @@ class GeneralPurposeVerifier(Verifier):
         Returns:
             float: Probability that the step leads to the correct answer
         """
+        print("Verifier: GeneralPurpose")
         # Create a prompt for the LLM to evaluate the reasoning
         evaluation_prompt = self._create_evaluation_prompt(input_text)
         
