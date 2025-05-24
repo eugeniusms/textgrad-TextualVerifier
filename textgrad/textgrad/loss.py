@@ -5,7 +5,6 @@ from typing import List, Union
 from textgrad.autograd import LLMCall, FormattedLLMCall, OrderedFieldsMultimodalLLMCall
 from textgrad.autograd import Module
 from .config import SingletonBackwardEngine
-from textgrad.verification import Verifier, TextualVerifier # NEW VERIFICATION
 
 
 class TextLoss(Module):
@@ -229,76 +228,3 @@ class ImageQALoss(Module):
         }
         return self.multimodal_llm_call(inputs=inputs,
                                         response_role_description=f"evaluation of the {response.get_role_description()}")
-
-
-# NEW VERIFICATION
-class VerifiedLoss(Module):
-    def __init__(self, 
-                 eval_system_prompt: Union[Variable, str],
-                 engine: Union[EngineLM, str] = None,
-                 verifier_engine: Union[EngineLM, str] = None,
-                 verifier: Verifier = TextualVerifier,
-                 step_eval_iterations: int = 3):
-        """
-        A loss function that verifies and revises reasoning steps before evaluation.
-        
-        :param eval_system_prompt: System prompt for final evaluation
-        :type eval_system_prompt: Union[Variable, str]
-        :param engine: Engine for final evaluation and revision
-        :type engine: Union[EngineLM, str]
-        :param verifier_engine: Engine for verification (defaults to main engine)
-        :type verifier_engine: Union[EngineLM, str]
-        :param step_eval_iterations: Eval iterations per step
-        :type step_eval_iterations: int
-        
-        :example:
-        >>> from textgrad import get_engine, Variable
-        >>> from textgrad.loss import VerificationLoss
-        >>> engine = get_engine("gpt-4o")
-        >>> eval_prompt = "Evaluate the quality of this reasoning"
-        >>> verification_loss = VerificationLoss(eval_prompt, engine)
-        >>> question = Variable("What is 2+2?", requires_grad=False)
-        >>> reasoning = Variable("<Step>2+2=4</Step>", requires_grad=True)
-        >>> result = verification_loss(question, reasoning)
-        """
-        super().__init__()
-        
-        # Setup evaluation prompt (following TextLoss pattern)
-        if isinstance(eval_system_prompt, str):
-            eval_system_prompt = Variable(eval_system_prompt, requires_grad=False, 
-                                        role_description="system prompt for evaluation")
-        self.eval_system_prompt = eval_system_prompt
-        
-        # Setup engines (following existing pattern)
-        if ((engine is None) and (SingletonBackwardEngine().get_engine() is None)):
-            raise Exception("No engine provided. Either provide an engine as the argument to this call, or use `textgrad.set_backward_engine(engine)` to set the backward engine.")
-        elif engine is None:
-            engine = SingletonBackwardEngine().get_engine()
-        if isinstance(engine, str):
-            engine = get_engine(engine)
-        self.engine = engine
-
-        # Basic parameter
-        self.llm_call = LLMCall(self.engine, self.eval_system_prompt)
-        
-        # Setup verifier
-        verifier_engine = verifier_engine or engine
-        self.verifier = verifier(engine=verifier_engine, 
-                                step_eval_iterations=step_eval_iterations)
-
-    def forward(self, instance: Variable) -> Variable: 
-        """
-        Verify loss value, then evaluate the final result.
-        
-        :param instance: The instance variable.
-        :type instance: Variable
-        :return: The result of the evaluation
-        """
-        text_loss = self.llm_call(instance)
-        
-        # Instance -> what to evaluate
-        # Text Loss -> basic loss on instance
-        # Verified Loss -> loss to instance verified by verify function
-        verified_loss = self.verifier.verify(instance, text_loss)
-
-        return verified_loss

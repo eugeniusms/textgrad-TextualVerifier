@@ -39,6 +39,7 @@ class TextualVerifier(Verifier):
         """
         print("Verifier: Textual")
         # Step 1: Extract steps from reasoning (using your step_formatter logic)
+        question = instance + calculation
         cot_prompt = self.cot_prompter(question)
         reasoning_path = self.engine(cot_prompt)
         initial_steps = self._step_formatter(reasoning_path)

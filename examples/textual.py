@@ -1,9 +1,10 @@
-import textgrad as tg
+from textgrad.engine import get_engine
 from textgrad.variable import Variable
-from textgrad.verification import TextualVerifier
-from textgrad.loss import TextLoss, VerifiedLoss
+from textgrad.optimizer import TextualGradientDescent
+from textgrad.verification import verify, TextualVerifier
+from textgrad.loss import TextLoss
 
-tg.set_backward_engine("gemini-1.5-pro")
+engine = get_engine("gemini-1.5-pro")
 
 initial_solution = """To solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:
 x = (-b ± √(b^2 - 4ac)) / 2a
@@ -23,7 +24,7 @@ Do not attempt to solve it yourself, do not give a solution, only identify error
                               requires_grad=False,
                               role_description="system prompt")
 
-optimizer = tg.TGD([solution])
+optimizer = TextualGradientDescent([solution])
 
 # TextLoss Basic
 loss1 = TextLoss(loss_system_prompt)
@@ -37,11 +38,15 @@ print(solution.value)
 # Verification Loss
 optimizer.zero_grad()
 
-loss2 = VerifiedLoss(eval_system_prompt=loss_system_prompt, 
-                        verifier=TextualVerifier,
-                        step_eval_iterations=3)
+loss2 = TextLoss(loss_system_prompt, engine=engine)
 result2 = loss2(solution) # Forward method in Loss Function
-print("LOSS FINAL:", result2)
+verified_result2 = verify(instance=solution, 
+                            calculation=result2,
+                            verifier=TextualVerifier,
+                            verifier_engine=engine,
+                            step_eval_iterations=3)
+
+print("LOSS FINAL:", verified_result2)
 
 result2.backward()
 optimizer.step()
