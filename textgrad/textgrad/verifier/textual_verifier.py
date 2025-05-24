@@ -11,8 +11,7 @@ class TextualVerifier(Verifier):
     """
     
     def __init__(self, 
-                engine: Union[str, EngineLM],
-                eval_system_prompt: Variable = None,
+                verifier_engine: Union[str, EngineLM],
                 step_eval_iterations: int = 3):
         """
         Initialize the TextualVerifier.
@@ -22,19 +21,8 @@ class TextualVerifier(Verifier):
             eval_system_prompt: Custom evaluation prompt (optional)
             step_eval_iterations: Number of verification iterations per step
         """
-        self.engine = validate_engine_or_get_default(engine)
+        self.engine = validate_engine_or_get_default(verifier_engine)
         self.step_eval_iterations = step_eval_iterations
-        
-        # Default evaluation prompt if none provided
-        if eval_system_prompt is None:
-            self.eval_system_prompt = Variable(
-                """Evaluate the reasoning and provide an improved, corrected version. 
-                Focus on mathematical accuracy and logical consistency.""",
-                requires_grad=False,
-                role_description="evaluation system prompt"
-            )
-        else:
-            self.eval_system_prompt = eval_system_prompt
     
     def verify(self, instance: Variable, calculation: Variable) -> Variable:
         """
