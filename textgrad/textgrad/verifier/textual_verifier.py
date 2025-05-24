@@ -4,6 +4,13 @@ from typing import Union, List
 from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
+from .verifier_prompts import (
+    COT_PROMPT,
+    VARIANT_GENERATION_PROMPT,
+    VOTING_PROMPT,
+    MERGE_STEPS_PROMPT,
+    DECISION_PROMPT
+)
 
 class TextualVerifier(Verifier):
     """
@@ -64,15 +71,7 @@ class TextualVerifier(Verifier):
         if self.logger:
             print("INFO:textgrad:TextualVerifier:generate_cot_steps Generating CoT steps...")
         
-        cot_prompt = f"""
-        Break down this problem into clear calculation steps.
-        Focus only on the mathematical/logical steps needed.
-        Mark each step with <Step> and </Step> tags.
-        
-        Problem: {instance}
-        
-        Let's think step by step:
-        """
+        cot_prompt = COT_PROMPT.format(instance)
         
         response = self.engine(cot_prompt)
         steps = self._extract_steps_from_response(response)
@@ -136,15 +135,9 @@ class TextualVerifier(Verifier):
         variants = []
         
         for iteration in range(self.step_eval_iterations):
-            variant_prompt = f"""
-            Original problem: {instance}
-            Instruction: {prompt}
-            Current step: {step}
-            
-            Provide an alternative calculation approach for this step.
-            Focus only on the calculation, not the final answer.
-            Variant {iteration + 1}:
-            """
+            variant_prompt = VARIANT_GENERATION_PROMPT.format(
+                instance, prompt, step, iteration + 1
+            )
             
             variant = self.engine(variant_prompt)
             variants.append(variant.strip())
@@ -153,33 +146,21 @@ class TextualVerifier(Verifier):
     
     def _vote_on_variants(self, original_step: str, variants: List[str]) -> str:
         """Vote on the most significant/correct variant."""
-        all_options = [original_step] + variants
+        variants_text = chr(10).join(f"{i+1}. {var}" for i, var in enumerate(variants))
         
-        voting_prompt = f"""
-        Original step: {original_step}
-        
-        Alternative variants:
-        {chr(10).join(f"{i+1}. {var}" for i, var in enumerate(variants))}
-        
-        Which calculation approach is most accurate and significant?
-        Return only the best calculation step:
-        """
+        voting_prompt = VOTING_PROMPT.format(original_step, variants_text)
         
         best_step = self.engine(voting_prompt)
         return best_step.strip()
     
-    def _merge_verified_steps(self, prompt, verified_steps: List[str]) -> str:
+    def _merge_verified_steps(self, prompt: str, verified_steps: List[str]) -> str:
         """Merge all verified steps into one coherent calculation."""
         if self.logger:
             print("INFO:textgrad:TextualVerifier:merge_verified_steps Merging verified steps...")
         
-        merge_prompt = f"""
-        Instruction: Merge these verified calculation steps into one coherent calculation. {prompt}
+        steps_text = chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))
         
-        {chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))}
-        
-        Provide the complete merged calculation:
-        """
+        merge_prompt = MERGE_STEPS_PROMPT.format(prompt, steps_text)
         
         merged = self.engine(merge_prompt)
         return merged.strip()
@@ -189,36 +170,22 @@ class TextualVerifier(Verifier):
         if self.logger:
             print("INFO:textgrad:TextualVerifier:make_decision Making final decision...")
         
-        decision_prompt = f"""
-        Compare these two calculations:
-        
-        Original calculation: {original_calculation}
-        
-        Verified calculation: {merged_calculation}
-        
-        Classify the decision:
-        1. INCORRECT - Original is wrong, use verified version
-        2. INCOMPLETE - Original is correct but missing parts from verified
-        3. CORRECT - Original is fine, no changes needed
-        
-        Respond with: [DECISION]: [FINAL_CALCULATION]
-        """
+        decision_prompt = DECISION_PROMPT.format(original_calculation, merged_calculation)
         
         decision_response = self.engine(decision_prompt)
         
         # Parse decision
-        if "INCORRECT" in decision_response:
+        if "REPLACE" in decision_response:
             if self.logger:
-                print("[X] Original calculation was incorrect - using verified version")
+                print("[X] Original feedback insufficient - using process-focused version")
             return merged_calculation
-        elif "INCOMPLETE" in decision_response:
+        elif "ENHANCE" in decision_response:
             if self.logger:
-                print("[-] Original calculation incomplete - merging with verified")
-            # Extract final calculation after the decision
-            final_calc = decision_response.split(":", 1)[-1].strip()
-            return final_calc if final_calc else merged_calculation
+                print("[-] Enhancing original feedback with process guidance")
+            # Extract final feedback after the decision
+            final_feedback = decision_response.split(":", 1)[-1].strip()
+            return final_feedback if final_feedback else merged_calculation
         else:
             if self.logger:
-                print("[V] Original calculation is correct - no changes needed")
+                print("[V] Original feedback is already process-focused")
             return original_calculation
-
