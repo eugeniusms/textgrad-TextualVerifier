@@ -21,7 +21,15 @@
 | Paper | Yuksekgonul, M., Bianchi, F., Boen, J., Liu, S., Huang, Z., Guestrin, C., & Zou, J. (2024). TextGrad: Automatic "differentiation" via text. arXiv. | https://arxiv.org/abs/2406.07496 |
 | Documentation | TextGrad's Documentation | https://textgrad.readthedocs.io/en/latest/index.html |
 | Github | textgrad | https://github.com/zou-group/textgrad |
-| HuggingFace | TextGrad | https://huggingface.co/TextGrad | 
+
+## Datasets Sources
+| Dataset | Link |
+| ---- | ---- |
+| BBH Object Counting | https://github.com/suzgunmirac/BIG-Bench-Hard |
+| GPQA | https://huggingface.co/datasets/Idavidrein/gpqa |
+| GSM8K | https://huggingface.co/datasets/openai/gsm8k |
+| Leetcode Hard | https://raw.githubusercontent.com/vinid/data/master/leetcode_with_tests.jsonl |
+| MMLU | https://huggingface.co/datasets/cais/mmlu |
 
 ## Helpful Arcticles
 - https://codeslord.github.io/general/2024/06/12/textgrad/
