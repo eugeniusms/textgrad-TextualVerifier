@@ -1,3 +1,4 @@
+![TextualVerifier](assets/textual-verifier-logo.png)
 # TextualVerifier - Verify Step by Step in TextGrad
 
 ## Introduction
