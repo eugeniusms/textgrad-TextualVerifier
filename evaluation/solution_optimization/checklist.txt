@@ -1,0 +1,4 @@
+[DONE] Generate Initial Solution CSV
+[DONE] Solution Optimization with Raw TextGrad
+[NOT YET] Solution Optimization with TextualVerifier TextGrad -> Need Better Algo (Test 10 Sample)
+[NOT YET] Solution Optimization Analysis
