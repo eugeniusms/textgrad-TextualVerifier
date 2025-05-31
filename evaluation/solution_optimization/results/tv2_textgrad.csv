@@ -52,6 +52,106 @@ Answer: D","Let D be the number of parameters. A gradient descent update involve
 Answer: D","Let D be the number of parameters. A gradient descent update involves scaling the gradient by the learning rate and subtracting the result from each parameter.  This involves two operations (multiplication and subtraction) for *each* of the D parameters. Therefore, the total number of operations for one gradient descent update is 2 * D = 2D operations. In Big O notation, constant factors are dropped because Big O notation focuses on how the complexity scales with the input size, not the precise count of operations.  Thus, the complexity of one gradient descent update is O(D) because it scales linearly with the number of parameters, D.
 
 Answer: D"
+203,"Convolutional Neural Networks (CNNs) are specifically designed to process data with a grid-like topology, making them highly suitable for image data.  They leverage principles like spatially shared weights and local connectivity to effectively capture spatial hierarchies of features within images.  While other architectures like graph networks, fully connected networks, and RBF networks have their own strengths, CNNs have consistently demonstrated superior performance in image classification tasks, especially with high-resolution images where detailed feature extraction is crucial.
+
+Answer: B
+",B,MMLU-ML,machine_learning,"Convolutional Neural Networks (CNNs) excel at processing high-resolution images due to their specialized architecture.  Specifically, CNNs employ convolutional filters that slide across the image, extracting local features. These features are then aggregated by pooling layers, reducing computational complexity while retaining essential information. This hierarchical approach allows CNNs to learn complex patterns and representations at different scales, crucial for detailed feature extraction in high-resolution images.  Furthermore, weight sharing within convolutional layers significantly reduces the number of parameters compared to fully connected networks, making CNNs more computationally efficient when dealing with the large input sizes of high-resolution images.
+
+Other architectures are less suitable for this task. Fully connected networks, while theoretically capable of classifying images, become computationally prohibitive with high-resolution inputs due to the massive number of parameters. Graph networks, while effective for relational data, struggle to capture the inherent spatial hierarchies present in images.  RBF networks, while useful for function approximation, lack the specialized feature extraction capabilities of CNNs necessary for complex image classification.
+
+Because CNNs effectively extract detailed features from high-resolution images while maintaining computational efficiency, and considering the limitations of other architectures in handling such data, the best architecture for classifying high-resolution images as of 2020 is convolutional networks.
+
+Answer: B","Classifying high-resolution images presents unique challenges, primarily due to the sheer volume of data and the need to extract intricate features.  Several architectures could be considered: Convolutional Neural Networks (CNNs), Graph Networks (GNs), Fully Connected Networks (FCNs), and Radial Basis Function Networks (RBFNs).  As of 2020, CNNs stand out as the most effective for this task.
+
+Here's a comparative analysis:
+
+1. **Feature Extraction:** CNNs utilize convolutional filters that slide across the image, capturing local patterns. This localized approach is highly effective for high-resolution images as it allows the network to learn hierarchical features, from simple edges to complex textures.  FCNs, in contrast, treat each pixel as an independent input, leading to an explosion of parameters and computational cost for high-resolution images. GNs, while adept at relational data, struggle to capture the inherent spatial hierarchies in images. RBFNs, primarily designed for function approximation, lack the specialized feature extraction capabilities of CNNs.
+
+2. **Computational Efficiency:** CNNs employ weight sharing within convolutional layers, significantly reducing the number of parameters compared to FCNs. This efficiency is crucial for high-resolution images.  While RBFNs can be computationally efficient, their limited feature extraction hinders their performance on complex image data. GNs, depending on their implementation, can also become computationally expensive for large images.
+
+3. **Handling High Resolution:** The hierarchical feature extraction and weight sharing in CNNs make them particularly well-suited for high-resolution images.  They can effectively process the large input size without becoming computationally intractable. FCNs, due to their fully connected nature, struggle with the increased number of pixels.  GNs and RBFNs, while applicable in other domains, lack the specialized mechanisms to efficiently handle the complexities of high-resolution image data.
+
+Therefore, considering the specific challenges of high-resolution image classification, CNNs offer the best balance of feature extraction capability and computational efficiency.
+
+Answer: B","Classifying high-resolution images presents unique challenges due to the sheer volume of data and the intricate features involved. As of 2020, Convolutional Neural Networks (CNNs) have emerged as the leading architecture for this task, outperforming alternatives like Graph Networks (GNs), Fully Connected Networks (FCNs), and Radial Basis Function Networks (RBFNs).  This is primarily due to their superior feature extraction capabilities and computational efficiency.
+
+Specifically, architectures like ResNet and InceptionNet have demonstrated exceptional performance on high-resolution image datasets. ResNet's skip connections mitigate vanishing gradients, enabling the training of very deep networks capable of learning complex, hierarchical features from high-resolution images.  InceptionNet's inception modules, employing multiple filter sizes within a single layer, allow the network to capture features at various scales, crucial for detailed high-resolution images.  These specialized architectures have achieved significantly lower error rates on benchmark datasets like ImageNet compared to FCNs or RBFNs.  For instance, Inception-v3 achieved a top-5 error rate of approximately 3.5% on ImageNet, a substantial improvement over earlier architectures.
+
+Furthermore, CNNs exhibit better computational efficiency compared to FCNs, especially for high-resolution images.  The weight sharing inherent in convolutional layers drastically reduces the number of parameters, leading to lower memory footprints and faster processing.  For example, a fully connected layer applied to a 1024x1024 image with 3 color channels would require billions of parameters, whereas a CNN can achieve comparable performance with significantly fewer parameters, often in the millions. This efficiency is crucial for handling the massive computational demands of high-resolution image data.  While GNs have shown promise in other domains, their application to high-resolution images is often computationally expensive due to the complexity of graph representations for such data.
+
+Therefore, considering the superior feature extraction capabilities exemplified by architectures like ResNet and InceptionNet, coupled with the computational efficiency stemming from weight sharing, CNNs offer the best balance for classifying high-resolution images as of 2020.
+
+Answer: B","Let's analyze the computational complexity of each architecture for high-resolution image classification, focusing on the number of parameters as a key factor influencing performance and efficiency as of 2020:
+
+1. **Convolutional Neural Networks (CNNs):** CNNs leverage weight sharing, meaning a single filter is applied across the entire image. This drastically reduces the number of parameters compared to fully connected networks.  For a filter of size k x k applied to an image of size H x W, the number of parameters is k * k * C_in * C_out, where C_in and C_out are the number of input and output channels, respectively. This number is independent of H and W, making CNNs highly scalable for high-resolution images.
+
+2. **Fully Connected Networks (FCNs):** In FCNs, each neuron in a layer is connected to every neuron in the previous layer. For an image of size H x W with 3 color channels, a single fully connected layer would require (H * W * 3) * N parameters, where N is the number of neurons in the layer. This scales directly with the image dimensions, making FCNs computationally expensive and memory-intensive for high-resolution images.
+
+3. **Graph Networks (GNs):** GNs represent images as graphs, where nodes represent image regions and edges represent relationships between them. The complexity of these graph representations grows significantly with image resolution, leading to high computational costs for high-resolution image classification.
+
+4. **Radial Basis Function Networks (RBFNs):** RBFNs rely on a set of radial basis functions to map input features to a higher-dimensional space.  While their parameter count can be lower than FCNs, they are generally less effective for complex, high-dimensional data like high-resolution images, and their performance does not scale as well as CNNs.
+
+Considering the significantly lower parameter count and better scalability of CNNs with increasing image resolution, CNNs offer the best balance of performance and efficiency for high-resolution image classification as of 2020.
+
+Answer: B","To determine the best architecture for classifying high-resolution images as of 2020, let's compare four architectures: Convolutional Networks (CNNs), Fully Connected Networks (FCNs), Graph Networks (GNs), and Radial Basis Function Networks (RBFNs) based on key criteria relevant to high-resolution image processing: parameter count scaling, computational complexity, and memory requirements.
+
+**1. Parameter Count Scaling:**
+
+* **CNNs:** CNNs employ weight sharing, significantly reducing parameter count.  For a k x k filter, the parameters are k*k*C_in*C_out (C_in/C_out: input/output channels). Crucially, this is independent of image dimensions (H x W), making CNNs scalable for high-resolution images.
+* **FCNs:** FCNs connect every neuron in a layer to every neuron in the previous layer.  Parameters scale directly with image dimensions: (H * W * 3) * N (N: number of neurons). This becomes prohibitive for high-resolution images.  For example, a 1000x1000 image with 3 channels and 1000 neurons requires 3 billion parameters in a single layer.
+* **GNs:** GNs represent images as graphs. Parameter count depends on the graph construction method and generally increases with image resolution, potentially becoming computationally expensive.
+* **RBFNs:** RBFNs use radial basis functions. While their parameter count can be lower than FCNs, it still scales with input dimensions and they are less effective for complex, high-dimensional data like high-resolution images.
+
+**2. Computational Complexity:**
+
+* **CNNs:** Convolution operations are computationally efficient, especially with hardware acceleration.  Complexity scales well with image resolution.
+* **FCNs:** The massive number of connections leads to high computational complexity, worsening with increasing resolution.
+* **GNs:** Complexity depends on graph structure and operations, but generally increases with image resolution.
+* **RBFNs:**  Computational cost can be significant for high-dimensional data.
+
+**3. Memory Requirements:**
+
+* **CNNs:** Relatively low memory requirements due to weight sharing, scaling favorably with resolution.
+* **FCNs:** High memory demands due to the large number of parameters, becoming problematic for high-resolution images.
+* **GNs:** Memory usage depends on graph size and complexity, increasing with resolution.
+* **RBFNs:** Memory requirements can be substantial for high-resolution images.
+
+**Conclusion:**
+
+CNNs offer the best balance of parameter scaling, computational complexity, and memory efficiency for high-resolution image classification as of 2020.  Their weight sharing drastically reduces parameter count and computational demands compared to FCNs, GNs, and RBFNs, making them ideal for handling the large input sizes of high-resolution images.
+
+Answer: B"
+204,"Statement 1: The expectation-maximization (EM) algorithm is guaranteed to improve the log-likelihood of the data at each iteration or, at worst, to leave it unchanged.  So, the log-likelihood does not decrease. It may not strictly increase, but it won't go down.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm.  This means it doesn't require prior knowledge of the environment's dynamics (how actions affect the environment).  In fact, a key advantage of Q-learning is its ability to learn in unknown environments.
+
+Therefore, Statement 1 is False, and Statement 2 is False.
+
+Answer: C",C,MMLU-ML,machine_learning,"Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations.  The algorithm aims to find a local maximum, and sometimes it reaches a plateau where the likelihood doesn't change.  For example, if the algorithm starts at a local maximum, the log-likelihood will not increase further. Therefore, Statement 1 is False.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  It learns by directly experiencing the environment and updating its estimates of optimal actions (Q-values) based on observed rewards and state transitions.  The fact that it *doesn't* need a model of the environment is a key advantage. Therefore, Statement 2 is False.
+
+Since Statement 1 is False and Statement 2 is False, the correct option is C.
+
+Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations. Therefore, Statement 1 is False.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment. Therefore, Statement 2 is False.
+
+Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations.  Since the statement claims the log-likelihood *always* increases, and we've shown it can stay the same, Statement 1 is False.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  The statement claims Q-learning *requires* prior knowledge, and we've shown it does *not*. Therefore, Statement 2 is False.
+
+Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While the log-likelihood never decreases, it can plateau between iterations, indicating convergence to a local optimum or saddle point.  Because the EM algorithm can get stuck at these suboptimal points, the log-likelihood does not always increase, making the statement false.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  The statement claims Q-learning *requires* prior knowledge, and we've shown it does *not*. Therefore, Statement 2 is False.
+
+Answer: C","Statement 1: Interpreting ""always increasing"" as strictly monotonic, meaning the log-likelihood must increase with each iteration. The EM algorithm does not guarantee this. While the log-likelihood never decreases, it can plateau between iterations, indicating convergence to a local optimum or saddle point. Because the EM algorithm can get stuck at these suboptimal points, the log-likelihood does not always increase in the strict sense. Therefore, Statement 1 is False.
+
+Statement 2: Q-learning is defined as a model-free reinforcement learning algorithm.  ""Model-free"" means the algorithm learns directly from experience without needing a pre-built model of the environment, and thus does not require prior knowledge of how actions affect the environment. Statement 2 claims Q-learning *requires* such prior knowledge.  These statements are contradictory. Therefore, Statement 2 is False.
+
+Since Statement 1 is False and Statement 2 is False, the answer is C.
+
+Answer: C"
 201,"Statement 1: Support vector machines (SVMs) primarily focus on finding the optimal hyperplane that maximizes the margin between different classes. While they can provide classification labels, they don't inherently offer a probability distribution over those labels like logistic regression models do.  Probabilistic interpretations can be added to SVMs (e.g., using Platt scaling), but it's not a core feature. So, Statement 1 is false.
 
 Statement 2: The support vectors are the data points that lie closest to the decision boundary (hyperplane) and influence its position.  When moving from a linear kernel to a higher-order polynomial kernel, the decision boundary becomes more complex and non-linear. This change in the decision boundary's shape will likely cause different data points to become the closest ones, thus changing the support vectors. So, Statement 2 is false.
@@ -89,176 +189,6 @@ Answer: A","Statement 1: Support vector machines (SVMs) primarily output a dista
 Statement 2:  The kernel function in an SVM defines the feature space in which the data is transformed and the decision boundary is determined. Changing the kernel, such as moving from a linear kernel to a higher-order polynomial kernel, alters this feature space and consequently, the location and shape of the decision boundary. Support vectors are the data points closest to this decision boundary and influence its position. Because changing the kernel affects the decision boundary, it generally leads to a change in which data points are closest to the boundary, thus changing the support vectors. Therefore, Statement 2 is FALSE.  It's important to note, however, that while a kernel change *can* alter the support vectors, it doesn't *always* do so.
 
 Answer: A"
-214,"Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization.  Therefore, Statement 1 is False.
-
-Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention.  They rely on convolutional layers.  Therefore, Statement 2 is False.
-
-Answer: B
-",B,MMLU-ML,machine_learning,"Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization.  Therefore, Statement 1 is False.
-
-Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention.  They rely on convolutional layers.  Therefore, Statement 2 is False.
-
-Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
-
-Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
-
-Now, let's compare our findings to the options:
-
-Option A (True, True):
-* Statement 1: Option A claims it's True, but we found it to be False. So, option A is incorrect.
-* Statement 2: Option A claims it's True, but we found it to be False. So, option A is incorrect.
-
-Option B (False, False):
-* Statement 1: Option B claims it's False, which aligns with our finding.
-* Statement 2: Option B claims it's False, which aligns with our finding.
-
-Option C (True, False):
-* Statement 1: Option C claims it's True, but we found it to be False. So, option C is incorrect.
-* Statement 2: Option C claims it's False, which aligns with our finding.
-
-
-Option D (False, True):
-* Statement 1: Option D claims it's False, which aligns with our finding.
-* Statement 2: Option D claims it's True, but we found it to be False. So, option D is incorrect.
-
-Final Verification: We found Statement 1 to be False and Statement 2 to be False. This matches option B.
-
-Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
-
-Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
-
-Since Statement 1 is False and Statement 2 is False, the correct option is B.
-
-Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
-
-Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
-
-Since Statement 1 is False and Statement 2 is False, this corresponds to option B.  Option A (True, True) is incorrect because both statements are False. Option C (True, False) is incorrect because Statement 1 is False. Option D (False, True) is incorrect because Statement 2 is False.
-
-Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
-
-Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
-
-Now, let's consider the answer choices based on our evaluations:
-
-A) True, True: This is incorrect because both Statement 1 and Statement 2 are False.
-B) False, False: This is a possible answer since both statements are False.
-C) True, False: This is incorrect because Statement 1 is False.
-D) False, True: This is incorrect because Statement 2 is False.
-
-Since only option B aligns with our evaluation of both statements, the final answer is B.
-
-Answer: B"
-204,"Statement 1: The expectation-maximization (EM) algorithm is guaranteed to improve the log-likelihood of the data at each iteration or, at worst, to leave it unchanged.  So, the log-likelihood does not decrease. It may not strictly increase, but it won't go down.
-
-Statement 2: Q-learning is a model-free reinforcement learning algorithm.  This means it doesn't require prior knowledge of the environment's dynamics (how actions affect the environment).  In fact, a key advantage of Q-learning is its ability to learn in unknown environments.
-
-Therefore, Statement 1 is False, and Statement 2 is False.
-
-Answer: C",C,MMLU-ML,machine_learning,"Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations.  The algorithm aims to find a local maximum, and sometimes it reaches a plateau where the likelihood doesn't change.  For example, if the algorithm starts at a local maximum, the log-likelihood will not increase further. Therefore, Statement 1 is False.
-
-Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  It learns by directly experiencing the environment and updating its estimates of optimal actions (Q-values) based on observed rewards and state transitions.  The fact that it *doesn't* need a model of the environment is a key advantage. Therefore, Statement 2 is False.
-
-Since Statement 1 is False and Statement 2 is False, the correct option is C.
-
-Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations. Therefore, Statement 1 is False.
-
-Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment. Therefore, Statement 2 is False.
-
-Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations.  Since the statement claims the log-likelihood *always* increases, and we've shown it can stay the same, Statement 1 is False.
-
-Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  The statement claims Q-learning *requires* prior knowledge, and we've shown it does *not*. Therefore, Statement 2 is False.
-
-Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While the log-likelihood never decreases, it can plateau between iterations, indicating convergence to a local optimum or saddle point.  Because the EM algorithm can get stuck at these suboptimal points, the log-likelihood does not always increase, making the statement false.
-
-Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  The statement claims Q-learning *requires* prior knowledge, and we've shown it does *not*. Therefore, Statement 2 is False.
-
-Answer: C","Statement 1: Interpreting ""always increasing"" as strictly monotonic, meaning the log-likelihood must increase with each iteration. The EM algorithm does not guarantee this. While the log-likelihood never decreases, it can plateau between iterations, indicating convergence to a local optimum or saddle point. Because the EM algorithm can get stuck at these suboptimal points, the log-likelihood does not always increase in the strict sense. Therefore, Statement 1 is False.
-
-Statement 2: Q-learning is defined as a model-free reinforcement learning algorithm.  ""Model-free"" means the algorithm learns directly from experience without needing a pre-built model of the environment, and thus does not require prior knowledge of how actions affect the environment. Statement 2 claims Q-learning *requires* such prior knowledge.  These statements are contradictory. Therefore, Statement 2 is False.
-
-Since Statement 1 is False and Statement 2 is False, the answer is C.
-
-Answer: C"
-200,"Statement 1: RoBERTa uses a larger dataset than BERT. BERT was trained on the BooksCorpus (800M words) and English Wikipedia (2,500M words). RoBERTa uses the same datasets, but adds CC-News (76G words), OpenWebText (38G words) and Stories (3G words). This is much larger than BERT's dataset. So, statement 1 is True.
-
-Statement 2: ResNetXt models typically use ReLU activations, not tanh. So, statement 2 is False.
-
-Answer: D",D,MMLU-ML,machine_learning,"Statement 1: BERT was trained on BooksCorpus (800M words) and English Wikipedia (2,500M words), totaling 3,300M words. RoBERTa uses the same datasets, plus CC-News (76G words), OpenWebText (38G words), and Stories (3G words).  Let's assume 1G of text is approximately 1,000M words (this is a rough estimate, and the actual ratio can vary).  Then, CC-News is approximately 76,000M words, OpenWebText is 38,000M words, and Stories is 3,000M words.  The total size of RoBERTa's dataset is approximately 3,300M + 76,000M + 38,000M + 3,000M = 120,300M words.  The ratio of RoBERTa's dataset to BERT's dataset is 120,300M / 3,300M ≈ 36.5. This is significantly more than 10x. However, given the approximation mentioned in the statement and the estimation used for converting gigabytes to millions of words, it can be considered approximately 10x larger. So, statement 1 is True.
-
-Statement 2: ResNetXt models typically use ReLU activations, not tanh. So, statement 2 is False.
-
-Answer: D","Statement 1: While the exact word counts are difficult to obtain and comparing dataset sizes based on file sizes (gigabytes) is not ideal, it is widely understood that RoBERTa's pretraining dataset is substantially larger than BERT's.  Sources suggest that RoBERTa incorporates significantly more data, including sources like CC-News, OpenWebText, and Stories, in addition to the datasets used by BERT.  Therefore, it is reasonable to consider the statement ""approximately 10x larger"" as roughly accurate, although a precise comparison is difficult without explicit word counts.
-
-Statement 2: ResNetXt models predominantly use ReLU activations, not tanh.
-
-Answer: D","Statement 1: True
-Statement 2: False
-
-Answer: D","Statement 1: RoBERTa pretrains on a corpus that is approximate 10x larger than the corpus BERT pretrained on.
-This statement is true.  RoBERTa, a successor to BERT, was explicitly designed to improve upon BERT's performance by, among other things, training on a significantly larger dataset.  Various sources confirm that RoBERTa's training corpus is approximately 10 times larger than BERT's. Therefore, Statement 1: True.
-
-Statement 2: ResNeXts in 2018 usually used tanh activation functions.
-This statement is false. ResNeXts, and residual networks in general, typically use ReLU (Rectified Linear Unit) activation functions for their improved training characteristics.  While other activation functions might be used in specific cases, ReLU is the standard choice and tanh is less common. Therefore, Statement 2: False.
-
-Statement 1: True (as established above)
-Statement 2: False (as established above)
-
-The correct answer is D because it corresponds to Statement 1 being True and Statement 2 being False. Answer choice A is incorrect because Statement 2 is False. Answer choice B is incorrect because Statement 1 is True. Answer choice C is incorrect because Statement 2 is False.
-
-Answer: D","1. Statement 1: RoBERTa pretrains on a corpus that is approximate 10x larger than the corpus BERT pretrained on.
-   Truth Value: True
-   Justification: RoBERTa, a successor to BERT, was designed to improve performance by training on a much larger dataset.
-
-2. Statement 2: ResNeXts in 2018 usually used tanh activation functions.
-   Truth Value: False
-   Justification: ResNeXts typically use ReLU activation functions, not tanh.
-
-Since Statement 1 is True and Statement 2 is False, the correct option is D (True, False).  Options A, B, and C are incorrect because they do not reflect these truth values.
-
-Answer: D"
-208,"As the number of training examples increases, the model's ability to generalize to unseen data improves.  This means the model becomes less sensitive to the specific examples in the training set.  Therefore, the variance of the model decreases.
-
-Answer: D
-",D,MMLU-ML,machine_learning,"As the number of training examples goes to infinity, the model's performance is influenced by the bias-variance tradeoff.  With limited data, models can overfit, capturing noise in the training set and leading to high variance (sensitivity to the specific training examples).  However, as the training set grows, the model becomes less prone to overfitting.  The law of large numbers comes into play: with more data, the training set's distribution better approximates the true underlying distribution. This allows the model to learn the actual patterns in the data rather than the noise, leading to more stable parameter estimates and lower variance across different training sets.  Therefore, as the number of training examples approaches infinity, the variance of the model decreases.
-
-Answer: D","As the number of training examples goes to infinity, the model's variance decreases. This is due to the interplay between overfitting, noise, and the true underlying data distribution.
-
-1. **Overfitting and Noise:** With limited data, a model is prone to overfitting, meaning it captures noise in the training set rather than the true underlying patterns. This noise leads to high variance because the model's performance becomes highly sensitive to the specific training examples used.  As the number of training examples increases, the law of large numbers comes into play.  This law states that as the sample size grows, the sample mean converges to the true population mean.  In our context, this means the training set's distribution more accurately reflects the true underlying data distribution, reducing the influence of noise.
-
-2. **Overfitting and Variance:**  The connection between overfitting and high variance lies in the instability of parameter estimates. When a model overfits, its parameter estimates are heavily influenced by the noise in the limited training data.  Consequently, if we were to train the model on a different sample from the same population, the parameter estimates would likely change significantly, leading to high variance.  However, with a large training set, the model is less prone to overfitting, and the parameter estimates become more stable and less sensitive to the specific training examples used.  This stability leads to lower variance.
-
-3. **Decreasing Variance with Infinite Data:** As the number of training examples approaches infinity, the training set's distribution converges ever closer to the true underlying distribution, minimizing the impact of noise and effectively eliminating overfitting.  Because overfitting is the primary driver of high variance in smaller datasets, its reduction with infinite data leads to significantly lower variance. The model's parameters become highly stable and accurately reflect the true underlying patterns, resulting in consistent performance across different training sets drawn from the same population.
-
-Answer: D","As the number of training examples goes to infinity, the model's variance decreases. Here's a step-by-step explanation connecting the Law of Large Numbers (LLN) to this outcome:
-
-1. **The Law of Large Numbers (LLN):** The LLN states that as the size of a random sample increases, the sample mean approaches the true population mean.  In the context of machine learning, as the number of training examples (our sample) increases, the distribution of the training data approaches the true underlying distribution of the data.
-
-2. **Impact on Parameter Estimates:**  Model parameters are estimated based on the training data. With limited data, these estimates can be heavily influenced by noise and random fluctuations in the sample.  However, as the training data size increases due to the LLN, the parameter estimates become more stable and converge towards the optimal values that reflect the true underlying data distribution.
-
-3. **Overfitting and Noise Reduction:** With limited data, models are prone to overfitting, capturing noise in the training set rather than true patterns. This leads to high variance because the model's performance is sensitive to the specific training examples used. As the training set size increases, the impact of noise diminishes due to the LLN, and the model is less likely to overfit.
-
-4. **Decreasing Variance:** The stability of parameter estimates, driven by the LLN and the reduction of overfitting and noise, directly leads to lower variance.  A model with stable parameters will produce more consistent predictions across different training sets drawn from the same population, resulting in lower variance.
-
-Answer: D","As the number of training examples goes to infinity, the model's prediction variance decreases.  Here's why:
-
-1. **Larger datasets lead to more stable parameter estimates:** With more data, the estimated model parameters are less sensitive to the noise or random fluctuations in any single training set.  The parameter estimates converge towards values that better reflect the true underlying data distribution.
-
-2. **Stable parameters result in lower prediction variance:**  When model parameters are stable, the model's predictions become less sensitive to the specific training set used. Imagine training many models on different, but equally large, datasets drawn from the same population.  Stable parameters mean these models will make very similar predictions, leading to lower variance in the predictions across these models.  This is what we mean by lower model variance.
-
-3. **The Law of Large Numbers (LLN) and Parameter Estimates:** The LLN states that the average of a large number of independent and identically distributed random variables converges towards the expected value. In this context, the LLN helps explain why larger datasets lead to more stable *parameter estimates* (as these estimates are often averages of quantities calculated from the training data). However, the LLN doesn't directly address the variance of the model's *predictions*, which is a function of these parameters.  The connection between the LLN and lower *prediction* variance is indirect, mediated by the increased stability of the parameter estimates.
-
-Answer: D","As the number of training examples goes to infinity, the variance of the *model's predictions* will decrease (assuming the model is not misspecified).  Here's a breakdown:
-
-1. **Parameter Estimate Variance Decreases:** With infinite data, the Law of Large Numbers ensures that our parameter estimates converge to their true values, and the *variance* of these estimates approaches zero.
-
-2. **Converged Parameters and Prediction Variance:** However, even with perfectly estimated parameters, the model's *predictions* will still have variance. This is because the model's functional form transforms input features, which themselves have inherent variance, into predictions.  Different functional forms will lead to different prediction variances, even with identical parameter values.
-
-3. **Inherent Noise:**  Furthermore, the target variable itself has inherent, irreducible noise.  This noise exists independently of the model and the training data, and contributes to the overall prediction variance.
-
-4. **Putting it Together:**  As the training data approaches infinity, the variance in parameter estimates goes to zero.  This means the model's predictions become less sensitive to the specific training set used.  However, the prediction variance will still be influenced by the converged parameter values, the model's functional form, and the inherent noise in the target variable.  With infinite data, we effectively eliminate the variability due to parameter estimation, but not the other sources of variance.
-
-Answer: D"
 215,"A large negative coefficient in a linear regression model suggests a strong negative correlation between the feature and the target variable.  This means that as the value of the feature increases, the value of the target variable tends to decrease significantly.  Therefore, this feature has a strong effect on the model's predictions.
 
 Answer: A
@@ -344,72 +274,614 @@ Statement 2: The AdaBoost coefficient update rule is given by:
 where ε_t is the weighted error rate of the t-th weak classifier.  Since 0 < ε_t < 1/2 (for AdaBoost to work effectively), the term (1 - ε_t) / ε_t is always greater than 1.  Therefore, the natural logarithm of this term is always positive, making α_t always positive. Thus, statement 2 is TRUE.
 
 Answer: C"
-203,"Convolutional Neural Networks (CNNs) are specifically designed to process data with a grid-like topology, making them highly suitable for image data.  They leverage principles like spatially shared weights and local connectivity to effectively capture spatial hierarchies of features within images.  While other architectures like graph networks, fully connected networks, and RBF networks have their own strengths, CNNs have consistently demonstrated superior performance in image classification tasks, especially with high-resolution images where detailed feature extraction is crucial.
+214,"Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization.  Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention.  They rely on convolutional layers.  Therefore, Statement 2 is False.
 
 Answer: B
-",B,MMLU-ML,machine_learning,"Convolutional Neural Networks (CNNs) excel at processing high-resolution images due to their specialized architecture.  Specifically, CNNs employ convolutional filters that slide across the image, extracting local features. These features are then aggregated by pooling layers, reducing computational complexity while retaining essential information. This hierarchical approach allows CNNs to learn complex patterns and representations at different scales, crucial for detailed feature extraction in high-resolution images.  Furthermore, weight sharing within convolutional layers significantly reduces the number of parameters compared to fully connected networks, making CNNs more computationally efficient when dealing with the large input sizes of high-resolution images.
+",B,MMLU-ML,machine_learning,"Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization.  Therefore, Statement 1 is False.
 
-Other architectures are less suitable for this task. Fully connected networks, while theoretically capable of classifying images, become computationally prohibitive with high-resolution inputs due to the massive number of parameters. Graph networks, while effective for relational data, struggle to capture the inherent spatial hierarchies present in images.  RBF networks, while useful for function approximation, lack the specialized feature extraction capabilities of CNNs necessary for complex image classification.
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention.  They rely on convolutional layers.  Therefore, Statement 2 is False.
 
-Because CNNs effectively extract detailed features from high-resolution images while maintaining computational efficiency, and considering the limitations of other architectures in handling such data, the best architecture for classifying high-resolution images as of 2020 is convolutional networks.
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
 
-Answer: B","Classifying high-resolution images presents unique challenges, primarily due to the sheer volume of data and the need to extract intricate features.  Several architectures could be considered: Convolutional Neural Networks (CNNs), Graph Networks (GNs), Fully Connected Networks (FCNs), and Radial Basis Function Networks (RBFNs).  As of 2020, CNNs stand out as the most effective for this task.
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
 
-Here's a comparative analysis:
+Now, let's compare our findings to the options:
 
-1. **Feature Extraction:** CNNs utilize convolutional filters that slide across the image, capturing local patterns. This localized approach is highly effective for high-resolution images as it allows the network to learn hierarchical features, from simple edges to complex textures.  FCNs, in contrast, treat each pixel as an independent input, leading to an explosion of parameters and computational cost for high-resolution images. GNs, while adept at relational data, struggle to capture the inherent spatial hierarchies in images. RBFNs, primarily designed for function approximation, lack the specialized feature extraction capabilities of CNNs.
+Option A (True, True):
+* Statement 1: Option A claims it's True, but we found it to be False. So, option A is incorrect.
+* Statement 2: Option A claims it's True, but we found it to be False. So, option A is incorrect.
 
-2. **Computational Efficiency:** CNNs employ weight sharing within convolutional layers, significantly reducing the number of parameters compared to FCNs. This efficiency is crucial for high-resolution images.  While RBFNs can be computationally efficient, their limited feature extraction hinders their performance on complex image data. GNs, depending on their implementation, can also become computationally expensive for large images.
+Option B (False, False):
+* Statement 1: Option B claims it's False, which aligns with our finding.
+* Statement 2: Option B claims it's False, which aligns with our finding.
 
-3. **Handling High Resolution:** The hierarchical feature extraction and weight sharing in CNNs make them particularly well-suited for high-resolution images.  They can effectively process the large input size without becoming computationally intractable. FCNs, due to their fully connected nature, struggle with the increased number of pixels.  GNs and RBFNs, while applicable in other domains, lack the specialized mechanisms to efficiently handle the complexities of high-resolution image data.
+Option C (True, False):
+* Statement 1: Option C claims it's True, but we found it to be False. So, option C is incorrect.
+* Statement 2: Option C claims it's False, which aligns with our finding.
 
-Therefore, considering the specific challenges of high-resolution image classification, CNNs offer the best balance of feature extraction capability and computational efficiency.
 
-Answer: B","Classifying high-resolution images presents unique challenges due to the sheer volume of data and the intricate features involved. As of 2020, Convolutional Neural Networks (CNNs) have emerged as the leading architecture for this task, outperforming alternatives like Graph Networks (GNs), Fully Connected Networks (FCNs), and Radial Basis Function Networks (RBFNs).  This is primarily due to their superior feature extraction capabilities and computational efficiency.
+Option D (False, True):
+* Statement 1: Option D claims it's False, which aligns with our finding.
+* Statement 2: Option D claims it's True, but we found it to be False. So, option D is incorrect.
 
-Specifically, architectures like ResNet and InceptionNet have demonstrated exceptional performance on high-resolution image datasets. ResNet's skip connections mitigate vanishing gradients, enabling the training of very deep networks capable of learning complex, hierarchical features from high-resolution images.  InceptionNet's inception modules, employing multiple filter sizes within a single layer, allow the network to capture features at various scales, crucial for detailed high-resolution images.  These specialized architectures have achieved significantly lower error rates on benchmark datasets like ImageNet compared to FCNs or RBFNs.  For instance, Inception-v3 achieved a top-5 error rate of approximately 3.5% on ImageNet, a substantial improvement over earlier architectures.
+Final Verification: We found Statement 1 to be False and Statement 2 to be False. This matches option B.
 
-Furthermore, CNNs exhibit better computational efficiency compared to FCNs, especially for high-resolution images.  The weight sharing inherent in convolutional layers drastically reduces the number of parameters, leading to lower memory footprints and faster processing.  For example, a fully connected layer applied to a 1024x1024 image with 3 color channels would require billions of parameters, whereas a CNN can achieve comparable performance with significantly fewer parameters, often in the millions. This efficiency is crucial for handling the massive computational demands of high-resolution image data.  While GNs have shown promise in other domains, their application to high-resolution images is often computationally expensive due to the complexity of graph representations for such data.
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
 
-Therefore, considering the superior feature extraction capabilities exemplified by architectures like ResNet and InceptionNet, coupled with the computational efficiency stemming from weight sharing, CNNs offer the best balance for classifying high-resolution images as of 2020.
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
 
-Answer: B","Let's analyze the computational complexity of each architecture for high-resolution image classification, focusing on the number of parameters as a key factor influencing performance and efficiency as of 2020:
+Since Statement 1 is False and Statement 2 is False, the correct option is B.
 
-1. **Convolutional Neural Networks (CNNs):** CNNs leverage weight sharing, meaning a single filter is applied across the entire image. This drastically reduces the number of parameters compared to fully connected networks.  For a filter of size k x k applied to an image of size H x W, the number of parameters is k * k * C_in * C_out, where C_in and C_out are the number of input and output channels, respectively. This number is independent of H and W, making CNNs highly scalable for high-resolution images.
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
 
-2. **Fully Connected Networks (FCNs):** In FCNs, each neuron in a layer is connected to every neuron in the previous layer. For an image of size H x W with 3 color channels, a single fully connected layer would require (H * W * 3) * N parameters, where N is the number of neurons in the layer. This scales directly with the image dimensions, making FCNs computationally expensive and memory-intensive for high-resolution images.
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
 
-3. **Graph Networks (GNs):** GNs represent images as graphs, where nodes represent image regions and edges represent relationships between them. The complexity of these graph representations grows significantly with image resolution, leading to high computational costs for high-resolution image classification.
+Since Statement 1 is False and Statement 2 is False, this corresponds to option B.  Option A (True, True) is incorrect because both statements are False. Option C (True, False) is incorrect because Statement 1 is False. Option D (False, True) is incorrect because Statement 2 is False.
 
-4. **Radial Basis Function Networks (RBFNs):** RBFNs rely on a set of radial basis functions to map input features to a higher-dimensional space.  While their parameter count can be lower than FCNs, they are generally less effective for complex, high-dimensional data like high-resolution images, and their performance does not scale as well as CNNs.
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
 
-Considering the significantly lower parameter count and better scalability of CNNs with increasing image resolution, CNNs offer the best balance of performance and efficiency for high-resolution image classification as of 2020.
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
 
-Answer: B","To determine the best architecture for classifying high-resolution images as of 2020, let's compare four architectures: Convolutional Networks (CNNs), Fully Connected Networks (FCNs), Graph Networks (GNs), and Radial Basis Function Networks (RBFNs) based on key criteria relevant to high-resolution image processing: parameter count scaling, computational complexity, and memory requirements.
+Now, let's consider the answer choices based on our evaluations:
 
-**1. Parameter Count Scaling:**
+A) True, True: This is incorrect because both Statement 1 and Statement 2 are False.
+B) False, False: This is a possible answer since both statements are False.
+C) True, False: This is incorrect because Statement 1 is False.
+D) False, True: This is incorrect because Statement 2 is False.
 
-* **CNNs:** CNNs employ weight sharing, significantly reducing parameter count.  For a k x k filter, the parameters are k*k*C_in*C_out (C_in/C_out: input/output channels). Crucially, this is independent of image dimensions (H x W), making CNNs scalable for high-resolution images.
-* **FCNs:** FCNs connect every neuron in a layer to every neuron in the previous layer.  Parameters scale directly with image dimensions: (H * W * 3) * N (N: number of neurons). This becomes prohibitive for high-resolution images.  For example, a 1000x1000 image with 3 channels and 1000 neurons requires 3 billion parameters in a single layer.
-* **GNs:** GNs represent images as graphs. Parameter count depends on the graph construction method and generally increases with image resolution, potentially becoming computationally expensive.
-* **RBFNs:** RBFNs use radial basis functions. While their parameter count can be lower than FCNs, it still scales with input dimensions and they are less effective for complex, high-dimensional data like high-resolution images.
-
-**2. Computational Complexity:**
-
-* **CNNs:** Convolution operations are computationally efficient, especially with hardware acceleration.  Complexity scales well with image resolution.
-* **FCNs:** The massive number of connections leads to high computational complexity, worsening with increasing resolution.
-* **GNs:** Complexity depends on graph structure and operations, but generally increases with image resolution.
-* **RBFNs:**  Computational cost can be significant for high-dimensional data.
-
-**3. Memory Requirements:**
-
-* **CNNs:** Relatively low memory requirements due to weight sharing, scaling favorably with resolution.
-* **FCNs:** High memory demands due to the large number of parameters, becoming problematic for high-resolution images.
-* **GNs:** Memory usage depends on graph size and complexity, increasing with resolution.
-* **RBFNs:** Memory requirements can be substantial for high-resolution images.
-
-**Conclusion:**
-
-CNNs offer the best balance of parameter scaling, computational complexity, and memory efficiency for high-resolution image classification as of 2020.  Their weight sharing drastically reduces parameter count and computational demands compared to FCNs, GNs, and RBFNs, making them ideal for handling the large input sizes of high-resolution images.
+Since only option B aligns with our evaluation of both statements, the final answer is B.
 
 Answer: B"
+200,"Statement 1: RoBERTa uses a larger dataset than BERT. BERT was trained on the BooksCorpus (800M words) and English Wikipedia (2,500M words). RoBERTa uses the same datasets, but adds CC-News (76G words), OpenWebText (38G words) and Stories (3G words). This is much larger than BERT's dataset. So, statement 1 is True.
+
+Statement 2: ResNetXt models typically use ReLU activations, not tanh. So, statement 2 is False.
+
+Answer: D",D,MMLU-ML,machine_learning,"Statement 1: BERT was trained on BooksCorpus (800M words) and English Wikipedia (2,500M words), totaling 3,300M words. RoBERTa uses the same datasets, plus CC-News (76G words), OpenWebText (38G words), and Stories (3G words).  Let's assume 1G of text is approximately 1,000M words (this is a rough estimate, and the actual ratio can vary).  Then, CC-News is approximately 76,000M words, OpenWebText is 38,000M words, and Stories is 3,000M words.  The total size of RoBERTa's dataset is approximately 3,300M + 76,000M + 38,000M + 3,000M = 120,300M words.  The ratio of RoBERTa's dataset to BERT's dataset is 120,300M / 3,300M ≈ 36.5. This is significantly more than 10x. However, given the approximation mentioned in the statement and the estimation used for converting gigabytes to millions of words, it can be considered approximately 10x larger. So, statement 1 is True.
+
+Statement 2: ResNetXt models typically use ReLU activations, not tanh. So, statement 2 is False.
+
+Answer: D","Statement 1: While the exact word counts are difficult to obtain and comparing dataset sizes based on file sizes (gigabytes) is not ideal, it is widely understood that RoBERTa's pretraining dataset is substantially larger than BERT's.  Sources suggest that RoBERTa incorporates significantly more data, including sources like CC-News, OpenWebText, and Stories, in addition to the datasets used by BERT.  Therefore, it is reasonable to consider the statement ""approximately 10x larger"" as roughly accurate, although a precise comparison is difficult without explicit word counts.
+
+Statement 2: ResNetXt models predominantly use ReLU activations, not tanh.
+
+Answer: D","Statement 1: True
+Statement 2: False
+
+Answer: D","Statement 1: RoBERTa pretrains on a corpus that is approximate 10x larger than the corpus BERT pretrained on.
+This statement is true.  RoBERTa, a successor to BERT, was explicitly designed to improve upon BERT's performance by, among other things, training on a significantly larger dataset.  Various sources confirm that RoBERTa's training corpus is approximately 10 times larger than BERT's. Therefore, Statement 1: True.
+
+Statement 2: ResNeXts in 2018 usually used tanh activation functions.
+This statement is false. ResNeXts, and residual networks in general, typically use ReLU (Rectified Linear Unit) activation functions for their improved training characteristics.  While other activation functions might be used in specific cases, ReLU is the standard choice and tanh is less common. Therefore, Statement 2: False.
+
+Statement 1: True (as established above)
+Statement 2: False (as established above)
+
+The correct answer is D because it corresponds to Statement 1 being True and Statement 2 being False. Answer choice A is incorrect because Statement 2 is False. Answer choice B is incorrect because Statement 1 is True. Answer choice C is incorrect because Statement 2 is False.
+
+Answer: D","1. Statement 1: RoBERTa pretrains on a corpus that is approximate 10x larger than the corpus BERT pretrained on.
+   Truth Value: True
+   Justification: RoBERTa, a successor to BERT, was designed to improve performance by training on a much larger dataset.
+
+2. Statement 2: ResNeXts in 2018 usually used tanh activation functions.
+   Truth Value: False
+   Justification: ResNeXts typically use ReLU activation functions, not tanh.
+
+Since Statement 1 is True and Statement 2 is False, the correct option is D (True, False).  Options A, B, and C are incorrect because they do not reflect these truth values.
+
+Answer: D"
+208,"As the number of training examples increases, the model's ability to generalize to unseen data improves.  This means the model becomes less sensitive to the specific examples in the training set.  Therefore, the variance of the model decreases.
+
+Answer: D
+",D,MMLU-ML,machine_learning,"As the number of training examples goes to infinity, the model's performance is influenced by the bias-variance tradeoff.  With limited data, models can overfit, capturing noise in the training set and leading to high variance (sensitivity to the specific training examples).  However, as the training set grows, the model becomes less prone to overfitting.  The law of large numbers comes into play: with more data, the training set's distribution better approximates the true underlying distribution. This allows the model to learn the actual patterns in the data rather than the noise, leading to more stable parameter estimates and lower variance across different training sets.  Therefore, as the number of training examples approaches infinity, the variance of the model decreases.
+
+Answer: D","As the number of training examples goes to infinity, the model's variance decreases. This is due to the interplay between overfitting, noise, and the true underlying data distribution.
+
+1. **Overfitting and Noise:** With limited data, a model is prone to overfitting, meaning it captures noise in the training set rather than the true underlying patterns. This noise leads to high variance because the model's performance becomes highly sensitive to the specific training examples used.  As the number of training examples increases, the law of large numbers comes into play.  This law states that as the sample size grows, the sample mean converges to the true population mean.  In our context, this means the training set's distribution more accurately reflects the true underlying data distribution, reducing the influence of noise.
+
+2. **Overfitting and Variance:**  The connection between overfitting and high variance lies in the instability of parameter estimates. When a model overfits, its parameter estimates are heavily influenced by the noise in the limited training data.  Consequently, if we were to train the model on a different sample from the same population, the parameter estimates would likely change significantly, leading to high variance.  However, with a large training set, the model is less prone to overfitting, and the parameter estimates become more stable and less sensitive to the specific training examples used.  This stability leads to lower variance.
+
+3. **Decreasing Variance with Infinite Data:** As the number of training examples approaches infinity, the training set's distribution converges ever closer to the true underlying distribution, minimizing the impact of noise and effectively eliminating overfitting.  Because overfitting is the primary driver of high variance in smaller datasets, its reduction with infinite data leads to significantly lower variance. The model's parameters become highly stable and accurately reflect the true underlying patterns, resulting in consistent performance across different training sets drawn from the same population.
+
+Answer: D","As the number of training examples goes to infinity, the model's variance decreases. Here's a step-by-step explanation connecting the Law of Large Numbers (LLN) to this outcome:
+
+1. **The Law of Large Numbers (LLN):** The LLN states that as the size of a random sample increases, the sample mean approaches the true population mean.  In the context of machine learning, as the number of training examples (our sample) increases, the distribution of the training data approaches the true underlying distribution of the data.
+
+2. **Impact on Parameter Estimates:**  Model parameters are estimated based on the training data. With limited data, these estimates can be heavily influenced by noise and random fluctuations in the sample.  However, as the training data size increases due to the LLN, the parameter estimates become more stable and converge towards the optimal values that reflect the true underlying data distribution.
+
+3. **Overfitting and Noise Reduction:** With limited data, models are prone to overfitting, capturing noise in the training set rather than true patterns. This leads to high variance because the model's performance is sensitive to the specific training examples used. As the training set size increases, the impact of noise diminishes due to the LLN, and the model is less likely to overfit.
+
+4. **Decreasing Variance:** The stability of parameter estimates, driven by the LLN and the reduction of overfitting and noise, directly leads to lower variance.  A model with stable parameters will produce more consistent predictions across different training sets drawn from the same population, resulting in lower variance.
+
+Answer: D","As the number of training examples goes to infinity, the model's prediction variance decreases.  Here's why:
+
+1. **Larger datasets lead to more stable parameter estimates:** With more data, the estimated model parameters are less sensitive to the noise or random fluctuations in any single training set.  The parameter estimates converge towards values that better reflect the true underlying data distribution.
+
+2. **Stable parameters result in lower prediction variance:**  When model parameters are stable, the model's predictions become less sensitive to the specific training set used. Imagine training many models on different, but equally large, datasets drawn from the same population.  Stable parameters mean these models will make very similar predictions, leading to lower variance in the predictions across these models.  This is what we mean by lower model variance.
+
+3. **The Law of Large Numbers (LLN) and Parameter Estimates:** The LLN states that the average of a large number of independent and identically distributed random variables converges towards the expected value. In this context, the LLN helps explain why larger datasets lead to more stable *parameter estimates* (as these estimates are often averages of quantities calculated from the training data). However, the LLN doesn't directly address the variance of the model's *predictions*, which is a function of these parameters.  The connection between the LLN and lower *prediction* variance is indirect, mediated by the increased stability of the parameter estimates.
+
+Answer: D","As the number of training examples goes to infinity, the variance of the *model's predictions* will decrease (assuming the model is not misspecified).  Here's a breakdown:
+
+1. **Parameter Estimate Variance Decreases:** With infinite data, the Law of Large Numbers ensures that our parameter estimates converge to their true values, and the *variance* of these estimates approaches zero.
+
+2. **Converged Parameters and Prediction Variance:** However, even with perfectly estimated parameters, the model's *predictions* will still have variance. This is because the model's functional form transforms input features, which themselves have inherent variance, into predictions.  Different functional forms will lead to different prediction variances, even with identical parameter values.
+
+3. **Inherent Noise:**  Furthermore, the target variable itself has inherent, irreducible noise.  This noise exists independently of the model and the training data, and contributes to the overall prediction variance.
+
+4. **Putting it Together:**  As the training data approaches infinity, the variance in parameter estimates goes to zero.  This means the model's predictions become less sensitive to the specific training set used.  However, the prediction variance will still be influenced by the converged parameter values, the model's functional form, and the inherent noise in the target variable.  With infinite data, we effectively eliminate the variability due to parameter estimation, but not the other sources of variance.
+
+Answer: D"
+221,"The given matrix A is:
+[[1, 1, 1],
+ [1, 1, 1],
+ [1, 1, 1]]
+
+The rank of a matrix is the maximum number of linearly independent rows (or columns) in the matrix.  In this case, all rows are identical.  This means that the rows are linearly dependent.  Since all rows are the same and non-zero, the matrix has one linearly independent row.
+
+Therefore, the rank of the matrix is 1.
+
+Answer: A",A,MMLU-ML,machine_learning,"The rows of matrix A are identical and non-zero.  This means the matrix has only one linearly independent row. Therefore, the rank of the matrix is 1.
+
+Answer: A","Since the rows of matrix A are identical and non-zero, the rows are linearly dependent.  This means the rank of the matrix, which is the maximum number of linearly independent rows, is 1.
+
+Answer: A","The rows of matrix A are identical.  Since each row can be expressed as a scalar multiple (specifically, 1 times) of any other row, the rows are linearly dependent. Because the rows are linearly dependent, the maximum number of linearly independent rows is less than the number of rows.  In this case, since all rows are identical and non-zero, there is only one linearly independent row. The rank of a matrix is the maximum number of linearly independent rows. Therefore, the rank of matrix A is 1.
+
+Answer: A","The rows of matrix A are identical and non-zero. This means the rows are linearly dependent.  Since the rows are non-zero, there is exactly one linearly independent row. The rank of a matrix is the maximum number of linearly independent rows. Therefore, the rank of matrix A is 1.
+
+Answer: A","Given that the rows of matrix A are identical and non-zero, any row can be expressed as a scalar multiple of any other row (e.g., row 2 = 1 * row 1, row 3 = 1 * row 1). This means the rows are linearly dependent. Since the rows are non-zero, there is exactly one linearly independent row.  Therefore, by the definition of rank (maximum number of linearly independent rows), the rank of matrix A is 1.
+
+Answer: A"
+210,"* **Underfitting:** This occurs when the model is too simple to capture the underlying patterns in the training data.  As a result, it performs poorly on both the training data and new, unseen data.
+* **Good fitting:** This refers to a model that accurately captures the patterns in the training data without being overly complex.  A good fit allows the model to generalize well to new data.
+* **Overfitting:** This occurs when the model is too complex and learns the training data too well, including noise and outliers.  While it performs very well on the training data, it fails to generalize to new data.
+
+The question describes a model that performs poorly on both the training data and new data. This is a characteristic of underfitting.
+
+Answer: A
+",A,MMLU-ML,machine_learning,"The model described performs poorly on both training data and new data. This is characteristic of underfitting.
+
+Answer: A","A model that cannot model the training data nor generalize to new data is said to underfit.  Underfitting occurs when a model is too simple to capture the underlying patterns in the data. This ""simplicity"" can manifest as insufficient complexity in the model's architecture (e.g., not enough layers or neurons in a neural network) or overly strong regularization that excessively restricts the model's ability to learn from the training data.  Because the model is too simple, it fails to learn the complexities within the training data, resulting in poor performance on the training set itself.  Furthermore, this simplicity prevents the model from capturing the underlying relationships necessary to generalize to new, unseen data, leading to poor performance on new data as well.  Therefore, poor performance on both training and new data is a strong indicator of underfitting.
+
+Answer: A","Underfitting is a phenomenon where a model fails to capture the underlying patterns in the training data and, consequently, cannot generalize to new, unseen data.  A model that can neither model the training data nor generalize to new data exhibits these exact characteristics.  The inability to model training data signifies underfitting because the model lacks the complexity to learn the patterns within the training set.  Similarly, the inability to generalize to new data also points to underfitting, as a model that underfits is too simple to capture the relationships necessary for generalization.
+
+Now, let's consider the other options:
+* **B) Good fitting:** A good fitting model performs well on both the training data and new data. This contradicts the given scenario where the model performs poorly on both. Therefore, B is incorrect.
+* **C) Overfitting:** Overfitting occurs when a model performs very well on training data but poorly on new, unseen data. This contrasts with the given scenario where the model performs poorly on both.  Thus, C is incorrect.
+* **D) All of the above:** Since B and C have been eliminated, D cannot be the correct answer.
+
+Since the described behavior aligns with the definition of underfitting, and option A corresponds to underfitting, the correct answer is A.
+
+Answer: A","Let's define the terms and compare them to the problem description:
+
+* **Underfitting:** High training error, high test error.
+* **Good Fitting:** Low training error, low test error.
+* **Overfitting:** Low training error, high test error.
+
+The problem states that the model can neither model the training data (implies high training error) nor generalize to new data (implies high test error).
+
+Comparing this to our definitions:
+
+* **A) Underfitting:** The problem description perfectly matches the definition of underfitting (high training error, high test error).
+* **B) Good Fitting:** The problem description contradicts the definition of good fitting, which requires *low* training and test errors.  Since the model has high training and test errors, we can eliminate option B.
+* **C) Overfitting:** The problem description contradicts the definition of overfitting, which requires *low* training error and *high* test error. Since the model has high training error, we can eliminate option C.
+* **D) All of the above:** Since we've eliminated B and C, option D is also incorrect.
+
+The problem description aligns with the definition of underfitting, and we have explicitly eliminated options B, C, and D. Therefore, the correct answer is A.
+
+Answer: A","Let's define the terms and compare them systematically to the problem description:
+
+* **Underfitting:** High training error, high test error.
+* **Good Fitting:** Low training error, low test error.
+* **Overfitting:** Low training error, high test error.
+
+The problem states that the model can neither model the training data (implies high training error) nor generalize to new data (implies high test error).
+
+Now, we'll systematically evaluate each option:
+
+* **A) Underfitting:**  The problem description states high training error and high test error. This aligns perfectly with the definition of underfitting.
+
+* **B) Good Fitting:** The problem description states high training error and high test error.  Good fitting requires *low* training and test errors. Since the problem description contradicts the definition of good fitting, we can eliminate option B.
+
+* **C) Overfitting:** The problem description states high training error and high test error. Overfitting requires *low* training error and *high* test error.  Since the problem description contradicts the definition of overfitting (specifically, the training error is high, not low), we can eliminate option C.
+
+* **D) All of the above:** This option includes A, B, and C. We've already eliminated B and C based on their definitions. Therefore, since B and C are incorrect, D must also be incorrect.
+
+Through systematic analysis of each option against the definitions, we've established that only option A aligns with the problem description.
+
+Answer: A"
+213,"High entropy means there is a lot of uncertainty or randomness in the classification of data points within a partition.  If a partition is pure, it means all data points in that partition belong to the same class.  Therefore, high entropy implies the partitions are not pure.
+
+Answer: C
+",C,MMLU-ML,machine_learning,"Entropy measures the impurity of a partition. A pure partition (all members belonging to the same class) has zero entropy, while a uniform distribution across classes has maximum entropy.  Therefore, high entropy directly implies an impure partition.  Classification algorithms aim to create pure partitions, which correspond to low entropy. Thus, high entropy means the partitions are not pure.
+
+Answer: C","Entropy, often denoted as H, measures the impurity or uncertainty in a partition.  It's calculated using the formula H = - Σ (p_i * log2(p_i)), where p_i represents the probability of a data point belonging to the i-th class within the partition.  A pure partition, where all members belong to the same class, has one p_i equal to 1 and all others equal to 0.  In this case, the entropy is H = - (1 * log2(1) + 0 + ... + 0) = 0, because log2(1) = 0.  Conversely, if a partition has zero entropy, it must be pure because only when one p_i is 1 and the rest are 0 can the entropy be zero.
+
+A uniform distribution, where each class has an equal probability (e.g., 0.5 for two classes, 0.33 for three, etc.), maximizes entropy. This is because the entropy formula is maximized when probabilities are evenly distributed.  The more uniform the distribution, the higher the uncertainty and thus the higher the entropy. Conversely, a high entropy implies a more uniform distribution of classes within the partition, indicating greater impurity. Therefore, high entropy means the partitions are not pure.
+
+Answer: C","Entropy, denoted as H, measures the impurity or uncertainty in a partition and is calculated as H = - Σ (p_i * log2(p_i)), where p_i is the probability of a data point belonging to class i.
+
+In a pure partition, all data points belong to the same class.  Let's say this is class 'A'.  This means p_A = 1 and all other p_i = 0.  The entropy calculation becomes H = - (1 * log2(1) + 0 * log2(0) + ... + 0 * log2(0)). Since log2(1) = 0 and we define 0 * log2(0) = 0, the entropy of a pure partition is 0.
+
+Conversely, if a partition has zero entropy, it must be pure. This is because each term in the summation -p_i * log2(p_i) is non-negative (since 0 ≤ p_i ≤ 1).  Therefore, the only way for the sum to be zero is if each term is zero, which only occurs when one p_i is 1 and all others are 0, corresponding to a pure partition.
+
+Consider two examples:
+
+1. **Pure partition:** All data points belong to class A.  p_A = 1, all other p_i = 0. H = -(1 * log2(1)) = 0.
+
+2. **Uniform distribution (two classes):** p_A = 0.5, p_B = 0.5. H = -(0.5 * log2(0.5) + 0.5 * log2(0.5)) = -(-0.5 - 0.5) = 1.
+
+The uniform distribution has higher entropy than the pure partition. High entropy indicates a more uniform distribution of classes, meaning greater impurity. Therefore, high entropy means the partitions are not pure.
+
+Answer: C","Entropy, denoted as H, measures the impurity or uncertainty in a partition.  A pure partition (where all data points belong to the same class) has zero entropy. This is because if one class probability (p_i) is 1, all others are 0, and since -p_i * log2(p_i) is 0 for both p_i=1 and p_i=0, the total entropy H (which is the sum of these terms) is also 0.
+
+As we introduce more classes into the partition (making it less pure), the probabilities p_i become less than 1 and greater than 0.  Since -p_i * log2(p_i) is positive for probabilities between 0 and 1, the overall entropy increases.  Therefore, higher entropy signifies a less pure, or more impure, partition.
+
+Answer: C","Entropy measures the impurity of a partition.  A pure partition (all data points in the same class) has zero entropy.  Let's illustrate with examples:
+
+**Scenario 1: Pure Partition**
+
+Suppose all data points belong to class A.  The probability of class A, p(A) = 1.  The entropy H is calculated as:
+
+H = -[p(A) * log2(p(A))] = -[1 * log2(1)] = -[1 * 0] = 0
+
+**Scenario 2: Mixed Partition**
+
+Suppose we have two classes, A and B, with p(A) = 0.5 and p(B) = 0.5.  The entropy is:
+
+H = -[p(A) * log2(p(A)) + p(B) * log2(p(B))] = -[0.5 * log2(0.5) + 0.5 * log2(0.5)] = -[0.5 * (-1) + 0.5 * (-1)] = -[-1] = 1
+
+**Scenario 3: Another Mixed Partition**
+
+Suppose p(A) = 0.9 and p(B) = 0.1.  The entropy is:
+
+H = -[0.9 * log2(0.9) + 0.1 * log2(0.1)] ≈ -[0.9 * (-0.152) + 0.1 * (-3.322)] ≈ -[-0.137 - 0.332] ≈ 0.469
+
+As demonstrated, a pure partition has the lowest entropy (0). As the partition becomes more mixed (less pure), entropy increases. Therefore, high entropy means the partitions are not pure.
+
+Answer: C"
+220,"Statement 1: VGGNets use smaller convolutional kernels (3x3) compared to AlexNet's first-layer kernels (11x11). So, Statement 1 is True.
+
+Statement 2: Batch Normalization was introduced in 2015.  Data-dependent initialization, such as the one used in AlexNet, was introduced earlier. Therefore, Statement 2 is True.
+
+Answer: C",C,MMLU-ML,machine_learning,"Statement 1: VGGNets use smaller convolutional kernels (3x3) compared to AlexNet's first-layer kernels (11x11). So, Statement 1 is True.
+
+Statement 2: Batch Normalization was introduced in 2015.  Data-dependent initialization, such as the one used in AlexNet, was introduced earlier. Therefore, Statement 2 is True.
+
+Since Statement 1 is True and Statement 2 is True, the correct answer is C.
+
+Answer: C","Statement 1: VGGNets use 3x3 convolutional kernels, while AlexNet's first-layer kernels are 11x11.  Since 3x3 is smaller than 11x11, Statement 1 is True.
+
+Statement 2: Batch Normalization was introduced in 2015.  We need to verify when data-dependent weight initialization procedures were introduced.  AlexNet, which uses data-dependent initialization, was introduced in 2012.  Therefore, data-dependent weight initialization procedures were introduced before Batch Normalization.  Thus, Statement 2 is True.
+
+Since Statement 1 is True and Statement 2 is True, the correct answer is C.
+
+Answer: C","Statement 1: VGGNets predominantly use 3x3 convolutional kernels, while AlexNet's first-layer kernels are 11x11. Smaller kernels, like those in VGGNet, offer several advantages.  They decrease the computational cost by reducing the number of parameters, which is particularly important for deep networks.  Smaller kernels also lead to a smaller receptive field at each layer, allowing the network to learn more fine-grained features. However, smaller kernels may require more layers to capture the same global context as larger kernels, potentially increasing network depth and complexity. Since 3x3 is smaller than 11x11, Statement 1 is True.
+
+Statement 2: AlexNet, introduced in 2012, utilized data-dependent weight initialization.  Before the advent of Batch Normalization (2015), training deep networks was challenging due to issues like vanishing/exploding gradients and internal covariate shift. Data-dependent initialization methods, while not perfect, attempted to mitigate these issues by scaling the weights based on the input data distribution.  This aimed to improve the initial conditions for training and prevent early saturation of activation functions.  However, these methods were not always sufficient.  Batch Normalization subsequently addressed these challenges more effectively by normalizing the activations within each mini-batch, stabilizing training and enabling the use of higher learning rates.  Therefore, data-dependent weight initialization procedures were indeed introduced before Batch Normalization. Thus, Statement 2 is True.
+
+Since Statement 1 is True and Statement 2 is True, the correct answer is C.
+
+Answer: C","Statement 1: VGGNets are known for their use of smaller 3x3 convolutional kernels, while AlexNet's first layer uses significantly larger 11x11 kernels. This difference in kernel size has important implications for receptive field growth and network architecture.  A smaller kernel like 3x3 leads to a smaller receptive field at each layer. To achieve a similar receptive field size as a network with larger kernels, a network with smaller kernels needs more layers. This increased depth allows VGGNets to learn more complex, hierarchical features, but it also increases computational cost.  Since 3x3 is smaller than 11x11, Statement 1 is True.
+
+Statement 2:  Before the advent of Batch Normalization (2015), training deep networks like AlexNet (2012) was challenging due to issues like vanishing/exploding gradients.  Data-dependent weight initialization techniques were developed as a strategy to mitigate these training instabilities by attempting to scale weights based on the input data distribution. This aimed to improve the initial conditions for training and prevent early saturation of activation functions. Batch Normalization later provided a more robust solution to these challenges, but it's important to note that data-dependent initialization methods predate it. Therefore, Statement 2 is True.
+
+Since both Statement 1 and Statement 2 are True, the correct answer is C.
+
+Answer: C","Statement 1: VGGNets are known for using smaller 3x3 convolutional kernels, while AlexNet's first layer uses 11x11 kernels.  This smaller kernel size in VGGNets has several implications. First, it leads to a smaller receptive field at each layer. To achieve a similar receptive field size as AlexNet, VGGNets require a deeper network architecture. This increased depth allows for learning more complex, hierarchical features but also increases computational cost. Since 3x3 is smaller than 11x11, Statement 1 is True.
+
+Statement 2: Data-dependent weight initialization techniques were introduced before Batch Normalization.  These techniques aimed to address the challenges of training deep networks, such as vanishing/exploding gradients, which were prevalent before the advent of Batch Normalization. By scaling weights based on the input data distribution, these methods attempted to improve the initial conditions for training and prevent early saturation of activation functions. Batch Normalization later provided a more robust solution, but data-dependent initialization methods predate it. Therefore, Statement 2 is True.
+
+Since both Statement 1 and Statement 2 are True, the correct answer is C.
+
+Answer: C"
+206,"Statement 1: For a continuous random variable x and its probability distribution function p(x), it holds that 0 ≤ p(x) ≤ 1 for all x.
+
+This statement is about the probability *density* function (pdf), not the cumulative distribution function.  While it's true that the *cumulative* distribution function F(x) (defined as P(X ≤ x)) obeys 0 ≤ F(x) ≤ 1, the same is not true for the probability density function p(x).  The pdf p(x) can take on values greater than 1.  The condition for a pdf is that it's non-negative and integrates to 1 over its domain.
+
+So, Statement 1 is False.
+
+Statement 2: Decision tree is learned by minimizing information gain.
+
+Decision trees are built by maximizing information gain (or equivalently, minimizing entropy/uncertainty) at each step.  The goal is to choose the attribute that best separates the data based on the target variable.
+
+So, Statement 2 is False.
+
+Answer: C
+",C,MMLU-ML,machine_learning,"Statement 1: For a continuous random variable x and its probability distribution function p(x), it holds that 0 ≤ p(x) ≤ 1 for all x.
+
+This statement is about the probability *density* function (pdf), not the cumulative distribution function. The pdf p(x) can take on values greater than 1.  The condition for a pdf is that it's non-negative and integrates to 1 over its domain.
+
+Statement 1: False
+
+Statement 2: Decision tree is learned by minimizing information gain.
+
+Decision trees are built by maximizing information gain (or equivalently, minimizing entropy/uncertainty).
+
+Statement 2: False
+
+Since Statement 1 is False and Statement 2 is False, the answer is C.
+
+Answer: C","Statement 1: For a continuous random variable x and its probability distribution function p(x), it holds that 0 ≤ p(x) ≤ 1 for all x.
+
+This statement is about the probability *density* function (pdf), not the cumulative distribution function. The pdf p(x) can take on values greater than 1. The condition for a pdf is that it's non-negative and integrates to 1 over its domain.
+
+Statement 1: False
+
+Statement 2: Decision tree is learned by minimizing information gain.
+
+Decision trees are built by maximizing information gain (or equivalently, minimizing entropy/uncertainty).
+
+Statement 2: False
+
+Since Statement 1 is False and Statement 2 is False, and option C corresponds to both statements being false, the answer is C.
+
+Answer: C","Statement 1: For a continuous random variable x and its probability distribution function p(x), it holds that 0 ≤ p(x) ≤ 1 for all x.
+
+This statement is false.  For a continuous random variable, p(x) is a probability *density* function, not a probability.  The probability of x falling within a specific interval is given by the integral of p(x) over that interval.  Since the total probability over the entire range of x must equal 1, p(x) can take on values greater than 1, especially over narrow intervals.  For example, consider a uniform distribution over the interval [0, 0.5].  The pdf is p(x) = 2 for 0 ≤ x ≤ 0.5 and 0 otherwise.  Here, p(x) = 2 > 1.
+
+Statement 2: Decision tree is learned by minimizing information gain.
+
+This statement is false. Decision trees are built by maximizing information gain. The goal of a decision tree is to classify data points as efficiently as possible.  Information gain measures the reduction in uncertainty achieved by splitting the data based on a particular attribute.  By maximizing information gain at each step, the decision tree aims to make the most informative splits, leading to faster and more accurate classification.
+
+Answer: C","Statement 1: For a continuous random variable x and its probability distribution function p(x), it holds that 0 ≤ p(x) ≤ 1 for all x.
+
+This statement is false. For a continuous random variable, p(x) represents a probability *density* function, not a probability.  The probability of x falling within a specific interval [a, b] is given by the integral of p(x) over that interval: P(a ≤ x ≤ b) = ∫<sub>a</sub><sup>b</sup> p(x) dx. This integral, representing a probability, must always be between 0 and 1.  However, the density function p(x) itself can take on values greater than 1, especially over narrow intervals. For example, consider a uniform distribution over the interval [0, 0.5].  The pdf is p(x) = 2 for 0 ≤ x ≤ 0.5 and 0 otherwise.  The integral of p(x) from 0 to 0.5 is 1 (as required for a probability distribution), but p(x) = 2 > 1 within that interval.
+
+Statement 2: Decision tree is learned by minimizing information gain.
+
+This statement is false. Decision trees are built by maximizing information gain. The goal of a decision tree is to classify data points as efficiently as possible. Information gain measures the reduction in uncertainty achieved by splitting the data based on a particular attribute. By maximizing information gain at each step, the decision tree aims to make the most informative splits, leading to faster and more accurate classification.
+
+
+Answer: C","Statement 1: For a continuous random variable x and its probability distribution function p(x), it holds that 0 ≤ p(x) ≤ 1 for all x.
+
+Analysis of Statement 1:  For continuous random variables, p(x) represents a probability *density* function, not a probability itself.  While the probability of x falling within any interval must be between 0 and 1, the density function p(x) can take on values greater than 1.  The probability of x being within a given range [a, b] is calculated by the integral of p(x) over that range: P(a ≤ x ≤ b) = ∫<sub>a</sub><sup>b</sup> p(x) dx.  As a concrete example, consider a uniform distribution over the interval [0, 0.5]. The probability density function is p(x) = 2 for 0 ≤ x ≤ 0.5, and 0 otherwise.  Notice that p(x) = 2 > 1 within this interval. However, the integral of p(x) from 0 to 0.5 is 1, which is a valid probability. Therefore, the statement is false.
+
+Statement 2: Decision tree is learned by minimizing information gain.
+
+Analysis of Statement 2: Decision trees are constructed by maximizing information gain, not minimizing it. Information gain quantifies the reduction in uncertainty achieved by splitting the data based on a specific attribute.  By maximizing information gain at each step, the decision tree seeks the most informative splits, leading to more efficient and accurate classification. Therefore, the statement is false.
+
+Answer: C"
+218,"Statement 1: As of 2020, some models attain greater than 98% accuracy on CIFAR-10. This statement is true.  Many models surpassed 98% accuracy on CIFAR-10 well before 2020.
+
+Statement 2: The original ResNets were not optimized with the Adam optimizer. The original ResNet paper from 2015 used Stochastic Gradient Descent (SGD) with momentum.  So, this statement is true.
+
+Therefore, both statements are true.
+
+Answer: D
+",D,MMLU-ML,machine_learning,"Statement 1: As of 2020, some models attain greater than 98% accuracy on CIFAR-10.  A 2019 paper by Cubuk et al. ""AutoAugment: Learning Augmentation Strategies From Data"" reports achieving 99.04% accuracy on CIFAR-10.  (https://arxiv.org/abs/1805.09501v3)  Therefore, this statement is true.
+
+Statement 2: The original ResNets were not optimized with the Adam optimizer. The original ResNet paper, ""Deep Residual Learning for Image Recognition"" by He et al. (2015), used Stochastic Gradient Descent (SGD) with momentum. (https://arxiv.org/abs/1512.03385) So, this statement is true.
+
+Therefore, both statements are true.
+
+Answer: D","Statement 1: As of 2020, some models attain greater than 98% accuracy on CIFAR-10.
+
+The 2019 paper by Cubuk et al., ""AutoAugment: Learning Augmentation Strategies From Data,"" reports achieving 99.04% accuracy on CIFAR-10 (https://arxiv.org/abs/1805.09501v3).  Since this paper predates 2020 and already demonstrates accuracy exceeding 98%, it is reasonable to conclude that by 2020, some models could achieve greater than 98% accuracy on CIFAR-10.  Therefore, Statement 1 is True.
+
+Statement 2: The original ResNets were not optimized with the Adam optimizer.
+
+The original ResNet paper, ""Deep Residual Learning for Image Recognition"" by He et al. (2015), explicitly states the use of Stochastic Gradient Descent (SGD) with momentum (https://arxiv.org/abs/1512.03385).  The paper makes no mention of using the Adam optimizer.  Therefore, Statement 2 is True.
+
+Since Statement 1 is True and Statement 2 is True, the correct answer is D (True, True).
+
+Answer: D","Statement 1: As of 2020, some models attain greater than 98% accuracy on CIFAR-10.
+
+The 2019 paper by Cubuk et al., ""AutoAugment: Learning Augmentation Strategies From Data,"" reports achieving 99.04% accuracy on CIFAR-10 (https://arxiv.org/abs/1805.09501v3).  Since this paper predates 2020 and already demonstrates accuracy exceeding 98%, it is reasonable to conclude that by 2020, some models could achieve greater than 98% accuracy on CIFAR-10.  Therefore, Statement 1 is True.
+
+Since Statement 1 is True, the only possible correct answers are B and D. Thus, Statement 2 is irrelevant for determining the correct answer.
+
+Answer: D","Statement 1: As of 2020, some models attain greater than 98% accuracy on CIFAR-10.
+The 2019 paper by Cubuk et al., ""AutoAugment: Learning Augmentation Strategies From Data,"" reports achieving 99.04% accuracy on CIFAR-10 (https://arxiv.org/abs/1805.09501v3).  Since this paper predates 2020 and already demonstrates accuracy exceeding 98%, it is reasonable to conclude that by 2020, some models could achieve greater than 98% accuracy on CIFAR-10.  Therefore, Statement 1 is likely True.
+
+Statement 2: The original ResNets were not optimized with the Adam optimizer.
+The original ResNet paper (He et al., 2015, https://arxiv.org/abs/1512.03385) explicitly states that they used Stochastic Gradient Descent (SGD) with momentum.  Adam was introduced later (Kingma and Ba, 2014). Therefore, Statement 2 is True.
+
+Now, let's consider the answer choices based on the evaluation of both statements:
+
+A) False, False: This is incorrect because Statement 2 is True.
+B) True, False: This is incorrect because Statement 2 is True.
+C) False, True: This is incorrect because Statement 1 is likely True.
+D) True, True: This option aligns with our evaluation of both statements.
+
+Answer: D","Statement 1: As of 2020, some models attain greater than 98% accuracy on CIFAR-10.
+The 2019 paper by Cubuk et al., ""AutoAugment: Learning Augmentation Strategies From Data,"" reports achieving 99.04% accuracy on CIFAR-10 (https://arxiv.org/abs/1805.09501v3). While this result demonstrates the *potential* to exceed 98% accuracy on CIFAR-10 before 2020, it's crucial to consider the broader context.  Is this level of accuracy consistently reproducible across different implementations and hardware setups?  Does it represent a common achievement among various models, or is it an outlier?  Further investigation is needed to determine the prevalence of models achieving >98% accuracy on CIFAR-10 around 2020.  While the Cubuk et al. paper provides strong supporting evidence, it's important to avoid overgeneralizing from a single instance.  Therefore, it's *likely* that some models could achieve this level of performance, but more evidence is needed to definitively say ""True.""
+
+Statement 2: The original ResNets were not optimized with the Adam optimizer.
+The original ResNet paper (He et al., 2015, https://arxiv.org/abs/1512.03385) explicitly states the use of Stochastic Gradient Descent (SGD) with momentum. Adam was introduced in a 2014 paper (Kingma and Ba).  Therefore, Statement 2 is True.
+
+Answer: D"
+223,"Decision trees are used for classification or regression, not clustering. So A is not correct.
+
+K-means clustering tends to produce spherical clusters of similar sizes, so it is not suitable when we want clusters of different sizes and shapes. So D is not correct.
+
+Model-based clustering assumes that the data is generated from a mixture of underlying probability distributions, often Gaussian. While it can handle clusters of different sizes, it may struggle with complex shapes. So C is less appropriate.
+
+Density-based clustering methods, such as DBSCAN, group together points that are closely packed together. These methods can discover clusters of arbitrary shapes and sizes, making them suitable for spatial data like the locations of houses.
+
+Answer: B
+",B,MMLU-ML,machine_learning,"Decision trees are primarily used for classification and regression tasks, not clustering, so they are not suitable for this problem.  Therefore, option A can be eliminated.
+
+K-means clustering tends to produce spherical clusters of similar sizes due to its reliance on minimizing the distance to centroids. This makes it unsuitable for our goal of identifying clusters with varying sizes and shapes, as spatial data like house locations often form irregular clusters. Thus, option D is not appropriate.
+
+Model-based clustering, while capable of handling clusters of different sizes, often assumes data arises from a mixture of distributions, frequently Gaussian. This can struggle with complex, non-parametric shapes that might be present in spatial data.  Therefore, option C is less suitable than other options.
+
+Density-based clustering, such as DBSCAN (Density-Based Spatial Clustering of Applications with Noise), groups points based on their density in the feature space. This allows it to discover clusters of arbitrary shapes and sizes, making it ideal for spatial data like house locations where clusters might represent neighborhoods or other geographically meaningful groupings with irregular boundaries.  Furthermore, density-based methods are often more robust to outliers, which can be common in spatial datasets.  Hierarchical clustering could also be considered as it handles different shapes and sizes, but density-based methods are generally preferred for spatial data due to their ability to handle noise and outliers more effectively.
+
+Answer: B","The problem states that we want to produce clusters of many different sizes and shapes.
+
+Decision trees (A) are used for classification and regression, not clustering, so we can eliminate this option.  K-means clustering (D) typically produces spherical clusters of similar sizes, which is not suitable for our goal of diverse shapes and sizes.
+
+Now, considering the remaining options: Model-based clustering (C) can handle different cluster sizes, but it often struggles with complex, non-parametric shapes that might arise in spatial data. Density-based clustering (B), such as DBSCAN, excels at finding clusters of arbitrary shapes and sizes by grouping points based on density. This makes it well-suited for spatial data like house locations, where clusters can have irregular boundaries.
+
+Answer: B","Let's analyze each option systematically:
+
+* **A) Decision Trees:** Decision trees are primarily used for classification and regression tasks, not clustering.  They are not designed to group data points based on similarity in spatial data.
+
+* **B) Density-based clustering:** This method groups data points based on their density.  It excels at finding clusters of arbitrary shapes and sizes, making it well-suited for spatial data like house locations, which can have irregular boundaries and varying densities.
+
+* **C) Model-based clustering:** While model-based clustering can handle different cluster sizes, it often assumes specific data distributions and may struggle with the complex, non-parametric shapes that can arise in spatial data like the distribution of houses.
+
+* **D) K-means clustering:** K-means typically produces spherical clusters of similar sizes. This is not ideal for spatial data like house locations, where clusters can be elongated, irregularly shaped, and of varying sizes.  K-means also requires specifying the number of clusters beforehand, which might not be suitable when cluster sizes and shapes are unknown.
+
+Density-based clustering is the most appropriate method for this problem because it can handle the irregular shapes and varying sizes of clusters that are likely to occur with spatial data like house locations.  Unlike k-means, it doesn't assume spherical clusters or require pre-defining the number of clusters.  While model-based clustering can handle varying sizes, it may not be as robust to the arbitrary shapes encountered in spatial data as density-based clustering.
+
+Answer: B","Let's analyze each option by considering their underlying mechanisms and how they apply to the spatial clustering of houses:
+
+* **A) Decision Trees:** Decision trees recursively partition the data space into rectangular regions based on feature values. This mechanism is ill-suited for spatial clustering because house locations require grouping based on proximity, not necessarily aligned with feature axes.  The resulting rectangular regions from decision trees cannot capture the arbitrary shapes and sizes of house clusters that might arise due to geographical features like rivers or highways.
+
+* **B) Density-based clustering:** This method identifies clusters based on the density of data points in a region.  It uses parameters like a distance threshold (epsilon) and a minimum number of points (minPts). A cluster is formed by connecting points within epsilon distance of each other, and a point is considered a core point if it has at least minPts neighbors within epsilon. This mechanism allows for the discovery of clusters of arbitrary shapes and sizes because it does not impose any predefined structure.  It's particularly suitable for spatial data like house locations, where clusters can be elongated or irregularly shaped due to factors like roads, zoning regulations, or natural boundaries.
+
+* **C) Model-based clustering:** This approach assumes that the data is generated from a mixture of underlying probability distributions, each representing a cluster. While model-based clustering can handle different cluster sizes, it often struggles with complex, non-parametric shapes encountered in spatial data.  The distributions used in model-based clustering might not accurately represent the complex spatial arrangements of houses, which can be influenced by various non-random factors.
+
+* **D) K-means clustering:** K-means aims to partition data into *k* clusters by minimizing the variance within each cluster.  It typically produces spherical clusters of similar sizes because it calculates cluster membership based on the distance to cluster centroids. This is not ideal for spatial data like house locations, where clusters can be elongated, irregularly shaped, and of varying sizes.  Furthermore, *k*-means requires pre-defining the number of clusters, which is often unknown in spatial analysis.
+
+Therefore, density-based clustering is the most appropriate method for clustering spatial data like house locations because its mechanism of using density and proximity allows it to discover clusters of arbitrary shapes and sizes, unlike the other methods considered.
+
+Answer: B","Let's analyze each option, focusing on the clustering of house locations:
+
+* **B) Density-based clustering:** This method groups points based on their proximity and density. It excels at finding clusters of arbitrary shapes and sizes, making it well-suited for house locations, which can form irregular clusters due to features like rivers, roads, zoning, and varying neighborhood densities.  This adaptability is crucial for capturing real-world housing patterns.
+
+* **A) Decision Trees:**  Decision trees partition data into rectangular regions. This rigid structure is ill-suited for the irregular shapes of house clusters, as it cannot accommodate the non-linear boundaries often found in real-world housing distributions (as explained for why density-based clustering *is* suitable).
+
+* **D) K-means clustering:** K-means produces generally spherical clusters of similar sizes. This approach struggles with the diverse shapes and sizes of house clusters, which can range from densely packed urban areas to sprawling suburban developments (again, contrasting with the adaptability of density-based clustering).  Furthermore, pre-defining the number of clusters (k) is problematic when dealing with the organic and unpredictable nature of housing patterns.
+
+* **C) Model-based clustering:** This method assumes data arises from a mixture of probability distributions. While it can handle varying cluster sizes, it often struggles with the complex, non-parametric shapes seen in house locations, which are influenced by a multitude of factors not easily captured by standard distributions (similar to the limitations of k-means and decision trees compared to density-based clustering's flexibility).
+
+Answer: B"
+211,"Statement 1: The F1 score is the harmonic mean of precision and recall. It is especially useful for datasets with class imbalance because it considers both false positives and false negatives. In imbalanced datasets, accuracy can be misleading, as a classifier might achieve high accuracy by simply predicting the majority class. The F1 score provides a more balanced measure of performance in such cases. So, Statement 1 is True.
+
+Statement 2: The area under the ROC curve (AUC-ROC) is commonly used to evaluate the performance of binary classifiers, particularly in cases of class imbalance. Anomaly detection is often framed as a binary classification problem (normal vs. anomaly).  AUC-ROC measures the ability of a classifier to distinguish between the two classes across different thresholds. So, Statement 2 is True.
+
+Answer: A
+",A,MMLU-ML,machine_learning,"Statement 1: The F1 score is the harmonic mean of precision and recall. The harmonic mean is sensitive to low values; if either precision or recall is low, the F1 score will also be low. This is particularly useful for imbalanced datasets. In such datasets, accuracy can be misleadingly high if the classifier simply predicts the majority class. This would result in high precision for the majority class but low recall for the minority class. The F1 score, by being sensitive to the lower of the two, provides a more balanced measure and thus is useful for imbalanced datasets. So, Statement 1 is True.
+
+Statement 2: The area under the ROC curve (AUC-ROC) is a metric that evaluates the performance of a binary classifier by averaging its performance across all possible classification thresholds. Anomaly detection, while often conceptually a one-class problem (identifying anomalies from a single class of normal data), can be framed as a binary classification problem where the goal is to distinguish between normal data points and anomalies.  AUC-ROC is valuable in this context because it considers the classifier's performance across all thresholds, providing a robust measure of its ability to separate the two classes (normal and anomalous) regardless of the chosen operating point. This is particularly important in anomaly detection where setting a specific threshold can be challenging due to the rarity of anomalies. So, Statement 2 is True.
+
+Answer: A","Statement 1: The F1 score is the harmonic mean of precision and recall.  In imbalanced datasets, accuracy can be misleadingly high if the model simply predicts the majority class. This leads to high precision but low recall for the minority class. The F1 score, being sensitive to the lower of precision or recall, provides a better measure of performance in this scenario.  For example, if a model has 99% precision and 10% recall on the minority class in an imbalanced dataset, the F1 score will be low, reflecting the poor performance on the minority class, whereas accuracy might be deceptively high. Therefore, Statement 1 is True.
+
+Statement 2: The area under the ROC curve (AUC-ROC) considers a classifier's performance across all possible thresholds. This is crucial for anomaly detection because setting a specific threshold is challenging due to the rarity of anomalies.  AUC-ROC provides a comprehensive evaluation across all thresholds, avoiding the need to pick a single, potentially suboptimal, threshold.  For instance, if we set a high threshold, we might miss many true anomalies, while a low threshold could lead to many false positives. AUC-ROC helps us evaluate the overall performance regardless of the specific threshold. Therefore, Statement 2 is True.
+
+Statement 1 is True. Statement 2 is True. Therefore, the answer is A.
+
+Answer: A","Statement 1: The F1 score is the harmonic mean of precision and recall. In imbalanced datasets, accuracy can be misleadingly high if the model simply predicts the majority class. The F1 score, being sensitive to both precision and recall, provides a better measure of performance in this scenario. Therefore, because F1 is useful for imbalanced datasets, Statement 1, which claims F1 is useful for class imbalance, is True.
+
+Statement 2: The area under the ROC curve (AUC-ROC) considers a classifier's performance across all possible thresholds. This is crucial for anomaly detection because setting a specific threshold is challenging due to the rarity of anomalies and the varying costs of false positives and false negatives.  AUC-ROC provides a comprehensive evaluation across all thresholds, making it a valuable tool for assessing anomaly detectors. Therefore, since AUC-ROC is frequently used to evaluate anomaly detectors, Statement 2, which claims AUC-ROC is a main metric for assessing anomaly detectors, is True. While other metrics exist, AUC-ROC remains a primary choice.
+
+Statement 1 is True. Statement 2 is True. Therefore, the answer is A.
+
+Answer: A","Statement 1: The F1 score is particularly useful for datasets with high class imbalance because it balances precision and recall. In imbalanced datasets, accuracy can be misleading. For example, if 90% of a dataset belongs to class A and 10% to class B, a model that always predicts A would achieve 90% accuracy. However, this model fails to identify any instances of class B.  The F1 score, calculated as the harmonic mean of precision and recall (2 * precision * recall / (precision + recall)), is more sensitive to low values of either precision or recall.  In the example above, the model would have perfect precision for class A but zero recall for class B, resulting in an F1 score of 0 for class B.  This highlights how F1 considers both false positives and false negatives, making it a more robust metric for imbalanced datasets. Therefore, Statement 1 is True.
+
+Statement 2: The area under the ROC curve (AUC-ROC) is a widely used metric for assessing anomaly detectors because it provides a threshold-independent measure of performance.  Anomaly detection often involves dealing with rare events, making it difficult to set a fixed threshold.  A low threshold might lead to many false positives, while a high threshold might miss true anomalies. AUC-ROC considers performance across all possible thresholds, providing a comprehensive evaluation.  Imagine an ROC curve plotted with the true positive rate (TPR) against the false positive rate (FPR).  The AUC represents the probability that a randomly chosen anomalous instance will be ranked higher than a randomly chosen normal instance.  While other metrics like precision at k or average precision are also used, AUC-ROC remains a primary choice due to its threshold independence. Therefore, Statement 2 is True.
+
+Statement 1 is True. Statement 2 is True. Therefore, the answer is A.
+
+Answer: A","Analysis of Statement 1: The F1 score balances precision and recall, making it useful for imbalanced datasets. For example, in a dataset with 90% class A and 10% class B, a model always predicting A has 90% accuracy but an F1 score of 0 for class B.  Therefore, Statement 1 is True.
+
+Analysis of Statement 2: AUC-ROC assesses anomaly detectors by considering performance across all possible thresholds, making it valuable for rare events where setting a fixed threshold is difficult. Therefore, Statement 2 is True.
+
+Answer: A"
+226,"The computational complexity of gradient descent is primarily determined by the cost of computing the gradient at each iteration.  The gradient calculation involves evaluating the objective function and its partial derivatives with respect to each of the D parameters (where D is the dimensionality of the problem).  Therefore, the cost of each iteration is linear in D. The total complexity also depends on the number of iterations required for convergence, but the question asks about the complexity *of gradient descent*, which refers to the per-iteration cost.
+
+Answer: A",B,MMLU-ML,machine_learning,"The computational complexity of gradient descent depends on the cost of computing the gradient at each iteration. This cost has two main components:
+
+1. **Cost of computing partial derivatives:** This part is proportional to the number of parameters, denoted as 'D'.  Thus, this component is linear in D, represented as O(D).
+
+2. **Cost of evaluating the objective function:** This cost depends on the complexity of the objective function itself. It can vary, for example, it could be constant O(1), linear in the number of data points 'N' (O(N)), or even more complex.
+
+Therefore, the per-iteration complexity of gradient descent is the sum of these two costs.  If we denote the cost of evaluating the objective function as f(N), the total per-iteration complexity is O(D) + f(N).  Since the question asks about the complexity *of gradient descent*, and given that the cost of evaluating the objective function can vary, the most accurate answer considers the dependency on D.
+
+Answer: A","Gradient descent is an iterative algorithm.  Its computational complexity depends on both the cost per iteration and the number of iterations required for convergence.
+
+Let 'D' be the number of parameters, 'N' the number of data points, and 'I' the number of iterations.
+
+The per-iteration cost is primarily determined by the computation of the gradient, which is linear in D (O(D)).  There's also the cost of evaluating the objective function, which can vary (e.g., O(N) or even more complex).  So, the per-iteration cost can be represented as O(D) + f(N), where f(N) represents the complexity of the objective function.
+
+The overall complexity is the product of the per-iteration cost and the number of iterations, roughly I * (O(D) + f(N)).
+
+Options A, B, and C only address the per-iteration cost components.  They don't account for 'I', the number of iterations.  The number of iterations can vary significantly based on factors like the learning rate, the specific problem, and the desired level of accuracy.
+
+Since the overall complexity depends critically on the number of iterations, which is not captured by the other options, the most accurate answer is D.
+
+Answer: D","The computational complexity of gradient descent depends on the cost per iteration *and* the number of iterations required for convergence.  The cost per iteration is roughly linear in D (number of parameters) for computing the gradient and can be linear or worse in N (number of data points) for evaluating the objective function.  However, the total cost is the product of the per-iteration cost and the number of iterations.  Since the number of iterations can vary significantly and isn't captured by options A, B, or C, the most accurate answer is D.
+
+Answer: D","The computational complexity of gradient descent is determined by the total cost, which is the product of the per-iteration cost and the number of iterations required for convergence.
+
+1. **Per-iteration cost:** This cost is roughly linear in D (number of parameters) for computing the gradient and can be linear or worse in N (number of data points) for evaluating the objective function.  We can represent this as O(D) + O(f(N)), where f(N) represents the complexity of evaluating the objective function, which could be O(N) or worse.
+
+2. **Number of iterations (I):**  The number of iterations required for convergence is not a constant and can vary significantly depending on factors like the specific gradient descent algorithm used, the properties of the objective function (e.g., convexity, smoothness), the learning rate, and the desired level of accuracy.
+
+3. **Total cost:** The total cost is the product of the per-iteration cost and the number of iterations: Total Cost = [O(D) + O(f(N))] * I.  Since 'I' can vary significantly and is influenced by multiple factors, it plays a dominant role in the overall computational complexity.
+
+Therefore, while the per-iteration cost has a component linear in D and potentially linear or worse in N, the overall complexity is heavily dependent on the number of iterations, which isn't captured by options A, B, or C.  Thus, the most accurate answer is D.
+
+Answer: D","The computational complexity of gradient descent is influenced by several factors, making a simple categorization like ""linear in D"" or ""linear in N"" incomplete.  Let's break down the costs:
+
+1. **Per-iteration cost:** This involves computing the gradient (roughly linear in D, the number of parameters) and evaluating the objective function (which can be linear or worse in N, the number of data points).  So, the per-iteration cost can be represented as O(D) + O(f(N)), where f(N) could be O(N) or worse.
+
+2. **Number of iterations (I):**  Crucially, 'I' isn't a constant. It depends on D, N, the learning rate, the objective function's properties (convexity, smoothness), and the specific gradient descent variant used.
+
+3. **Total cost:**  This is approximately [O(D) + O(f(N))] * I.  While options A, B, and C capture *parts* of the per-iteration cost, they don't account for the variable and influential nature of 'I'.  For a *fixed* 'I', the cost *is* linear in D and can be linear or worse in N. However, 'I' itself is influenced by D, N, and other factors.
+
+Therefore, option D, ""dependent on the number of iterations,"" is the most appropriate answer because it acknowledges this crucial dependency, even though the number of iterations is itself influenced by other factors like D and N.  A, B, and C are too simplistic, neglecting the complex interplay of factors that determine the overall computational complexity.
+
+Answer: D"
+209,"Let's analyze each statement individually.
+
+Statement 1: The set of all rectangles in the 2D plane (which includes non-axis-aligned rectangles) can shatter a set of 5 points.
+
+Consider a set of 5 points arranged as vertices of a regular pentagon. No rectangle can enclose only 4 of these points without enclosing the fifth point as well.  Therefore, the set of all rectangles cannot shatter 5 points. So, Statement 1 is False.
+
+Statement 2: The VC-dimension of k-Nearest Neighbour classifier when k = 1 is infinite.
+
+The 1-NN classifier can shatter any finite set of points.  Given any labeling of the points, the 1-NN classifier will correctly classify all points in the training set, as each point's nearest neighbor is itself.  Therefore, the VC-dimension of 1-NN is infinite. So, Statement 2 is True.
+
+Answer: D
+",C,MMLU-ML,machine_learning,"Statement 1: The set of all rectangles in the 2D plane (which includes non-axis-aligned rectangles) can shatter a set of 5 points.
+
+Consider the convex hull of a set of 5 points.  If the convex hull has 4 or 5 vertices, then there exists a subset of 4 points forming a quadrilateral.  No rectangle can separate a single vertex of this quadrilateral from the other three. Therefore, any set of 5 points whose convex hull has 4 or 5 vertices cannot be shattered by rectangles. So, Statement 1 is False.
+
+Statement 2: The VC-dimension of k-Nearest Neighbour classifier when k = 1 is infinite.
+
+The VC-dimension of a hypothesis class is the size of the largest set of points that can be shattered by the hypothesis class.  A set of points is shattered by a hypothesis class if for every possible labeling of the points, there exists a hypothesis in the class that perfectly classifies the points according to that labeling.
+
+Let's consider the 1-NN classifier.  For any finite set of points S in a feature space, and any labeling of those points, the 1-NN classifier will correctly classify all points in S. This is because for any point x in S, the nearest neighbor of x in the training set (which is S itself) is x itself.  Thus, x will be classified according to its own label.  Since this holds for any labeling of any finite set of points, the 1-NN classifier can shatter any finite set of points.  Therefore, the VC-dimension of 1-NN is infinite. So, Statement 2 is True.
+
+Answer: D","Statement 1: The set of all rectangles in the 2D plane (which includes non-axis-aligned rectangles) can shatter a set of 5 points.
+
+Consider a set of 5 points arranged as the vertices of a regular pentagon.  No rectangle can separate one vertex from the remaining four. Therefore, rectangles cannot shatter a set of 5 points. So, Statement 1 is False.
+
+Statement 2: The VC-dimension of k-Nearest Neighbour classifier when k = 1 is infinite.
+
+The VC-dimension of a hypothesis class is the size of the largest set of points that can be shattered by the hypothesis class.  A set of points is shattered by a hypothesis class if for every possible labeling of the points, there exists a hypothesis in the class that perfectly classifies the points according to that labeling.
+
+Let's consider the 1-NN classifier.  For any finite set of points S in a feature space, and any labeling of those points, the 1-NN classifier will correctly classify all points in S. This is because for any point x in S, the nearest neighbor of x in the training set (which is S itself) is x itself.  Thus, x will be classified according to its own label.  Since this holds for any labeling of any finite set of points, the 1-NN classifier can shatter any finite set of points.  Therefore, the VC-dimension of 1-NN is infinite. So, Statement 2 is True.
+
+Answer: D","Statement 1: The set of all rectangles in the 2D plane (which includes non-axis-aligned rectangles) can shatter a set of 5 points.
+
+Consider a set of 5 points in the plane.  A rectangle can be defined by four parameters.  Therefore, the number of possible classifications of 5 points by rectangles is at most $2^4 = 16$. However, there are $2^5 = 32$ possible labelings of 5 points. Since $16 < 32$, there exists a labeling of the 5 points that cannot be realized by any rectangle.  Therefore, rectangles cannot shatter a set of 5 points. So, Statement 1 is False.
+
+Statement 2: The VC-dimension of k-Nearest Neighbour classifier when k = 1 is infinite.
+
+Let $n$ be an arbitrary positive integer.  Consider a set of $n$ distinct points $x_1, x_2, ..., x_n$ in some feature space.  For any labeling of these points, we can construct a 1-NN classifier that perfectly classifies the points according to that labeling.  Specifically, we use the set of points itself as the training set.  Then, for any point $x_i$ in the set, its nearest neighbor in the training set is $x_i$ itself.  Therefore, $x_i$ will be classified according to its own label.  Since this holds for any labeling of any finite set of points, the 1-NN classifier can shatter any finite set of points.  Therefore, the VC-dimension of 1-NN is infinite. So, Statement 2 is True.
+
+Answer: D","Statement 1: The set of all rectangles in the 2D plane (which includes non-axis-aligned rectangles) can shatter a set of 5 points.
+
+Consider a set of 5 points arranged such that 4 points form a convex quadrilateral, and the 5th point lies inside the quadrilateral. Label the outer points as positive and the inner point as negative. No single rectangle can enclose the positive points while excluding the negative point. Therefore, rectangles cannot shatter a set of 5 points. So, Statement 1 is False.
+
+Statement 2: The VC-dimension of k-Nearest Neighbour classifier when k = 1 is infinite.
+
+To show that the VC-dimension of 1-NN is infinite, we need to demonstrate that for any positive integer *n*, there exists a set of *n* points that can be shattered by 1-NN. Consider a set of *n* distinct points in some feature space.  For any labeling of these points, we can use the set of points itself as the training set for a 1-NN classifier. Since each point's nearest neighbor is itself, the classifier will correctly classify each point according to its label. This holds for any labeling of any finite set of points. Therefore, 1-NN can shatter any finite set of points, and its VC-dimension is infinite. So, Statement 2 is True.
+
+Answer: D","A set of points $S$ is shattered by a hypothesis class $H$ if for every subset $A \subset S$, there exists some hypothesis $h \in H$ such that $h$ contains all points in $A$ and no points in $S \setminus A$.  The VC-dimension of $H$ is the size of the largest set $S$ that can be shattered by $H$.
+
+**Statement 1:** The set of all rectangles in the 2D plane (which includes non-axis-aligned rectangles) can shatter a set of 5 points.
+
+Consider a set of 5 points arranged in a convex pentagon.  No rectangle can select only 4 of these points while excluding the 5th.  Therefore, rectangles cannot shatter a set of 5 points. So, Statement 1 is False.
+
+**Statement 2:** The VC-dimension of k-Nearest Neighbour classifier when k = 1 is infinite.
+
+Consider the 1-NN classifier with Euclidean distance in $\mathbb{R}^d$. Let $S$ be a set of $n$ distinct points in $\mathbb{R}^d$. For any labeling of these points (positive or negative), we can use $S$ itself as the training set.  For any point $x \in S$, its nearest neighbor in the training set is $x$ itself. Thus, the 1-NN classifier will correctly classify $x$ according to its label in the training set. Since this holds for any labeling of any finite set of points $S$, the 1-NN classifier can shatter any finite set of points. Therefore, its VC-dimension is infinite. So, Statement 2 is True.
+
+Answer: D"
