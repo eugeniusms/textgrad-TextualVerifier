@@ -1,0 +1,7 @@
+Failed Experiments:
+
+1. Implementing Verification on TextualGradientDescent (VTGD) -> 
+2. Directly Implementing Verification on Loss Function (VerifiedLosss) -> Need Static Function to Optimized as Gradient on TGD Optimization, Not Generic -> Standalone Verifier
+2. Create Probability Based Verification Implementation (Based on StepCo) -> Not Significant (Decreasing Accuracy)
+3. Combine TextualVerifier with Probability Answer Choose Implementation -> Inconsistency Results in Every Iteration
+. Focused-Step Verification without Context Before -> Unstable & Insignificant (Zero-Shot +2.67%, Final +1.94%, Majority Voting -0.97%)
