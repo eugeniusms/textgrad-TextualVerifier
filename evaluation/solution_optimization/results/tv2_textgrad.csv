@@ -38,3 +38,378 @@ The total number of different examples is the product of the number of possible 
 Therefore, the total number of examples is 3 * 2 * 2 * 2 * 3 = 72.
 
 Answer: C"
+205,"The cost of a gradient descent update involves updating each parameter of our model.  Let's assume our model has D parameters. The gradient vector, g, also has D components (one for each parameter).  A gradient descent update involves scaling the gradient by the learning rate and subtracting it from the current parameter vector.  This involves D subtractions (one for each parameter).  Therefore, the complexity is proportional to D.
+
+Answer: D
+",D,MMLU-ML,machine_learning,"Let D be the number of parameters.  A gradient descent update involves scaling the gradient by the learning rate and subtracting it from each parameter. This requires D multiplications and D subtractions. Therefore, the complexity is O(D).
+
+Answer: D","Let D be the number of parameters. A gradient descent update involves scaling the gradient by the learning rate and subtracting it from each parameter. This requires D multiplications (one for each parameter) and D subtractions (one for each parameter).  These 2D operations result in a computational complexity of O(D) because Big O notation focuses on the dominant growth factor as D increases, and constants are dropped. Therefore, the complexity is O(D).
+
+Answer: D","Let D be the number of parameters. A gradient descent update involves scaling the gradient by the learning rate and subtracting the result from each parameter.  For each of the D parameters, this involves one multiplication (scaling) and one subtraction. Thus, there are 2D total operations for one gradient descent update.  Big O notation focuses on the dominant growth factor and drops constants, so the complexity is O(D).
+
+Answer: D","Let D be the number of parameters. A gradient descent update involves scaling the gradient by the learning rate and subtracting the result from each parameter. This involves two operations (multiplication and subtraction) for each of the D parameters, resulting in 2D operations. In Big O notation, constant factors are dropped, so the complexity is O(D).
+
+Answer: D","Let D be the number of parameters. A gradient descent update involves scaling the gradient by the learning rate and subtracting the result from each parameter.  This involves two operations (multiplication and subtraction) for *each* of the D parameters. Therefore, the total number of operations for one gradient descent update is 2 * D = 2D operations. In Big O notation, constant factors are dropped because Big O notation focuses on how the complexity scales with the input size, not the precise count of operations.  Thus, the complexity of one gradient descent update is O(D) because it scales linearly with the number of parameters, D.
+
+Answer: D"
+201,"Statement 1: Support vector machines (SVMs) primarily focus on finding the optimal hyperplane that maximizes the margin between different classes. While they can provide classification labels, they don't inherently offer a probability distribution over those labels like logistic regression models do.  Probabilistic interpretations can be added to SVMs (e.g., using Platt scaling), but it's not a core feature. So, Statement 1 is false.
+
+Statement 2: The support vectors are the data points that lie closest to the decision boundary (hyperplane) and influence its position.  When moving from a linear kernel to a higher-order polynomial kernel, the decision boundary becomes more complex and non-linear. This change in the decision boundary's shape will likely cause different data points to become the closest ones, thus changing the support vectors. So, Statement 2 is false.
+
+Answer: A
+",A,MMLU-ML,machine_learning,"Statement 1: Support vector machines (SVMs) do not inherently provide probability distributions over labels.  While methods like Platt scaling can be used to obtain probabilities, the core SVM algorithm focuses on finding the optimal separating hyperplane. Logistic regression, on the other hand, directly models the probability of different classes. Therefore, Statement 1 is false.
+
+Statement 2: Support vectors are defined as the data points closest to the decision boundary (hyperplane).  Changing the kernel function changes the decision boundary.  Therefore, we generally expect the support vectors to change as well when moving from a linear to a higher-order polynomial kernel.  So, Statement 2 is false.
+
+
+Answer: A","Statement 1: Support vector machines (SVMs) do not inherently provide probability distributions over labels.  While methods like Platt scaling can be used to obtain probabilities, the core SVM algorithm focuses on finding the optimal separating hyperplane. Logistic regression, on the other hand, directly models the probability of different classes. Therefore, Statement 1 is FALSE.
+
+Statement 2: Support vectors are defined as the data points closest to the decision boundary (hyperplane).  Changing the kernel function changes the decision boundary.  Therefore, we generally expect the support vectors to change as well when moving from a linear to a higher-order polynomial kernel.  So, Statement 2 is FALSE.
+
+A) False, False
+B) True, True
+C) True, False
+D) False, True
+
+Since Statement 1 is FALSE and Statement 2 is FALSE, the answer is A.
+
+Answer: A","Statement 1: Support vector machines (SVMs) do not inherently provide probability distributions over labels. While methods like Platt scaling can be used to obtain probabilities, the core SVM algorithm focuses on finding the optimal separating hyperplane. Logistic regression, on the other hand, directly models the probability of different classes. Therefore, Statement 1 is FALSE.
+
+Statement 2: Support vectors are defined as the data points closest to the decision boundary (hyperplane). Changing the kernel function changes the decision boundary. Therefore, we generally expect the support vectors to change as well when moving from a linear to a higher-order polynomial kernel.  Therefore, Statement 2 is FALSE.
+
+Statement 1 is FALSE because SVMs do not directly provide probability distributions, unlike logistic regression.
+Statement 2 is FALSE because changing the kernel function alters the decision boundary, and thus, the support vectors are also likely to change.
+
+Answer: A","Statement 1: Support vector machines (SVMs) do not inherently provide probability distributions over labels.  They primarily output a distance to the decision boundary (hyperplane). While methods like Platt scaling can be used to estimate probabilities from these distances, the core SVM algorithm itself doesn't directly model probabilities like logistic regression does. Logistic regression, on the other hand, directly models the probability of an example belonging to a particular class. Therefore, Statement 1 is FALSE.
+
+Statement 2: Support vectors are the data points that lie closest to the decision boundary and influence its position. The kernel function in an SVM defines the feature space in which the data is transformed and the decision boundary is determined. Changing the kernel, such as moving from a linear kernel to a higher-order polynomial kernel, changes this feature space and consequently, the location and shape of the decision boundary.  Since the support vectors are defined by their proximity to the decision boundary, changing the kernel generally leads to a change in the support vectors as well. Therefore, Statement 2 is FALSE.
+
+Answer: A","Statement 1: Support vector machines (SVMs) primarily output a distance to the decision boundary (hyperplane), not a probability distribution over possible labels.  While techniques like Platt scaling can be used to estimate probabilities from these distances, the core SVM algorithm itself doesn't directly model probabilities.  Logistic regression, conversely, directly models the probability of an example belonging to a particular class. Therefore, Statement 1 is FALSE.
+
+Statement 2:  The kernel function in an SVM defines the feature space in which the data is transformed and the decision boundary is determined. Changing the kernel, such as moving from a linear kernel to a higher-order polynomial kernel, alters this feature space and consequently, the location and shape of the decision boundary. Support vectors are the data points closest to this decision boundary and influence its position. Because changing the kernel affects the decision boundary, it generally leads to a change in which data points are closest to the boundary, thus changing the support vectors. Therefore, Statement 2 is FALSE.  It's important to note, however, that while a kernel change *can* alter the support vectors, it doesn't *always* do so.
+
+Answer: A"
+214,"Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization.  Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention.  They rely on convolutional layers.  Therefore, Statement 2 is False.
+
+Answer: B
+",B,MMLU-ML,machine_learning,"Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization.  Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention.  They rely on convolutional layers.  Therefore, Statement 2 is False.
+
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
+
+Now, let's compare our findings to the options:
+
+Option A (True, True):
+* Statement 1: Option A claims it's True, but we found it to be False. So, option A is incorrect.
+* Statement 2: Option A claims it's True, but we found it to be False. So, option A is incorrect.
+
+Option B (False, False):
+* Statement 1: Option B claims it's False, which aligns with our finding.
+* Statement 2: Option B claims it's False, which aligns with our finding.
+
+Option C (True, False):
+* Statement 1: Option C claims it's True, but we found it to be False. So, option C is incorrect.
+* Statement 2: Option C claims it's False, which aligns with our finding.
+
+
+Option D (False, True):
+* Statement 1: Option D claims it's False, which aligns with our finding.
+* Statement 2: Option D claims it's True, but we found it to be False. So, option D is incorrect.
+
+Final Verification: We found Statement 1 to be False and Statement 2 to be False. This matches option B.
+
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
+
+Since Statement 1 is False and Statement 2 is False, the correct option is B.
+
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
+
+Since Statement 1 is False and Statement 2 is False, this corresponds to option B.  Option A (True, True) is incorrect because both statements are False. Option C (True, False) is incorrect because Statement 1 is False. Option D (False, True) is incorrect because Statement 2 is False.
+
+Answer: B","Statement 1: The original ResNet paper uses Batch Normalization, not Layer Normalization. Therefore, Statement 1 is False.
+
+Statement 2: DCGANs (Deep Convolutional Generative Adversarial Networks) do not use self-attention. They rely on convolutional layers. Therefore, Statement 2 is False.
+
+Now, let's consider the answer choices based on our evaluations:
+
+A) True, True: This is incorrect because both Statement 1 and Statement 2 are False.
+B) False, False: This is a possible answer since both statements are False.
+C) True, False: This is incorrect because Statement 1 is False.
+D) False, True: This is incorrect because Statement 2 is False.
+
+Since only option B aligns with our evaluation of both statements, the final answer is B.
+
+Answer: B"
+204,"Statement 1: The expectation-maximization (EM) algorithm is guaranteed to improve the log-likelihood of the data at each iteration or, at worst, to leave it unchanged.  So, the log-likelihood does not decrease. It may not strictly increase, but it won't go down.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm.  This means it doesn't require prior knowledge of the environment's dynamics (how actions affect the environment).  In fact, a key advantage of Q-learning is its ability to learn in unknown environments.
+
+Therefore, Statement 1 is False, and Statement 2 is False.
+
+Answer: C",C,MMLU-ML,machine_learning,"Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations.  The algorithm aims to find a local maximum, and sometimes it reaches a plateau where the likelihood doesn't change.  For example, if the algorithm starts at a local maximum, the log-likelihood will not increase further. Therefore, Statement 1 is False.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  It learns by directly experiencing the environment and updating its estimates of optimal actions (Q-values) based on observed rewards and state transitions.  The fact that it *doesn't* need a model of the environment is a key advantage. Therefore, Statement 2 is False.
+
+Since Statement 1 is False and Statement 2 is False, the correct option is C.
+
+Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations. Therefore, Statement 1 is False.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment. Therefore, Statement 2 is False.
+
+Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While it's true that the log-likelihood will never decrease, it can remain constant between iterations.  Since the statement claims the log-likelihood *always* increases, and we've shown it can stay the same, Statement 1 is False.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  The statement claims Q-learning *requires* prior knowledge, and we've shown it does *not*. Therefore, Statement 2 is False.
+
+Answer: C","Statement 1: The EM algorithm does not guarantee that the log-likelihood will *always* increase. While the log-likelihood never decreases, it can plateau between iterations, indicating convergence to a local optimum or saddle point.  Because the EM algorithm can get stuck at these suboptimal points, the log-likelihood does not always increase, making the statement false.
+
+Statement 2: Q-learning is a model-free reinforcement learning algorithm. This means it doesn't require prior knowledge of how actions affect the environment.  The statement claims Q-learning *requires* prior knowledge, and we've shown it does *not*. Therefore, Statement 2 is False.
+
+Answer: C","Statement 1: Interpreting ""always increasing"" as strictly monotonic, meaning the log-likelihood must increase with each iteration. The EM algorithm does not guarantee this. While the log-likelihood never decreases, it can plateau between iterations, indicating convergence to a local optimum or saddle point. Because the EM algorithm can get stuck at these suboptimal points, the log-likelihood does not always increase in the strict sense. Therefore, Statement 1 is False.
+
+Statement 2: Q-learning is defined as a model-free reinforcement learning algorithm.  ""Model-free"" means the algorithm learns directly from experience without needing a pre-built model of the environment, and thus does not require prior knowledge of how actions affect the environment. Statement 2 claims Q-learning *requires* such prior knowledge.  These statements are contradictory. Therefore, Statement 2 is False.
+
+Since Statement 1 is False and Statement 2 is False, the answer is C.
+
+Answer: C"
+200,"Statement 1: RoBERTa uses a larger dataset than BERT. BERT was trained on the BooksCorpus (800M words) and English Wikipedia (2,500M words). RoBERTa uses the same datasets, but adds CC-News (76G words), OpenWebText (38G words) and Stories (3G words). This is much larger than BERT's dataset. So, statement 1 is True.
+
+Statement 2: ResNetXt models typically use ReLU activations, not tanh. So, statement 2 is False.
+
+Answer: D",D,MMLU-ML,machine_learning,"Statement 1: BERT was trained on BooksCorpus (800M words) and English Wikipedia (2,500M words), totaling 3,300M words. RoBERTa uses the same datasets, plus CC-News (76G words), OpenWebText (38G words), and Stories (3G words).  Let's assume 1G of text is approximately 1,000M words (this is a rough estimate, and the actual ratio can vary).  Then, CC-News is approximately 76,000M words, OpenWebText is 38,000M words, and Stories is 3,000M words.  The total size of RoBERTa's dataset is approximately 3,300M + 76,000M + 38,000M + 3,000M = 120,300M words.  The ratio of RoBERTa's dataset to BERT's dataset is 120,300M / 3,300M ≈ 36.5. This is significantly more than 10x. However, given the approximation mentioned in the statement and the estimation used for converting gigabytes to millions of words, it can be considered approximately 10x larger. So, statement 1 is True.
+
+Statement 2: ResNetXt models typically use ReLU activations, not tanh. So, statement 2 is False.
+
+Answer: D","Statement 1: While the exact word counts are difficult to obtain and comparing dataset sizes based on file sizes (gigabytes) is not ideal, it is widely understood that RoBERTa's pretraining dataset is substantially larger than BERT's.  Sources suggest that RoBERTa incorporates significantly more data, including sources like CC-News, OpenWebText, and Stories, in addition to the datasets used by BERT.  Therefore, it is reasonable to consider the statement ""approximately 10x larger"" as roughly accurate, although a precise comparison is difficult without explicit word counts.
+
+Statement 2: ResNetXt models predominantly use ReLU activations, not tanh.
+
+Answer: D","Statement 1: True
+Statement 2: False
+
+Answer: D","Statement 1: RoBERTa pretrains on a corpus that is approximate 10x larger than the corpus BERT pretrained on.
+This statement is true.  RoBERTa, a successor to BERT, was explicitly designed to improve upon BERT's performance by, among other things, training on a significantly larger dataset.  Various sources confirm that RoBERTa's training corpus is approximately 10 times larger than BERT's. Therefore, Statement 1: True.
+
+Statement 2: ResNeXts in 2018 usually used tanh activation functions.
+This statement is false. ResNeXts, and residual networks in general, typically use ReLU (Rectified Linear Unit) activation functions for their improved training characteristics.  While other activation functions might be used in specific cases, ReLU is the standard choice and tanh is less common. Therefore, Statement 2: False.
+
+Statement 1: True (as established above)
+Statement 2: False (as established above)
+
+The correct answer is D because it corresponds to Statement 1 being True and Statement 2 being False. Answer choice A is incorrect because Statement 2 is False. Answer choice B is incorrect because Statement 1 is True. Answer choice C is incorrect because Statement 2 is False.
+
+Answer: D","1. Statement 1: RoBERTa pretrains on a corpus that is approximate 10x larger than the corpus BERT pretrained on.
+   Truth Value: True
+   Justification: RoBERTa, a successor to BERT, was designed to improve performance by training on a much larger dataset.
+
+2. Statement 2: ResNeXts in 2018 usually used tanh activation functions.
+   Truth Value: False
+   Justification: ResNeXts typically use ReLU activation functions, not tanh.
+
+Since Statement 1 is True and Statement 2 is False, the correct option is D (True, False).  Options A, B, and C are incorrect because they do not reflect these truth values.
+
+Answer: D"
+208,"As the number of training examples increases, the model's ability to generalize to unseen data improves.  This means the model becomes less sensitive to the specific examples in the training set.  Therefore, the variance of the model decreases.
+
+Answer: D
+",D,MMLU-ML,machine_learning,"As the number of training examples goes to infinity, the model's performance is influenced by the bias-variance tradeoff.  With limited data, models can overfit, capturing noise in the training set and leading to high variance (sensitivity to the specific training examples).  However, as the training set grows, the model becomes less prone to overfitting.  The law of large numbers comes into play: with more data, the training set's distribution better approximates the true underlying distribution. This allows the model to learn the actual patterns in the data rather than the noise, leading to more stable parameter estimates and lower variance across different training sets.  Therefore, as the number of training examples approaches infinity, the variance of the model decreases.
+
+Answer: D","As the number of training examples goes to infinity, the model's variance decreases. This is due to the interplay between overfitting, noise, and the true underlying data distribution.
+
+1. **Overfitting and Noise:** With limited data, a model is prone to overfitting, meaning it captures noise in the training set rather than the true underlying patterns. This noise leads to high variance because the model's performance becomes highly sensitive to the specific training examples used.  As the number of training examples increases, the law of large numbers comes into play.  This law states that as the sample size grows, the sample mean converges to the true population mean.  In our context, this means the training set's distribution more accurately reflects the true underlying data distribution, reducing the influence of noise.
+
+2. **Overfitting and Variance:**  The connection between overfitting and high variance lies in the instability of parameter estimates. When a model overfits, its parameter estimates are heavily influenced by the noise in the limited training data.  Consequently, if we were to train the model on a different sample from the same population, the parameter estimates would likely change significantly, leading to high variance.  However, with a large training set, the model is less prone to overfitting, and the parameter estimates become more stable and less sensitive to the specific training examples used.  This stability leads to lower variance.
+
+3. **Decreasing Variance with Infinite Data:** As the number of training examples approaches infinity, the training set's distribution converges ever closer to the true underlying distribution, minimizing the impact of noise and effectively eliminating overfitting.  Because overfitting is the primary driver of high variance in smaller datasets, its reduction with infinite data leads to significantly lower variance. The model's parameters become highly stable and accurately reflect the true underlying patterns, resulting in consistent performance across different training sets drawn from the same population.
+
+Answer: D","As the number of training examples goes to infinity, the model's variance decreases. Here's a step-by-step explanation connecting the Law of Large Numbers (LLN) to this outcome:
+
+1. **The Law of Large Numbers (LLN):** The LLN states that as the size of a random sample increases, the sample mean approaches the true population mean.  In the context of machine learning, as the number of training examples (our sample) increases, the distribution of the training data approaches the true underlying distribution of the data.
+
+2. **Impact on Parameter Estimates:**  Model parameters are estimated based on the training data. With limited data, these estimates can be heavily influenced by noise and random fluctuations in the sample.  However, as the training data size increases due to the LLN, the parameter estimates become more stable and converge towards the optimal values that reflect the true underlying data distribution.
+
+3. **Overfitting and Noise Reduction:** With limited data, models are prone to overfitting, capturing noise in the training set rather than true patterns. This leads to high variance because the model's performance is sensitive to the specific training examples used. As the training set size increases, the impact of noise diminishes due to the LLN, and the model is less likely to overfit.
+
+4. **Decreasing Variance:** The stability of parameter estimates, driven by the LLN and the reduction of overfitting and noise, directly leads to lower variance.  A model with stable parameters will produce more consistent predictions across different training sets drawn from the same population, resulting in lower variance.
+
+Answer: D","As the number of training examples goes to infinity, the model's prediction variance decreases.  Here's why:
+
+1. **Larger datasets lead to more stable parameter estimates:** With more data, the estimated model parameters are less sensitive to the noise or random fluctuations in any single training set.  The parameter estimates converge towards values that better reflect the true underlying data distribution.
+
+2. **Stable parameters result in lower prediction variance:**  When model parameters are stable, the model's predictions become less sensitive to the specific training set used. Imagine training many models on different, but equally large, datasets drawn from the same population.  Stable parameters mean these models will make very similar predictions, leading to lower variance in the predictions across these models.  This is what we mean by lower model variance.
+
+3. **The Law of Large Numbers (LLN) and Parameter Estimates:** The LLN states that the average of a large number of independent and identically distributed random variables converges towards the expected value. In this context, the LLN helps explain why larger datasets lead to more stable *parameter estimates* (as these estimates are often averages of quantities calculated from the training data). However, the LLN doesn't directly address the variance of the model's *predictions*, which is a function of these parameters.  The connection between the LLN and lower *prediction* variance is indirect, mediated by the increased stability of the parameter estimates.
+
+Answer: D","As the number of training examples goes to infinity, the variance of the *model's predictions* will decrease (assuming the model is not misspecified).  Here's a breakdown:
+
+1. **Parameter Estimate Variance Decreases:** With infinite data, the Law of Large Numbers ensures that our parameter estimates converge to their true values, and the *variance* of these estimates approaches zero.
+
+2. **Converged Parameters and Prediction Variance:** However, even with perfectly estimated parameters, the model's *predictions* will still have variance. This is because the model's functional form transforms input features, which themselves have inherent variance, into predictions.  Different functional forms will lead to different prediction variances, even with identical parameter values.
+
+3. **Inherent Noise:**  Furthermore, the target variable itself has inherent, irreducible noise.  This noise exists independently of the model and the training data, and contributes to the overall prediction variance.
+
+4. **Putting it Together:**  As the training data approaches infinity, the variance in parameter estimates goes to zero.  This means the model's predictions become less sensitive to the specific training set used.  However, the prediction variance will still be influenced by the converged parameter values, the model's functional form, and the inherent noise in the target variable.  With infinite data, we effectively eliminate the variability due to parameter estimation, but not the other sources of variance.
+
+Answer: D"
+215,"A large negative coefficient in a linear regression model suggests a strong negative correlation between the feature and the target variable.  This means that as the value of the feature increases, the value of the target variable tends to decrease significantly.  Therefore, this feature has a strong effect on the model's predictions.
+
+Answer: A
+",D,MMLU-ML,machine_learning,"A large negative coefficient for a feature in a linear regression model indicates that, holding all other features constant, a one-unit increase in this feature corresponds to a large decrease in the predicted target variable. This suggests a strong relationship between the feature and the target variable, and therefore the feature has a strong effect on the model.
+
+Answer: A","A large negative coefficient for a feature in a linear regression model indicates a strong relationship between the feature and the target variable *when holding other features constant*.  However, this strong relationship is in the context of the *model's predictions*, not necessarily a reflection of a strong real-world causal relationship.  Other factors, such as feature variance, multicollinearity, spurious correlations, and overfitting, can influence the magnitude of the coefficient.  Therefore, while the feature likely has an effect on the model and should be retained for predictive purposes, further investigation is needed to determine the true nature and strength of the relationship.
+
+Answer: D","A large negative coefficient for a feature in a linear regression model suggests a strong negative relationship between that feature and the target variable *when holding other features constant (ceteris paribus)*.  However, this relationship is within the context of the model and doesn't necessarily reflect a true causal relationship in the real world.  Other factors, such as multicollinearity, spurious correlations, and overfitting, can influence the magnitude of the coefficient.  Therefore, while the feature *might* have a strong effect and be important, we cannot definitively determine its importance without further investigation.  Additional information needed includes analysis of Variance Inflation Factor (VIF) to check for multicollinearity, cross-validation to assess model robustness, and potentially regularization techniques to mitigate overfitting. These analyses would help determine if the observed large negative coefficient is a genuine effect or an artifact of the model or data.
+
+Answer: D","Answer: D
+
+A large negative coefficient suggests a strong negative relationship between the feature and the target variable *within the model*.  However, this doesn't necessarily mean the feature is truly important.  Other factors, such as spurious correlations or multicollinearity, could artificially inflate the coefficient's magnitude.  Therefore, additional analysis (e.g., checking for multicollinearity, cross-validation) is needed before deciding whether to retain or discard the feature.
+
+Here's why the other options are incorrect:
+
+* A) While the feature *appears* to have a strong effect, we can't be sure without further investigation.  Spurious correlations can mislead us.
+* B)  Dismissing the feature based solely on the coefficient is premature.  It might be genuinely important.
+* C) We *can* determine something: the need for more information.
+
+Therefore, D is the most accurate answer, as we need more information to assess the feature's true importance.","Answer: D
+
+A large negative coefficient suggests a strong negative relationship between the feature and the target variable *within the model*. However, this doesn't necessarily mean the feature is truly important for several reasons.  Further analysis is required before deciding whether to retain or discard the feature.
+
+Here's why additional information is crucial and how it relates to the other options:
+
+* **Multicollinearity:** A high negative coefficient could be due to multicollinearity, where this feature is highly correlated with other features.  We can check for this by calculating Variance Inflation Factors (VIFs).  A high VIF suggests multicollinearity, meaning the large coefficient might be artificially inflated and not reflect the feature's true importance. This directly addresses why option A (retain) might be premature.
+
+* **Model Generalizability:**  Even if the relationship is genuine within the training data, it might not generalize to new data.  We can assess this using k-fold cross-validation. If the feature's impact varies significantly across different folds, it suggests the relationship might not be robust, potentially supporting option B (ignore), but only after further investigation.
+
+* **Other Factors:**  Other issues like non-linearity or omitted variable bias could also influence the coefficient. Residual analysis can help identify non-linearity, while domain expertise and further data collection might be needed to address omitted variables.  These factors highlight why simply observing a large coefficient isn't enough to determine the feature's true importance.
+
+Therefore, option C (nothing can be determined) is too absolute. While we can't definitively conclude the feature's importance *without* additional analysis, we *can* determine that further investigation using techniques like VIFs, cross-validation, and residual analysis is necessary. This is why D is the most accurate answer.  We need more specific information, as outlined above, to assess the feature's true importance."
+199,"Statement 1: The Gauss-Markov theorem states that the ordinary least squares (OLS) estimator has the smallest variance among all linear unbiased estimators in a linear regression model under certain assumptions (linearity, strict exogeneity, no multicollinearity, and homoscedasticity).  However, there might exist non-linear unbiased estimators with smaller variances. So, statement 1 is false.
+
+Statement 2: AdaBoost assigns weights to classifiers based on their performance.  Classifiers that perform well are given higher weights (positive α), while classifiers that perform poorly are given lower weights.  The weights α can be negative if a classifier performs worse than random guessing (error rate > 0.5). So, statement 2 is false.
+
+Answer: B",C,MMLU-ML,machine_learning,"**Statement 1: Linear regression estimator has the smallest variance among *all* unbiased estimators.**
+
+The Gauss-Markov theorem states that the ordinary least squares (OLS) estimator has the smallest variance among all *linear* unbiased estimators, given the assumptions of the theorem hold (linearity, strict exogeneity, no multicollinearity, and homoscedasticity).  The key word here is *all*.  The statement claims the smallest variance among *all* unbiased estimators, not just linear ones.  Since there might exist non-linear unbiased estimators with smaller variances, the statement is too broad.
+
+For example, in some cases, non-linear estimators like the James-Stein estimator can have lower mean squared error (and thus potentially lower variance) than OLS. This happens when the number of parameters being estimated is greater than 2.
+
+Therefore, Statement 1 is FALSE.
+
+**Statement 2: The coefficients α assigned to the classifiers assembled by AdaBoost are *always* non-negative.**
+
+AdaBoost assigns weights (α) to classifiers based on their performance.  A classifier with an error rate less than 0.5 (better than random guessing) receives a positive α.  However, a classifier performing *worse* than random guessing (error rate > 0.5) is assigned a *negative* α.  The word ""always"" in the statement is crucial. Since α can be negative in some cases, the statement is FALSE.
+
+**Final Answer:**  Statement 1 is FALSE, and Statement 2 is FALSE.
+
+Answer: B","**Statement 1: Linear regression estimator has the smallest variance among all unbiased estimators.**
+
+The Gauss-Markov theorem states that the ordinary least squares (OLS) estimator has the smallest variance among all *linear* unbiased estimators, *given certain assumptions hold*. These assumptions include linearity, strict exogeneity, no multicollinearity, and homoscedasticity.  Statement 1 omits the crucial restriction to *linear* unbiased estimators.  Furthermore, when these assumptions are violated, other estimators can outperform OLS. For example, the James-Stein estimator, a non-linear estimator, can achieve lower variance than OLS when the number of parameters being estimated is greater than 2 and the errors are normally distributed.  Since Statement 1 claims the smallest variance among *all* unbiased estimators without these qualifications, it is FALSE.
+
+**Statement 2: The coefficients α assigned to the classifiers assembled by AdaBoost are *always* non-negative.**
+
+AdaBoost assigns weights (α) to classifiers based on their performance.  Classifiers with error rates less than 0.5 (better than random guessing) receive positive α. However, classifiers performing worse than random guessing (error rate > 0.5) receive a negative α. The word ""always"" makes the statement FALSE.
+
+Answer: B","**Statement 1: Linear regression estimator has the smallest variance among all unbiased estimators.**
+
+The Gauss-Markov theorem states that the ordinary least squares (OLS) estimator, used in linear regression, has the smallest variance among all *linear* unbiased estimators, given certain assumptions.  Because Statement 1 omits the crucial word ""linear,"" it is FALSE.
+
+**Statement 2: The coefficients α assigned to the classifiers assembled by AdaBoost are *always* non-negative.**
+
+AdaBoost assigns weights (α) to classifiers based on their performance. A classifier with an error rate greater than 0.5 performs worse than random guessing.  AdaBoost assigns a negative α to such a classifier to effectively reverse its predictions. For example, if a classifier with an error rate of 0.6 predicts class A, AdaBoost, by assigning a negative α, effectively changes the prediction to class B.  Therefore, the coefficients are not *always* non-negative, making Statement 2 FALSE.
+
+Answer: B","Statement 1: The estimator has the smallest variance among all *linear* unbiased estimators. Thus, statement 1 is FALSE.
+
+Statement 2: AdaBoost can assign negative coefficients α. Thus, statement 2 is FALSE.
+
+Answer: B","Statement 1: The statement refers to the Ordinary Least Squares (OLS) estimator in linear regression.  The Gauss-Markov theorem states that OLS has the smallest variance among all linear unbiased estimators *if* certain assumptions hold. These assumptions are:
+
+1. Linearity in parameters
+2. Random sampling
+3. No perfect multicollinearity
+4. Zero conditional mean of the error term (E[ε|X] = 0)
+5. Homoscedasticity (constant variance of the error term)
+
+Without further context about the specific linear regression model being considered, we cannot definitively verify if all these assumptions hold.  Therefore, we cannot conclusively say whether the OLS estimator has the smallest variance among *all* unbiased estimators (linear or non-linear). Thus, statement 1 is FALSE.
+
+Statement 2: The AdaBoost coefficient update rule is given by:
+α_t = (1/2) * ln((1 - ε_t) / ε_t)
+where ε_t is the weighted error rate of the t-th weak classifier.  Since 0 < ε_t < 1/2 (for AdaBoost to work effectively), the term (1 - ε_t) / ε_t is always greater than 1.  Therefore, the natural logarithm of this term is always positive, making α_t always positive. Thus, statement 2 is TRUE.
+
+Answer: C"
+203,"Convolutional Neural Networks (CNNs) are specifically designed to process data with a grid-like topology, making them highly suitable for image data.  They leverage principles like spatially shared weights and local connectivity to effectively capture spatial hierarchies of features within images.  While other architectures like graph networks, fully connected networks, and RBF networks have their own strengths, CNNs have consistently demonstrated superior performance in image classification tasks, especially with high-resolution images where detailed feature extraction is crucial.
+
+Answer: B
+",B,MMLU-ML,machine_learning,"Convolutional Neural Networks (CNNs) excel at processing high-resolution images due to their specialized architecture.  Specifically, CNNs employ convolutional filters that slide across the image, extracting local features. These features are then aggregated by pooling layers, reducing computational complexity while retaining essential information. This hierarchical approach allows CNNs to learn complex patterns and representations at different scales, crucial for detailed feature extraction in high-resolution images.  Furthermore, weight sharing within convolutional layers significantly reduces the number of parameters compared to fully connected networks, making CNNs more computationally efficient when dealing with the large input sizes of high-resolution images.
+
+Other architectures are less suitable for this task. Fully connected networks, while theoretically capable of classifying images, become computationally prohibitive with high-resolution inputs due to the massive number of parameters. Graph networks, while effective for relational data, struggle to capture the inherent spatial hierarchies present in images.  RBF networks, while useful for function approximation, lack the specialized feature extraction capabilities of CNNs necessary for complex image classification.
+
+Because CNNs effectively extract detailed features from high-resolution images while maintaining computational efficiency, and considering the limitations of other architectures in handling such data, the best architecture for classifying high-resolution images as of 2020 is convolutional networks.
+
+Answer: B","Classifying high-resolution images presents unique challenges, primarily due to the sheer volume of data and the need to extract intricate features.  Several architectures could be considered: Convolutional Neural Networks (CNNs), Graph Networks (GNs), Fully Connected Networks (FCNs), and Radial Basis Function Networks (RBFNs).  As of 2020, CNNs stand out as the most effective for this task.
+
+Here's a comparative analysis:
+
+1. **Feature Extraction:** CNNs utilize convolutional filters that slide across the image, capturing local patterns. This localized approach is highly effective for high-resolution images as it allows the network to learn hierarchical features, from simple edges to complex textures.  FCNs, in contrast, treat each pixel as an independent input, leading to an explosion of parameters and computational cost for high-resolution images. GNs, while adept at relational data, struggle to capture the inherent spatial hierarchies in images. RBFNs, primarily designed for function approximation, lack the specialized feature extraction capabilities of CNNs.
+
+2. **Computational Efficiency:** CNNs employ weight sharing within convolutional layers, significantly reducing the number of parameters compared to FCNs. This efficiency is crucial for high-resolution images.  While RBFNs can be computationally efficient, their limited feature extraction hinders their performance on complex image data. GNs, depending on their implementation, can also become computationally expensive for large images.
+
+3. **Handling High Resolution:** The hierarchical feature extraction and weight sharing in CNNs make them particularly well-suited for high-resolution images.  They can effectively process the large input size without becoming computationally intractable. FCNs, due to their fully connected nature, struggle with the increased number of pixels.  GNs and RBFNs, while applicable in other domains, lack the specialized mechanisms to efficiently handle the complexities of high-resolution image data.
+
+Therefore, considering the specific challenges of high-resolution image classification, CNNs offer the best balance of feature extraction capability and computational efficiency.
+
+Answer: B","Classifying high-resolution images presents unique challenges due to the sheer volume of data and the intricate features involved. As of 2020, Convolutional Neural Networks (CNNs) have emerged as the leading architecture for this task, outperforming alternatives like Graph Networks (GNs), Fully Connected Networks (FCNs), and Radial Basis Function Networks (RBFNs).  This is primarily due to their superior feature extraction capabilities and computational efficiency.
+
+Specifically, architectures like ResNet and InceptionNet have demonstrated exceptional performance on high-resolution image datasets. ResNet's skip connections mitigate vanishing gradients, enabling the training of very deep networks capable of learning complex, hierarchical features from high-resolution images.  InceptionNet's inception modules, employing multiple filter sizes within a single layer, allow the network to capture features at various scales, crucial for detailed high-resolution images.  These specialized architectures have achieved significantly lower error rates on benchmark datasets like ImageNet compared to FCNs or RBFNs.  For instance, Inception-v3 achieved a top-5 error rate of approximately 3.5% on ImageNet, a substantial improvement over earlier architectures.
+
+Furthermore, CNNs exhibit better computational efficiency compared to FCNs, especially for high-resolution images.  The weight sharing inherent in convolutional layers drastically reduces the number of parameters, leading to lower memory footprints and faster processing.  For example, a fully connected layer applied to a 1024x1024 image with 3 color channels would require billions of parameters, whereas a CNN can achieve comparable performance with significantly fewer parameters, often in the millions. This efficiency is crucial for handling the massive computational demands of high-resolution image data.  While GNs have shown promise in other domains, their application to high-resolution images is often computationally expensive due to the complexity of graph representations for such data.
+
+Therefore, considering the superior feature extraction capabilities exemplified by architectures like ResNet and InceptionNet, coupled with the computational efficiency stemming from weight sharing, CNNs offer the best balance for classifying high-resolution images as of 2020.
+
+Answer: B","Let's analyze the computational complexity of each architecture for high-resolution image classification, focusing on the number of parameters as a key factor influencing performance and efficiency as of 2020:
+
+1. **Convolutional Neural Networks (CNNs):** CNNs leverage weight sharing, meaning a single filter is applied across the entire image. This drastically reduces the number of parameters compared to fully connected networks.  For a filter of size k x k applied to an image of size H x W, the number of parameters is k * k * C_in * C_out, where C_in and C_out are the number of input and output channels, respectively. This number is independent of H and W, making CNNs highly scalable for high-resolution images.
+
+2. **Fully Connected Networks (FCNs):** In FCNs, each neuron in a layer is connected to every neuron in the previous layer. For an image of size H x W with 3 color channels, a single fully connected layer would require (H * W * 3) * N parameters, where N is the number of neurons in the layer. This scales directly with the image dimensions, making FCNs computationally expensive and memory-intensive for high-resolution images.
+
+3. **Graph Networks (GNs):** GNs represent images as graphs, where nodes represent image regions and edges represent relationships between them. The complexity of these graph representations grows significantly with image resolution, leading to high computational costs for high-resolution image classification.
+
+4. **Radial Basis Function Networks (RBFNs):** RBFNs rely on a set of radial basis functions to map input features to a higher-dimensional space.  While their parameter count can be lower than FCNs, they are generally less effective for complex, high-dimensional data like high-resolution images, and their performance does not scale as well as CNNs.
+
+Considering the significantly lower parameter count and better scalability of CNNs with increasing image resolution, CNNs offer the best balance of performance and efficiency for high-resolution image classification as of 2020.
+
+Answer: B","To determine the best architecture for classifying high-resolution images as of 2020, let's compare four architectures: Convolutional Networks (CNNs), Fully Connected Networks (FCNs), Graph Networks (GNs), and Radial Basis Function Networks (RBFNs) based on key criteria relevant to high-resolution image processing: parameter count scaling, computational complexity, and memory requirements.
+
+**1. Parameter Count Scaling:**
+
+* **CNNs:** CNNs employ weight sharing, significantly reducing parameter count.  For a k x k filter, the parameters are k*k*C_in*C_out (C_in/C_out: input/output channels). Crucially, this is independent of image dimensions (H x W), making CNNs scalable for high-resolution images.
+* **FCNs:** FCNs connect every neuron in a layer to every neuron in the previous layer.  Parameters scale directly with image dimensions: (H * W * 3) * N (N: number of neurons). This becomes prohibitive for high-resolution images.  For example, a 1000x1000 image with 3 channels and 1000 neurons requires 3 billion parameters in a single layer.
+* **GNs:** GNs represent images as graphs. Parameter count depends on the graph construction method and generally increases with image resolution, potentially becoming computationally expensive.
+* **RBFNs:** RBFNs use radial basis functions. While their parameter count can be lower than FCNs, it still scales with input dimensions and they are less effective for complex, high-dimensional data like high-resolution images.
+
+**2. Computational Complexity:**
+
+* **CNNs:** Convolution operations are computationally efficient, especially with hardware acceleration.  Complexity scales well with image resolution.
+* **FCNs:** The massive number of connections leads to high computational complexity, worsening with increasing resolution.
+* **GNs:** Complexity depends on graph structure and operations, but generally increases with image resolution.
+* **RBFNs:**  Computational cost can be significant for high-dimensional data.
+
+**3. Memory Requirements:**
+
+* **CNNs:** Relatively low memory requirements due to weight sharing, scaling favorably with resolution.
+* **FCNs:** High memory demands due to the large number of parameters, becoming problematic for high-resolution images.
+* **GNs:** Memory usage depends on graph size and complexity, increasing with resolution.
+* **RBFNs:** Memory requirements can be substantial for high-resolution images.
+
+**Conclusion:**
+
+CNNs offer the best balance of parameter scaling, computational complexity, and memory efficiency for high-resolution image classification as of 2020.  Their weight sharing drastically reduces parameter count and computational demands compared to FCNs, GNs, and RBFNs, making them ideal for handling the large input sizes of high-resolution images.
+
+Answer: B"
