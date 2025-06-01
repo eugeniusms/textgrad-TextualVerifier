@@ -30,6 +30,11 @@ from .engine import EngineLM, get_engine
 from .optimizer import TextualGradientDescent, TGD
 from .config import set_backward_engine, SingletonBackwardEngine
 from .autograd import sum, aggregate
-from .verifier import Verifier, TextualVerifier, TextualVerifierV2
+from .verifier import (
+    Verifier, 
+    TextualVerifier, 
+    TextualVerifierV2, 
+    TextualVerifierV3
+)
 
 singleton_backward_engine = SingletonBackwardEngine()

@@ -1,5 +1,6 @@
-[DONE] Generate Initial Solution CSV -> 2 Mins (32 Workers)
-[DONE] Solution Optimization with Raw TextGrad -> 7 Mins (64 Workers)
-[DONE] Solution Optimization with TextualVerifier TextGrad -> 59 Mins (128 Workers)
-[DONE] Solution Optimization with TextualVerifierV2 TextGrad -> 10 Mins *10 MMLU-ML (128 Workers)
+[DONE] Generate Initial Solution CSV -> 2 Mins 
+[DONE] Solution Optimization with Raw TextGrad -> 7 Mins 
+[DONE] Solution Optimization with TextualVerifier TextGrad -> 59 Mins 
+[DONE] Solution Optimization with TextualVerifierV2 TextGrad -> 2 Hours 27 Mins 
+[DONE] Solution Optimization with TextualVerifierV3 TextGrad -> ???
 [DONE] Solution Optimization Analysis
