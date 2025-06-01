@@ -2,5 +2,5 @@
 [DONE] Solution Optimization with Raw TextGrad -> 7 Mins 
 [DONE] Solution Optimization with TextualVerifier TextGrad -> 59 Mins 
 [DONE] Solution Optimization with TextualVerifierV2 TextGrad -> 2 Hours 27 Mins 
-[DONE] Solution Optimization with TextualVerifierV3 TextGrad -> ???
+[DONE] Solution Optimization with TextualVerifierV3 TextGrad -> 20 Mins
 [DONE] Solution Optimization Analysis
