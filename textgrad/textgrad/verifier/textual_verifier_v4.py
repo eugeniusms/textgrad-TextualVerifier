@@ -4,7 +4,7 @@ from typing import Union, List
 from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
-from .verifier_prompts_v3 import (
+from .verifier_prompts_v4 import (
     COT_PROMPT,
     CONSOLIDATED_VERIFICATION_PROMPT,
     CONSOLIDATED_VOTING_PROMPT,
