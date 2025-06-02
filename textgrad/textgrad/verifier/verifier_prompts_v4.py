@@ -53,14 +53,13 @@ CONSOLIDATED_VOTING_PROMPT = """
 Grouped feedback variant by steps:
 {}
 
-For each FeedbackStep$Number vote majority of feedbacks,
-For step with majority is 'No error', write 'No error' in that step.
+For each FeedbackStep$Number, perform majority voting across variants.
+If the majority feedback is 'No error', skip the step (do not output it).
+If the majority feedback is any other message, include it as:
 
-Create output format:
-<Step1></Step1>
-<Step2></Step2>
-...
-<Step`$TotalStep`></Step`$TotalStep`>
+<Step$Number>majority_feedback</Step$Number>
+
+Output only the steps with feedback other than 'No error'.
 """
 
 # V4 ENHANCEMENT: 
@@ -75,6 +74,7 @@ You are given two types of feedback for a solution:
 
 Your task:
 - Verify the feedback in (1) using the verification details in (2).
+- If all step in (2) is "No error", leave it unchanged.
 - If any part of (1) is incorrect according to (2), update it.
 - If any important information is missing in (1) but present in (2), add it clearly.
 - If any part in (1) is already correct and validated by (2), leave it unchanged.
