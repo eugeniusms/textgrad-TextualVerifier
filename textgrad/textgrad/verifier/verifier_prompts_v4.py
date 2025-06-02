@@ -27,7 +27,7 @@ If no error state "No error".
 
 Format your response as:
 <FeedbackStep1>Your concise error feedback for step 1</FeedbackStep1>
-<FeedbackStep2>Your concise feedback for step 2</FeedbackStep2>
+<FeedbackStep2>Your concise error feedback for step 2</FeedbackStep2>
 ...and so on for all steps
 """
 
@@ -68,10 +68,12 @@ Voting Results:
 # V4 ENHANCEMENT: Voting with concise prompt
 # HIGHLIGHT ORIGINAL STEP WITH CORRECTION PER STEP CONCISE IN TEXT NO FORMAT
 SUMMARIZED_VERIFICATION_RESULT = """
-Subject: {}
+Observable: {}
 
-Correction: {}
+Verified Feedback: {}
 
 Your task:  
-Merge the subject and correction into concise summary that merges the subject and corrections, ensuring nothing is left out:
+As an expert verifier, I need you to verify observable with verified feedback, then update observable based on your analysis.
+If exist wrong part in observable, then update observable part.
+If no wrong exist, then use existing observable.
 """

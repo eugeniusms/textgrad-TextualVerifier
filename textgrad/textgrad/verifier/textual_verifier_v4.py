@@ -63,9 +63,10 @@ class TextualVerifierV4(Verifier):
             reasoning_steps, verified_feedbacks
         )
         
+        print("CALCULATION", calculation)
         # Step 4: Make summary
         final_result = self._get_summary_voted_steps(
-            reasoning_steps, best_verification_feedback
+            calculation, best_verification_feedback
         )
         
         if self.logger:
@@ -131,10 +132,10 @@ class TextualVerifierV4(Verifier):
 
         return best_voted_feedback.strip()
 
-    def _get_summary_voted_steps(self, original_steps: str, best_voted_feedback: str) -> str:
+    def _get_summary_voted_steps(self, calculation: str, best_voted_feedback: str) -> str:
         
         summarized_verification_result = SUMMARIZED_VERIFICATION_RESULT.format(
-            original_steps,
+            calculation,
             best_voted_feedback,
         )
         summary = self.engine(summarized_verification_result)
