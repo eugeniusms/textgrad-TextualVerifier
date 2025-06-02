@@ -21,7 +21,8 @@ Steps to verify:
 {}
 
 Your task: 
-Verify math calculation & logical reasoning in each steps then deliver concise error analysis feedback for each steps.
+For every steps: verify math calculation & logical reasoning based on original problem & previous steps.
+Then deliver concise error analysis feedback for each steps.
 If no error state "No error".
 
 Format your response as:

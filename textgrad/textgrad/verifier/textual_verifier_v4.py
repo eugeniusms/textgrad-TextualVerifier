@@ -81,7 +81,7 @@ class TextualVerifierV4(Verifier):
         # print(steps)
         
         if self.logger:
-            print(f"INFO:textgrad:TextualVerifierV4:generate_cot_steps Generated {len(steps)} steps")
+            print(f"INFO:textgrad:TextualVerifierV4:generate_cot_steps Generated some steps")
         return steps
 
     def _verify_all_steps_in_one_call(self, instance: str, prompt: str, formatted_steps: str) -> List[str]:
