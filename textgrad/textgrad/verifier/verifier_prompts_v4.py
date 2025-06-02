@@ -3,16 +3,16 @@ Prompts for the TextualVerifier system.
 All prompts are process-focused to encourage better reasoning rather than direct corrections.
 """
 
+# V4 ENHANCEMENT: Concise prompt using <StepN></StepN> format
 COT_PROMPT = """
-Break down this problem into clear calculation steps.
-Focus only on the mathematical/logical steps needed.
-Mark each step with <Step> and </Step> tags.
+Breakdown the initial solution step by step without changing math calculation/logical reasoning.
+Label each step as <Step1></Step1>, <Step2></Step2>, etc. Please be concise each steps.
 
 Problem: {}
 
 Let's think step by step:"""
 
-# V3 ENHANCEMENT: Consolidated verification prompt for all steps in one call
+# V4 ENHANCEMENT: Concise prompt using <StepN></StepN> format
 CONSOLIDATED_VERIFICATION_PROMPT = """
 Original problem: {}
 Instruction: {}
@@ -20,73 +20,57 @@ Instruction: {}
 Steps to verify:
 {}
 
-Your task: Verify and improve ALL steps in a single comprehensive analysis.
-
-For each step, provide process-focused guidance that:
-- Analyzes methodological issues
-- Suggests systematic improvements  
-- Ensures logical coherence between steps
-- Maintains consistency throughout the reasoning chain
-- Does NOT provide direct numerical answers
+Your task: 
+Verify math calculation & logical reasoning in each steps then deliver concise error analysis feedback for each steps.
+If no error state "No error".
 
 Format your response as:
-<VerifiedStep1>Your improved guidance for step 1</VerifiedStep1>
-<VerifiedStep2>Your improved guidance for step 2</VerifiedStep2>
-<VerifiedStep3>Your improved guidance for step 3</VerifiedStep3>
+<FeedbackStep1>Your concise error feedback for step 1</FeedbackStep1>
+<FeedbackStep2>Your concise feedback for step 2</FeedbackStep2>
 ...and so on for all steps
+"""
 
-Focus on process improvements and reasoning methodology:"""
-
-# V3 ENHANCEMENT: Voting on complete solutions rather than individual steps
-CONSOLIDATED_VOTING_PROMPT = """
+# V4 ENHANCEMENT: Voting with concise prompt
+GROUPING_STEP_FOR_VOTING_PROMPT = """
 Original steps: 
 {}
 
-Complete verification variants:
+Step verification feedback variants:
 {}
 
-Which variant provides the best overall methodological guidance?
-Focus on:
-- Clearest reasoning process across all steps
-- Best error-prevention strategies throughout
-- Most systematic approach with strong coherence
-- Consistency in the complete reasoning chain
+Grouping each FeedbackStep by their Number in this format:
+<FeedbackStep1Variant1></FeedbackStep1Variant1>
+<FeedbackStep1Variant2></FeedbackStep1Variant1>
+...
+<FeedbackStep1Variant`$TotalVariant`></FeedbackStep1Variant`$TotalVariant`>
 
-Return the best complete process-focused guidance:"""
+For all steps.
+"""
 
-MERGE_STEPS_PROMPT = """
-Instruction: {}
-
-Process improvement guidance from verification steps:
+# V4 ENHANCEMENT: Voting with concise prompt
+CONSOLIDATED_VOTING_PROMPT = """
+Grouped feedback variant by steps:
 {}
 
-Synthesize this guidance into coherent process-focused feedback that:
-- Identifies methodology errors
-- Suggests systematic improvements
-- Guides better reasoning approaches
-- Does NOT provide direct numerical answers
+For each FeedbackStep$Number vote majority of feedbacks,
+For step with majority is 'No error', write 'No error' in that step.
 
-Provide the merged process feedback:"""
+Create output format:
 
-DECISION_PROMPT = """
-Compare these two evaluations:
+Voting Results:
+<Step1></Step1>
+<Step2></Step2>
+...
+<Step`$TotalStep`></Step`$TotalStep`>
+"""
 
-Original evaluation: {}
+# V4 ENHANCEMENT: Voting with concise prompt
+# HIGHLIGHT ORIGINAL STEP WITH CORRECTION PER STEP CONCISE IN TEXT NO FORMAT
+SUMMARIZED_VERIFICATION_RESULT = """
+Subject: {}
 
-Process-focused verification: {}
+Correction: {}
 
-Your task: Provide feedback that focuses on PROCESS improvements, not direct answers.
-
-Guidelines:
-- Identify methodology errors and reasoning flaws
-- Suggest systematic approaches for improvement
-- Guide better problem-solving processes
-- Avoid giving direct numerical corrections
-- Focus on teaching better reasoning skills
-
-Classify and provide process-focused feedback:
-1. ENHANCE - Original feedback can be improved with process guidance
-2. REPLACE - Original feedback is insufficient, use process-focused version
-3. SUFFICIENT - Original feedback is already process-focused
-
-Respond with: [DECISION]: [PROCESS_FOCUSED_FEEDBACK]"""
+Your task:  
+Merge the subject and correction into concise summary that merges the subject and corrections, ensuring nothing is left out:
+"""
