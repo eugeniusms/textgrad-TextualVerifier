@@ -133,6 +133,8 @@ class TextualVerifierV4(Verifier):
         return best_voted_feedback.strip()
 
     def _get_summary_voted_steps(self, calculation: str, best_voted_feedback: str) -> str:
+
+        print("VERIFIER", best_voted_feedback)
         
         summarized_verification_result = SUMMARIZED_VERIFICATION_RESULT.format(
             calculation,
