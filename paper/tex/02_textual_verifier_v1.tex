@@ -1,0 +1,165 @@
+\documentclass{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{listings}
+
+\renewcommand{\thealgorithm}{}
+
+\begin{document}
+
+\section*{TextualVerifier Class (Python)}
+\begin{lstlisting}[language=Python]
+class TextualVerifier(Verifier):
+    """
+    A verifier that uses an LLM to evaluate and improve reasoning steps.
+    """
+
+    def __init__(self,
+                verifier_engine: Union[str, EngineLM], 
+                step_eval_iterations: int = 3, 
+                logger: bool = False):
+        self.engine = validate_engine_or_get_default(verifier_engine)
+        self.step_eval_iterations = step_eval_iterations
+        self.logger = logger
+
+    def verify(self, instance: Variable, prompt: Variable, calculation: Variable) -> Variable:
+        ...
+
+    def _generate_cot_steps(self, instance: str) -> List[str]:
+        ...
+
+    def _extract_steps_from_response(self, response: str) -> List[str]:
+        ...
+
+    def _format_steps(self, steps: List[str]) -> List[str]:
+        ...
+
+    def _verify_each_step(self, instance: str, prompt: str, formatted_steps: List[str]) -> List[str]:
+        ...
+
+    def _generate_step_variants(self, instance: str, prompt: str, step: str) -> List[str]:
+        ...
+
+    def _vote_on_variants(self, original_step: str, variants: List[str]) -> str:
+        ...
+
+    def _merge_verified_steps(self, prompt: str, verified_steps: List[str]) -> str:
+        ...
+
+    def _make_decision(self, original_calculation: str, merged_calculation: str) -> str:
+        ...
+\end{lstlisting}
+
+% --- Main Verification Function ---
+\begin{algorithm}
+\caption{Verify(instance, prompt, calculation)}
+\begin{algorithmic}[1]
+\State reasoning\_steps $\gets$ GenerateCoTSteps(instance.value)
+\State formatted\_steps $\gets$ FormatSteps(reasoning\_steps)
+\State verified\_steps $\gets$ VerifyEachStep(instance.value, prompt.value, formatted\_steps)
+\State merged\_calculation $\gets$ MergeVerifiedSteps(prompt.value, verified\_steps)
+\State final\_result $\gets$ MakeDecision(calculation.value, merged\_calculation)
+\State \Return Variable(final\_result, requires\_grad=True, role\_description="verified calculation")
+\end{algorithmic}
+\end{algorithm}
+
+% --- GenerateCoTSteps Function ---
+\begin{algorithm}
+\caption{GenerateCoTSteps(instance)}
+\begin{algorithmic}[1]
+\State cot\_prompt $\gets$ Format(COT\_PROMPT, instance)
+\State response $\gets$ engine(cot\_prompt)
+\State steps $\gets$ ExtractStepsFromResponse(response)
+\State \Return steps[:5]
+\end{algorithmic}
+\end{algorithm}
+
+% --- ExtractStepsFromResponse Function ---
+\begin{algorithm}
+\caption{ExtractStepsFromResponse(response)}
+\begin{algorithmic}[1]
+\State steps $\gets$ RegexFindAll("<Step>(.*?)</Step>", response)
+\If {steps is empty}
+    \State steps $\gets$ FilterLines(response, min\_length=10)
+\EndIf
+\State \Return Cleaned(steps)
+\end{algorithmic}
+\end{algorithm}
+
+% --- FormatSteps Function ---
+\begin{algorithm}
+\caption{FormatSteps(steps)}
+\begin{algorithmic}[1]
+\For {i in 1 to length(steps)}
+    \State formatted[i] $\gets$ "Step " $\|$ i $\|$ ": " $\|$ steps[i]
+\EndFor
+\State \Return formatted
+\end{algorithmic}
+\end{algorithm}
+
+% --- VerifyEachStep Function ---
+\begin{algorithm}
+\caption{VerifyEachStep(instance, prompt, formatted\_steps)}
+\begin{algorithmic}[1]
+\For {each step in formatted\_steps}
+    \State variants $\gets$ GenerateStepVariants(instance, prompt, step)
+    \State best $\gets$ VoteOnVariants(step, variants)
+    \State Append best to verified\_steps
+\EndFor
+\State \Return verified\_steps
+\end{algorithmic}
+\end{algorithm}
+
+% --- GenerateStepVariants Function ---
+\begin{algorithm}
+\caption{GenerateStepVariants(instance, prompt, step)}
+\begin{algorithmic}[1]
+\For {iteration = 1 to step\_eval\_iterations}
+    \State variant\_prompt $\gets$ Format(VARIANT\_GENERATION\_PROMPT, instance, prompt, step, iteration)
+    \State variant $\gets$ engine(variant\_prompt)
+    \State Append Cleaned(variant) to variants
+\EndFor
+\State \Return variants
+\end{algorithmic}
+\end{algorithm}
+
+% --- VoteOnVariants Function ---
+\begin{algorithm}
+\caption{VoteOnVariants(original\_step, variants)}
+\begin{algorithmic}[1]
+\State variants\_text $\gets$ ConcatenateNumberedList(variants)
+\State voting\_prompt $\gets$ Format(VOTING\_PROMPT, original\_step, variants\_text)
+\State best\_step $\gets$ engine(voting\_prompt)
+\State \Return Cleaned(best\_step)
+\end{algorithmic}
+\end{algorithm}
+
+% --- MergeVerifiedSteps Function ---
+\begin{algorithm}
+\caption{MergeVerifiedSteps(prompt, verified\_steps)}
+\begin{algorithmic}[1]
+\State steps\_text $\gets$ JoinSteps(verified\_steps)
+\State merge\_prompt $\gets$ Format(MERGE\_STEPS\_PROMPT, prompt, steps\_text)
+\State merged $\gets$ engine(merge\_prompt)
+\State \Return Cleaned(merged)
+\end{algorithmic}
+\end{algorithm}
+
+% --- MakeDecision Function ---
+\begin{algorithm}
+\caption{MakeDecision(original\_calc, merged\_calc)}
+\begin{algorithmic}[1]
+\State decision\_prompt $\gets$ Format(DECISION\_PROMPT, original\_calc, merged\_calc)
+\State decision\_response $\gets$ engine(decision\_prompt)
+\If {"REPLACE" in decision\_response}
+    \State \Return merged\_calc
+\ElsIf {"ENHANCE" in decision\_response}
+    \State \Return ExtractEnhanced(decision\_response)
+\Else
+    \State \Return original\_calc
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\end{document}
