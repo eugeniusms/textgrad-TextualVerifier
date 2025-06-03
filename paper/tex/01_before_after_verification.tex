@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+
+\renewcommand{\thealgorithm}{}
+
+\begin{document}
+
+\begin{algorithm}
+\caption{Basic TextGrad Loss Calculation}
+\begin{algorithmic}[1]
+\State $\text{loss} \gets \text{TextLoss}(\text{loss\_system\_prompt}, \text{engine})$
+\State $\text{result} \gets \text{loss}(\text{solution})$
+\State $\text{result.backward()}$
+\State $\text{optimizer.step()}$
+\end{algorithmic}
+\end{algorithm}
+
+\vspace{1em}
+
+\begin{algorithm}
+\caption{Verified TextGrad Loss Calculation}
+\begin{algorithmic}[1]
+\State $\text{loss} \gets \text{TextLoss}(\text{loss\_system\_prompt}, \text{engine})$
+\State $\text{result} \gets \text{loss}(\text{solution})$
+\State $\text{verifier} \gets \text{Verifier}($
+\State \hspace{2cm} $\text{verifier\_engine} = \text{engine},$
+\Statex \hspace{2cm} $\text{step\_eval\_iterations} = 3)$
+\State $\text{verified\_result} \gets \text{verifier.verify}($
+\Statex \hspace{2cm} $\text{instance} = \text{solution},$
+\Statex \hspace{2cm} $\text{prompt} = \text{loss\_system\_prompt},$
+\Statex \hspace{2cm} $\text{calculation} = \text{result})$
+\State $\text{result.set\_value}(\text{verified\_result.value})$
+\State $\text{result.backward()}$
+\State $\text{optimizer.step()}$
+\end{algorithmic}
+\end{algorithm}
+
+\end{document}
