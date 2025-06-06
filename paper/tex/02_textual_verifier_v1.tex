@@ -71,7 +71,7 @@ class TextualVerifier(Verifier):
 \State cot\_prompt $\gets$ Format(COT\_PROMPT, instance)
 \State response $\gets$ engine(cot\_prompt)
 \State steps $\gets$ ExtractStepsFromResponse(response)
-\State \Return steps[:5]
+\State \Return steps
 \end{algorithmic}
 \end{algorithm}
 
