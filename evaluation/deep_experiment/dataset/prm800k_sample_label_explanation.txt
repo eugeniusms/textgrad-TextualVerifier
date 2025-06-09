@@ -1,0 +1,21 @@
+{
+  "steps": [  // Each step in the mathematical reasoning process
+    {
+      "completions": [  // Multiple possible continuations for this step
+        {
+          "text": "Let's call our two-digit integers x.",
+          "rating": 0,    // Human rating: 0=neutral/bad, 1=good
+          "flagged": false
+        },
+        {
+          "text": "So we need to find the number of positive two-digit integers that are 2 more than a multiple of 8.",
+          "rating": 1,    // This one got a positive rating
+          "flagged": false
+        }
+        // ... more alternatives
+      ],
+      "chosen_completion": 6  // Index of the chosen completion (0-based)
+    }
+    // ... more steps
+  ]
+}
