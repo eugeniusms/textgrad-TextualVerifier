@@ -4,7 +4,7 @@
       "completions": [  // Multiple possible continuations for this step
         {
           "text": "Let's call our two-digit integers x.",
-          "rating": 0,    // Human rating: 0=neutral/bad, 1=good
+          "rating": 0,    // Human rating: -1=negative, 0=neutral, 1=good
           "flagged": false
         },
         {
@@ -19,3 +19,18 @@
     // ... more steps
   ]
 }
+
+Rating Meaning:
+
+-1: Bad (Wrong)
+Wrong, Hard to verify, Contains gibberish, Contains off-topic text or non-sequiturs, 
+Suggests attempting something that is unreasonable for this problem, Derails the conversation, 
+Leads the solution into an immediately obvious dead end or makes it go in circles
+
+0: Okay
+Okay options sound like something a person would say, they just don't contribute 
+anything of essence to the conversation. They're reasonable, verifiably correct, and appropriate, 
+but they're also redundant, stalling, or just don't add any value.
+
+1: Great
+Correct, verifiable, appropriate, insightful

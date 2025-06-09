@@ -3,7 +3,7 @@
     {
       "completions": [
         {
-          "text": "7.8 minutes is the same as 7 minutes and 0.8 minutes.",
+          "text": "Let's call the price of a pencil p and the price of a jumbo eraser e. Then we can write two equations.",
           "rating": 1,
           "flagged": false
         }
@@ -14,7 +14,44 @@
     {
       "completions": [
         {
-          "text": "Right, and since there are 60 seconds in a minute, then there are 60 * 7 = 420 seconds in 7 minutes.",
+          "text": "The first equation is 3p + e = 124, and the second equation is 5p + e = 182.",
+          "rating": -1,
+          "flagged": false
+        },
+        {
+          "text": "The first equation is 3p+e=124, and the second is 5p+e=182.",
+          "rating": -1,
+          "flagged": false
+        },
+        {
+          "text": "The first equation is 3p + e = 124.",
+          "rating": -1,
+          "flagged": false
+        },
+        {
+          "text": "The first equation is $3p+e=124$. The second equation is $5p+e=182$.",
+          "rating": -1,
+          "flagged": false
+        },
+        {
+          "text": "The first equation is $3p+e=124$.",
+          "rating": -1,
+          "flagged": false
+        }
+      ],
+      "human_completion": {
+        "text": "We have $3p+e=1.24$ and $5p+e=1.82$.",
+        "rating": null,
+        "source": "human",
+        "flagged": false,
+        "corrected_rating": null
+      },
+      "chosen_completion": null
+    },
+    {
+      "completions": [
+        {
+          "text": "To solve this system, let's subtract the first equation from the second equation. This will eliminate e.",
           "rating": 1,
           "flagged": false
         }
@@ -25,7 +62,7 @@
     {
       "completions": [
         {
-          "text": "And since there are 60 seconds in a minute, then there are 60 * 0.8 = 48 seconds in 0.8 minutes.",
+          "text": "$5p+e-3p-e=1.82-1.24$.",
           "rating": 1,
           "flagged": false
         }
@@ -36,7 +73,7 @@
     {
       "completions": [
         {
-          "text": "So, in total, there are 420 + 48 = 468 seconds in 7.8 minutes.",
+          "text": "This simplifies to $2p=0.58$. So $p=0.29$.",
           "rating": 1,
           "flagged": false
         }
@@ -47,45 +84,35 @@
     {
       "completions": [
         {
-          "text": "Right. Let's check our work. 7.8 minutes is the same as 7 minutes and 0.8 minutes.",
+          "text": "We could also solve this system by substitution.",
           "rating": 0,
           "flagged": false
         },
         {
-          "text": "Exactly.\n\n# Answer\n\n468",
+          "text": "So a pencil costs $0.29.",
           "rating": 1,
           "flagged": false
         },
         {
-          "text": "That's correct.\n\n# Answer\n\n468",
+          "text": "Right. One pencil costs $\\$0.29$.",
           "rating": 1,
           "flagged": false
         },
         {
-          "text": "Correct.\n\n# Answer\n\n468",
+          "text": "So the price of a pencil is 29 cents.\n\n# Answer\n\n29",
           "rating": 1,
           "flagged": false
         },
         {
-          "text": "That's correct.\n\n# Answer\n\n468",
-          "rating": 1,
-          "flagged": false
-        },
-        {
-          "text": "Correct.\n\n# Answer\n\n468",
-          "rating": 1,
-          "flagged": false
-        },
-        {
-          "text": "That's right!\n\n# Answer\n\n468",
+          "text": "That means a pencil costs 29 cents.\n\n# Answer\n\n29",
           "rating": 1,
           "flagged": false
         }
       ],
       "human_completion": null,
-      "chosen_completion": 1
+      "chosen_completion": 4
     }
   ],
-  "total_time": 92405,
+  "total_time": 293250,
   "finish_reason": "solution"
 }
