@@ -1,0 +1,164 @@
+{
+  "steps": [
+    {
+      "completions": [
+        {
+          "text": "Let's call our two-digit integers x.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "Let's first think about the remainders when we divide by 8.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "So we need to find the number of positive two-digit integers that are 2 more than a multiple of 8.",
+          "rating": 1,
+          "flagged": false
+        },
+        {
+          "text": "So we're looking for numbers that are two more than a multiple of 8.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "So we have to find the number of integers that are two more than a multiple of 8.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "Let's write out the first few multiples of 8.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "So if a number leaves a remainder of 2 when divided by 8, it's of the form 8n+2.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 6
+    },
+    {
+      "completions": [
+        {
+          "text": "So we want to know the number of positive two-digit integers of the form 8n+2.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "I think we should just plug in numbers and see what happens.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        { "text": "Ok let's start with n=1.", "rating": 1, "flagged": false }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "8*1+2=10 which is a two-digit integer.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        { "text": "Let's try n=2.", "rating": 1, "flagged": false }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "8*2+2=18 which is also a two-digit integer.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "And if we keep going we'll see that all the numbers of the form 8n+2 are two-digit integers.",
+          "rating": 0,
+          "flagged": false
+        },
+        { "text": "Let's try n=3.", "rating": 0, "flagged": false },
+        { "text": "Let's try n=3.", "rating": 0, "flagged": false },
+        { "text": "Let's try n=3.", "rating": 0, "flagged": false },
+        {
+          "text": "3, 4, 5 and 6 work as well.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "But if n=3, then 8*3+2=26 which is a three-digit integer.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "And if we keep going like this, we'll see that every integer of the form 8n+2 is a two-digit integer.",
+          "rating": 0,
+          "flagged": false
+        }
+      ],
+      "human_completion": {
+        "text": "And let's keep plugging numbers until we get a three-digit number.",
+        "rating": null,
+        "source": "human",
+        "flagged": false,
+        "corrected_rating": null
+      },
+      "chosen_completion": null
+    },
+    {
+      "completions": [
+        { "text": "That would be n=12.", "rating": 1, "flagged": false }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "Right, since 8*12+2=98 is the last valid two-digit number.",
+          "rating": 1,
+          "flagged": false
+        },
+        { "text": "Because 8*13+2=106.", "rating": 1, "flagged": false },
+        {
+          "text": "So the number of positive two-digit integers of the form 8n+2 is 12.\n\n# Answer\n\n12",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 2
+    }
+  ],
+  "total_time": 1099187,
+  "finish_reason": "solution"
+}

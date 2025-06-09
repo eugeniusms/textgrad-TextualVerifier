@@ -1,0 +1,4 @@
+{
+  "problem": "How many positive two-digit integers leave a remainder of 2 when divided by 8?",
+  "ground_truth_answer": "12"
+}
