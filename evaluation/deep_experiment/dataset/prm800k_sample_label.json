@@ -1,0 +1,91 @@
+{
+  "steps": [
+    {
+      "completions": [
+        {
+          "text": "7.8 minutes is the same as 7 minutes and 0.8 minutes.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "Right, and since there are 60 seconds in a minute, then there are 60 * 7 = 420 seconds in 7 minutes.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "And since there are 60 seconds in a minute, then there are 60 * 0.8 = 48 seconds in 0.8 minutes.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "So, in total, there are 420 + 48 = 468 seconds in 7.8 minutes.",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 0
+    },
+    {
+      "completions": [
+        {
+          "text": "Right. Let's check our work. 7.8 minutes is the same as 7 minutes and 0.8 minutes.",
+          "rating": 0,
+          "flagged": false
+        },
+        {
+          "text": "Exactly.\n\n# Answer\n\n468",
+          "rating": 1,
+          "flagged": false
+        },
+        {
+          "text": "That's correct.\n\n# Answer\n\n468",
+          "rating": 1,
+          "flagged": false
+        },
+        {
+          "text": "Correct.\n\n# Answer\n\n468",
+          "rating": 1,
+          "flagged": false
+        },
+        {
+          "text": "That's correct.\n\n# Answer\n\n468",
+          "rating": 1,
+          "flagged": false
+        },
+        {
+          "text": "Correct.\n\n# Answer\n\n468",
+          "rating": 1,
+          "flagged": false
+        },
+        {
+          "text": "That's right!\n\n# Answer\n\n468",
+          "rating": 1,
+          "flagged": false
+        }
+      ],
+      "human_completion": null,
+      "chosen_completion": 1
+    }
+  ],
+  "total_time": 92405,
+  "finish_reason": "solution"
+}
