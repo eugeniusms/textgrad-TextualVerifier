@@ -52,16 +52,19 @@ class TextualVerifierExperiment(Verifier):
         if self.logger:
             print("INFO:textgrad:TextualVerifier:verify Starting Textual Verification...")
 
-        # Step 1: Format steps properly
-        formatted_steps = self._format_steps(instance.value)
+        # Step 1: Generate reasoning steps from instance
+        reasoning_steps = self._extract_steps_from_response(instance.value)
 
-        # Step 2: Verify each step iteratively
+        # Step 2: Format steps properly
+        formatted_steps = self._format_steps(reasoning_steps)
+
+        # Step 3: Verify each step iteratively
         verified_steps = self._verify_each_step_with_context(instance.value, prompt.value, formatted_steps)
         
-        # Step 3: Merge all verified steps
+        # Step 4: Merge all verified steps
         merged_calculation = self._merge_verified_steps(prompt.value, verified_steps)
         
-        # Step 4: Make final decision
+        # Step 5: Make final decision
         final_result = self._make_decision(calculation.value, merged_calculation)
         
         if self.logger:
