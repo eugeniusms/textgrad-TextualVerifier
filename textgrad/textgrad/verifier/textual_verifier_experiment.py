@@ -4,8 +4,7 @@ from typing import Union, List
 from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
-from .verifier_prompts_v2 import (
-    COT_PROMPT,
+from .verifier_prompts_experiment import (
     VARIANT_GENERATION_PROMPT_WITH_CONTEXT,
     VOTING_PROMPT_WITH_CONTEXT,
     MERGE_STEPS_PROMPT,
@@ -13,21 +12,12 @@ from .verifier_prompts_v2 import (
 )
 
 """
-[UPDATE TextualVerifier V2]
+[Experiment Using TextualVerifier V2]
 
-Situation: 
-Current performance is unstable with only a marginal and 
-statistically insignificant increase in accuracy.
-
-Objective:
-Improve overall accuracy and reasoning stability.
-
-Action List:
-1.  Enhanced _verify_each_step by incorporating previous cumulative context 
-    into _generate_step_variants to strengthen step-by-step coherence and 
-    support more informed verification.
+Due to step is exist step-by-step format, so skip:
+1. _generate_cot_steps
 """
-class TextualVerifierV2Analysis(Verifier):
+class TextualVerifierExperiment(Verifier):
     """
     A verifier that uses an LLM to evaluate and improve reasoning steps.
     """
@@ -61,40 +51,24 @@ class TextualVerifierV2Analysis(Verifier):
         """
         if self.logger:
             print("INFO:textgrad:TextualVerifier:verify Starting Textual Verification...")
-        
-        # Step 1: Generate reasoning steps from instance
-        reasoning_steps = self._generate_cot_steps(instance.value)
-        
-        # Step 2: Format steps properly
-        formatted_steps = self._format_steps(reasoning_steps)
-        
-        # Step 3: Verify each step iteratively
+
+        # Step 1: Format steps properly
+        formatted_steps = self._format_steps(instance.value)
+
+        # Step 2: Verify each step iteratively
         verified_steps = self._verify_each_step_with_context(instance.value, prompt.value, formatted_steps)
         
-        # Step 4: Merge all verified steps
+        # Step 3: Merge all verified steps
         merged_calculation = self._merge_verified_steps(prompt.value, verified_steps)
         
-        # Step 5: Make final decision
+        # Step 4: Make final decision
         final_result = self._make_decision(calculation.value, merged_calculation)
         
         if self.logger:
             print("[V] Verification complete!")
+
         return Variable(final_result, requires_grad=True, role_description="verified calculation")
-    
-    def _generate_cot_steps(self, instance: str) -> List[str]:
-        """Generate Chain of Thought steps from the instance."""
-        if self.logger:
-            print("INFO:textgrad:TextualVerifier:generate_cot_steps Generating CoT steps...")
-        
-        cot_prompt = COT_PROMPT.format(instance)
-        
-        response = self.engine(cot_prompt)
-        steps = self._extract_steps_from_response(response)
-        
-        if self.logger:
-            print(f"INFO:textgrad:TextualVerifier:generate_cot_steps Generated {len(steps)} steps")
-        return steps
-    
+
     def _extract_steps_from_response(self, response: str) -> List[str]:
         """Extract steps from LLM response."""
         # Look for <Step>...</Step> patterns
@@ -123,7 +97,7 @@ class TextualVerifierV2Analysis(Verifier):
             formatted.append(formatted_step)
         
         return formatted
-
+    
     def _verify_each_step_with_context(self, instance: str, prompt: str, formatted_steps: List[str]) -> List[str]:
         """
         ENHANCED: Verify each step by incorporating previous cumulative context.
