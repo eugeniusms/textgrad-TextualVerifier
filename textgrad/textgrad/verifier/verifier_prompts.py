@@ -43,6 +43,7 @@ Original calculation:
 Generated variants:
 {generated_variants}
 
-USE Majority Voting to choose ONLY 1 from generated variants.
-Provide ONLY the replaced calculation by selected variant, no additional text or formatting.
+Use majority voting to identify the variant that appears most frequently.
+Select that single variant as the replacement for the original calculation.
+Provide ONLY the selected variant, with no additional text or formatting.
 """
