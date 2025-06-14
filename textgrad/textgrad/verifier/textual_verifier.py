@@ -73,9 +73,6 @@ class TextualVerifier(Verifier):
             updated_calculation = self._generate_cot_steps(calculation_value) 
         else:
             updated_calculation = calculation_value
-        
-        if self.enable_logging:
-            print("INFO:textgrad:TextualVerifier:verify Generate calculation list ...")
 
         # 2. Convert CoT to list
         if self.use_step_breakdown:
@@ -84,7 +81,7 @@ class TextualVerifier(Verifier):
             step_breakdown = [updated_calculation] # Just only 1 step in no step breakdown flag
         
         if self.enable_logging:
-            print("INFO:textgrad:TextualVerifier:verify Calculation list is ready ...")
+            print(f"INFO:textgrad:TextualVerifier:verify Total {len(step_breakdown)} calculation steps is ready to verify ...")
 
         initial_context = f"These are previous context to help you verify calculation:\n{instance.value}\n"
         voted_variant_list = []
