@@ -1,6 +1,6 @@
 import re
-from textgrad.variable import Variable
 from typing import Union, List
+from textgrad.variable import Variable
 from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
@@ -11,160 +11,347 @@ from .verifier_prompts import (
     MAJORITY_VOTING_PROMPT,
 )
 
-# OUTPUT: Variable("<VERIFIED></VERIFIED><VERIFIED></VERIFIED>")
-class TextualVerifier(Verifier):
-    def __init__(self,
-                verifier_engine: Union[str, EngineLM], # LLM to verify
-                use_cot_generation: bool = False, # True if instance need to use CoT Prompt Generation <Step>...</Step>
-                use_step_breakdown: bool = True, # True if instance need to step breakdown -> Solution Optimization, Code Optimization
-                                                 # False if don't need to step breakdown -> Prompt Optimization
-                verification_task_prompts: List[str] = DEFAULT_VERIFICATION_TASK_PROMPTS,
-                enable_logging: bool = False): # If want to debug
 
+class TextualVerifier(Verifier):
+    """
+    A verifier that uses textual reasoning to verify calculations through:
+    1. Chain-of-Thought (CoT) generation
+    2. Step breakdown
+    3. Variant generation
+    4. Majority voting
+    
+    The verification process outputs results in the format:
+    "<VERIFIED>step1</VERIFIED><VERIFIED>step2</VERIFIED>..."
+    """
+    
+    def __init__(
+        self,
+        verifier_engine: Union[str, EngineLM],
+        use_cot_generation: bool = False,
+        use_step_breakdown: bool = True,
+        verification_task_prompts: List[str] = DEFAULT_VERIFICATION_TASK_PROMPTS,
+        enable_logging: bool = False
+    ):
+        """
+        Initialize the TextualVerifier.
+        
+        Args:
+            verifier_engine: LLM engine to use for verification
+            use_cot_generation: Whether to use Chain-of-Thought prompt generation
+                               with <Step>...</Step> formatting
+            use_step_breakdown: Whether to break down solutions into steps
+                               - True: For solution/code optimization (multi-step)
+                               - False: For prompt optimization (single-step)
+            verification_task_prompts: List of verification prompts to use
+            enable_logging: Whether to enable debug logging
+        """
         self.engine = validate_engine_or_get_default(verifier_engine)
         self.use_cot_generation = use_cot_generation
         self.use_step_breakdown = use_step_breakdown
         self.verification_task_prompts = verification_task_prompts
         self.enable_logging = enable_logging
         
-    def verify(self, instance: Variable, instruction: Variable, calculation: Variable) -> Variable:
+    def verify(
+        self, 
+        instance: Variable, 
+        instruction: Variable, 
+        calculation: Variable
+    ) -> Variable:
         """
-        [GENERIC VERIFICATION]
-        Definition:
-        - instance: input
-        - instruction: instruction
-        - calculation: output of instruction to input
-        - verification_prompt: verification we want to use
-        Formula:
-        ```
+        Verify a calculation using the configured verification strategy.
+        
+        The verification follows this general formula:
         instance + instruction => calculation
         instance + calculation + verification_prompt => verified_calculation
-        ```
-
-        [CASE VERIFY LOSS VALUE]
-        Definition:
-        - instance = prediction
-        - instruction = loss instruction
-        - calculation = loss value
-        Formula:
-        ```
-        prediction + loss instruction => loss value
-        prediction + loss value + verification prompt => verified loss value
-        ```
-
-        [CASE VERIFY OPTIMIZER RESULT]
-        Definition:
-        - instance = (prediction & loss value)
-        - instruction = optimization instruction
-        - calculation = optimized prediction
-        ```
-        (prediction & loss value) + optimization instruction => optimized prediction
-        (prediction & loss value) + optimized prediction + verification prompt => verified optimized prediction
-        ```
-        """
-
-        if self.enable_logging:
-            print("INFO:textgrad:TextualVerifier:verify Start verification ...")
         
-        calculation_value = calculation.value
-
-        # 1. Breakdown to steps with CoT
-        if self.use_cot_generation:
-            updated_calculation = self._generate_cot_steps(calculation_value) 
-        else:
-            updated_calculation = calculation_value
-
-        # 2. Convert CoT to list
-        if self.use_step_breakdown:
-            step_breakdown = self._convert_cot_format_to_list(updated_calculation) # Format: List[str]
-        else:
-            step_breakdown = [updated_calculation] # Just only 1 step in no step breakdown flag
+        Use Cases:
+        1. Loss Value Verification:
+           - instance = prediction
+           - instruction = loss instruction  
+           - calculation = loss value
+           
+        2. Optimizer Result Verification:
+           - instance = (prediction & loss value)
+           - instruction = optimization instruction
+           - calculation = optimized prediction
         
-        if self.enable_logging:
-            print(f"INFO:textgrad:TextualVerifier:verify Total {len(step_breakdown)} calculation steps is ready to verify ...")
-
-        initial_context = f"These are previous context to help you verify calculation:\n{instance.value}\n"
-        voted_variant_list = []
-        for i, step in enumerate(step_breakdown):
-            # 3. Generate variants
-            if self.enable_logging:
-                print(f"INFO:textgrad:TextualVerifier:verify Verify step {i+1}/{len(step_breakdown)} ...")
-
-            context = initial_context.join(f"Step {i+1}: ```{voted_variant}```" for i, voted_variant in enumerate(voted_variant_list))
-            generated_variants = self._generate_variants(instance=instance.value, 
-                                                         instruction=instruction.value, 
-                                                         previous_context=context,
-                                                         calculation=step,
-                                                         i=i+1)
-            # 4. Vote variants
-            voted_variant = self._majority_vote_variants(calculation=step, 
-                                                         generated_variants=generated_variants,
-                                                         i=i+1)
+        Args:
+            instance: Input data/context
+            instruction: Instruction applied to the instance
+            calculation: Output result from applying instruction to instance
             
-            voted_variant_list.append(voted_variant)
+        Returns:
+            Variable containing verified calculation with <VERIFIED> tags
+        """
+        self._log("Start verification process...")
+        
+        # Phase 1: Generate Chain-of-Thought steps if enabled
+        processed_calculation = self._process_calculation_with_cot(calculation.value)
+        
+        # Phase 2: Break down into verification steps
+        verification_steps = self._create_verification_steps(processed_calculation)
+        
+        self._log(f"Ready to verify {len(verification_steps)} calculation steps...")
+        
+        # Phase 3: Verify each step through variant generation and voting
+        verified_steps = self._verify_steps(
+            instance=instance.value,
+            instruction=instruction.value, 
+            steps=verification_steps
+        )
+        
+        # Phase 4: Format final result
+        verified_result = self._format_verified_result(verified_steps)
+        
+        return Variable(
+            verified_result, 
+            requires_grad=True, 
+            role_description="verified calculation"
+        )
 
-        # 5. Merge voted variants
-        verified_calculaton = "\n".join(f"<VERIFIED>{step}</VERIFIED>" for _, step in enumerate(voted_variant_list))
+    def _process_calculation_with_cot(self, calculation_value: str) -> str:
+        """
+        Process calculation with Chain-of-Thought generation if enabled.
+        
+        Args:
+            calculation_value: Raw calculation to process
+            
+        Returns:
+            Processed calculation (with CoT steps if enabled)
+        """
+        if self.use_cot_generation:
+            return self._generate_cot_steps(calculation_value)
+        return calculation_value
 
-        return Variable(verified_calculaton, requires_grad=True, role_description="verified calculation")
+    def _create_verification_steps(self, calculation: str) -> List[str]:
+        """
+        Create list of steps for verification.
+        
+        Args:
+            calculation: Calculation to break down
+            
+        Returns:
+            List of verification steps
+        """
+        if self.use_step_breakdown:
+            return self._convert_cot_format_to_list(calculation)
+        return [calculation]  # Single step if breakdown disabled
 
-    # For Calculation
-    def _get_ready_calculation(self, calculation: str) -> List[str]:
-        updated_calculation = calculation
-        if self.use_cot_generation: 
-            generate_cot_prompt = COT_PROMPT.format(
-                calculation=calculation
+    def _verify_steps(
+        self, 
+        instance: str, 
+        instruction: str, 
+        steps: List[str]
+    ) -> List[str]:
+        """
+        Verify each step through variant generation and majority voting.
+        
+        Args:
+            instance: Original instance value
+            instruction: Original instruction value
+            steps: List of steps to verify
+            
+        Returns:
+            List of verified steps
+        """
+        initial_context = f"Previous context for verification:\n{instance}\n"
+        verified_steps = []
+        
+        for i, step in enumerate(steps):
+            self._log(f"Verifying step {i+1}/{len(steps)}...")
+            
+            # Build context from previous verified steps
+            context = self._build_step_context(initial_context, verified_steps)
+            
+            # Generate variants for this step
+            variants = self._generate_variants(
+                instance=instance,
+                instruction=instruction,
+                previous_context=context,
+                calculation=step,
+                step_number=i+1
             )
-            updated_calculation = self.engine(generate_cot_prompt)
-        return updated_calculation
+            
+            # Vote on best variant
+            best_variant = self._majority_vote_variants(
+                calculation=step,
+                generated_variants=variants,
+                step_number=i+1
+            )
+            
+            verified_steps.append(best_variant)
+            
+        return verified_steps
 
-    # For Calculation
+    def _build_step_context(
+        self, 
+        initial_context: str, 
+        verified_steps: List[str], 
+    ) -> str:
+        """
+        Build context string from previous verified steps.
+        
+        Args:
+            initial_context: Base context string
+            verified_steps: Previously verified steps
+            current_step: Current step index
+            
+        Returns:
+            Formatted context string
+        """
+        if not self.use_step_breakdown:
+            return ""
+            
+        step_contexts = [
+            f"Step {i+1}: ```{step}```" 
+            for i, step in enumerate(verified_steps)
+        ]
+        
+        return initial_context + "\n".join(step_contexts)
+
+    def _format_verified_result(self, verified_steps: List[str]) -> str:
+        """
+        Format verified steps into final result with <VERIFIED> tags.
+        
+        Args:
+            verified_steps: List of verified calculation steps
+            
+        Returns:
+            Formatted result string with <VERIFIED> tags
+        """
+        return "\n".join(f"<VERIFIED>{step}</VERIFIED>" for step in verified_steps)
+
+    # Chain-of-Thought Processing Methods
+    
+    def _generate_cot_steps(self, calculation: str) -> str:
+        """
+        Generate Chain-of-Thought formatted steps for a calculation.
+        
+        Args:
+            calculation: Raw calculation to convert to CoT format
+            
+        Returns:
+            CoT formatted calculation with <STEP> tags
+        """
+        cot_prompt = COT_PROMPT.format(calculation=calculation)
+        return self.engine(cot_prompt)
+
     def _convert_cot_format_to_list(self, cot_formatted: str) -> List[str]:
+        """
+        Extract individual steps from CoT formatted text.
+        
+        Args:
+            cot_formatted: Text containing <STEP>...</STEP> tags
+            
+        Returns:
+            List of individual step strings
+        """
+        # Extract steps using regex pattern
         step_pattern = r"<STEP>(.*?)</STEP>"
         steps = re.findall(step_pattern, cot_formatted, re.DOTALL)
         
-        # Clean up steps
+        # Clean whitespace from extracted steps
         cleaned_steps = [step.strip() for step in steps if step.strip()]
         
-        # Fallback if no tags found
+        # Fallback: split by lines if no <STEP> tags found
         if not cleaned_steps:
             lines = cot_formatted.split('\n')
-            cleaned_steps = [line.strip() for line in lines 
-                           if line.strip() and len(line.strip()) > 10]
+            cleaned_steps = [
+                line.strip() for line in lines 
+                if line.strip() and len(line.strip()) > 10
+            ]
         
         return cleaned_steps
 
-    # Generate Verified Variants of Calculation
-    def _generate_variants(self, instance: str, instruction: str, previous_context: str, calculation: str, i: str) -> List[str]:
-        generated_variants = []
-        for j in range(len(self.verification_task_prompts)):
-            print(f"INFO:textgrad:TextualVerifier:generate_variants Generating step {i} variant {j+1}/{len(self.verification_task_prompts)} ...")
-
-            if not self.use_step_breakdown: # If no use_step_breakdown -> ""
-                previous_context = ""
-
+    # Variant Generation and Voting Methods
+    
+    def _generate_variants(
+        self, 
+        instance: str, 
+        instruction: str, 
+        previous_context: str, 
+        calculation: str, 
+        step_number: int
+    ) -> List[str]:
+        """
+        Generate multiple verified variants of a calculation step.
+        
+        Args:
+            instance: Original instance
+            instruction: Original instruction  
+            previous_context: Context from previous steps
+            calculation: Current calculation step
+            step_number: Current step number for logging
+            
+        Returns:
+            List of generated variants
+        """
+        variants = []
+        
+        for j, verification_prompt in enumerate(self.verification_task_prompts):
+            self._log(
+                f"Generating step {step_number} variant "
+                f"{j+1}/{len(self.verification_task_prompts)}..."
+            )
+            
+            # Skip context if step breakdown is disabled
+            context = previous_context if self.use_step_breakdown else ""
+            
+            # Generate variant using verification prompt
             variant_prompt = VARIANT_GENERATION_PROMPT.format(
                 instance=instance,
                 instruction=instruction,
-                previous_context=previous_context,
+                previous_context=context,
                 calculation=calculation,
-                verification_task_prompt=self.verification_task_prompts[j]
+                verification_task_prompt=verification_prompt
             )
-                
-            new_variant = self.engine(variant_prompt)
-            generated_variants.append(new_variant)
+            
+            variant = self.engine(variant_prompt)
+            variants.append(variant)
 
-        return generated_variants
+        return variants
 
-    def _majority_vote_variants(self, calculation: str, generated_variants: List[str], i: str) -> str:
-        if self.enable_logging:
-            print(f"INFO:textgrad:TextualVerifier:majority_vote_variants Run majority voting for step {i}...")
-
-        generated_variants_formatted = "\n".join(f"Variant {j+1}: ```{variant}```" for j, variant in enumerate(generated_variants))
+    def _majority_vote_variants(
+        self, 
+        calculation: str, 
+        generated_variants: List[str], 
+        step_number: int
+    ) -> str:
+        """
+        Select best variant through majority voting.
+        
+        Args:
+            calculation: Original calculation step
+            generated_variants: List of generated variants
+            step_number: Step number for logging
+            
+        Returns:
+            Selected best variant
+        """
+        self._log(f"Running majority voting for step {step_number}...")
+        
+        # Format variants for voting prompt
+        variants_text = "\n".join(
+            f"Variant {j+1}: ```{variant}```" 
+            for j, variant in enumerate(generated_variants)
+        )
+        
+        # Perform majority voting
         voting_prompt = MAJORITY_VOTING_PROMPT.format(
             calculation=calculation,
-            generated_variants=generated_variants_formatted
+            generated_variants=variants_text
         )
-        voted_variant = self.engine(voting_prompt)
+        
+        return self.engine(voting_prompt)
 
-        return voted_variant
+    # Utility Methods
+    
+    def _log(self, message: str) -> None:
+        """
+        Log message if logging is enabled.
+        
+        Args:
+            message: Message to log
+        """
+        if self.enable_logging:
+            print(f"INFO:textgrad:TextualVerifier: {message}")
