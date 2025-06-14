@@ -4,7 +4,7 @@ from typing import Union, List
 from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
-from .verifier_prompts import (
+from .verifier_prompts_v1 import (
     COT_PROMPT,
     VARIANT_GENERATION_PROMPT,
     VOTING_PROMPT,
@@ -12,7 +12,7 @@ from .verifier_prompts import (
     DECISION_PROMPT
 )
 
-class TextualVerifier(Verifier):
+class TextualVerifierV1(Verifier):
     """
     A verifier that uses an LLM to evaluate and improve reasoning steps.
     """

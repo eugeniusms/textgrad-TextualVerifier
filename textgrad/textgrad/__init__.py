@@ -32,7 +32,7 @@ from .config import set_backward_engine, SingletonBackwardEngine
 from .autograd import sum, aggregate
 from .verifier import (
     Verifier, 
-    TextualVerifier, 
+    TextualVerifierV1, 
     TextualVerifierV2, 
     TextualVerifierV3,
     TextualVerifierV4,
