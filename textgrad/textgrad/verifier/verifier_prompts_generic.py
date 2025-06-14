@@ -25,23 +25,23 @@ The result of instruction to instance is:
 Now I build verified calculation, currently I have:
 {context}
 
-
-
 Verification:
 {verification_prompt}
 """
 
 VARIANT_GENERATION_PROMPT = """"
-Given instance and instruction.
+You are verifying whether the calculation correctly follows from applying the instruction to the instance.
 
-Instance: {instance}
+Instance: 
+{instance}
 
-Instruction: {instruction}
+Instruction: 
+{instruction}
 
-The result of instruction to instance is:
+Calculation:
 {calculation}
 
-Verification:
+Verification Tasks:
 {verification_prompt}
 """
 
