@@ -219,7 +219,6 @@ class TextualVerifierWithTracker(Verifier):
 
             tracker.append({
                 "step_no": i+1,
-                "context": context,
                 "variants": tracker_variants,
                 "best_variant": tracker_best_variant,
             })
@@ -364,6 +363,11 @@ class TextualVerifierWithTracker(Verifier):
 
             tracker_variants.append({
                 "variant_no": j+1,
+                "instance": instance,
+                "instruction": instruction,
+                "previous_context": context,
+                "calculation": calculation,
+                "verification_task_prompt": verification_prompt,
                 "llm_input_or_variant_prompt": variant_prompt,
                 "llm_output_or_variant": variant,
             })
@@ -406,6 +410,8 @@ class TextualVerifierWithTracker(Verifier):
         best_variant = self.engine(voting_prompt)
 
         tracker_best_variant = {
+            "calculation": calculation,
+            "generated_variants": generated_variants,
             "llm_input_or_voting_prompt": voting_prompt,
             "llm_output_or_best_variant": best_variant,
         }
