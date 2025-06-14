@@ -9,7 +9,7 @@ Key improvements:
 """
 
 VARIANT_GENERATION_PROMPT_WITH_CONTEXT = """
-You are improving a step in a mathematical solution. Your job is to rewrite the current step with a DIFFERENT approach or explanation style.
+You are a mathematical expert reviewing and improving a step in a solution.
 
 PROBLEM: {problem}
 
@@ -18,31 +18,50 @@ SOLUTION APPROACH: {approach}
 VERIFIED PREVIOUS STEPS:
 {context}
 
-CURRENT STEP TO IMPROVE:
+PREVIOUSLY GENERATED VARIANTS (DO NOT REPEAT):
+{previous_variants_text}
+
+CURRENT STEP TO ANALYZE AND IMPROVE:
 {current_step}
 
 IS_FINAL_STEP: {is_final}
 
 TASK:
-Create a DIFFERENT version of this step that:
-1. Uses different wording or mathematical notation
-2. May use an alternative mathematical approach
-3. Provides a different level of detail (more or less)
-4. Maintains mathematical correctness
-5. Is DISTINCT from the original step
+First, carefully analyze the current step for any mathematical errors, logical issues, or improvements needed. Then create an improved version.
+
+ANALYSIS CHECKLIST:
+1. Are all mathematical calculations correct?
+2. Is the mathematical reasoning sound?
+3. Does it follow logically from previous steps?
+4. Are the mathematical concepts applied correctly?
+5. Is the notation and terminology accurate?
+6. For combinatorics: Are the right formulas used (e.g., circular vs linear permutations)?
+
+COMMON ERRORS TO CHECK:
+- Using n! instead of (n-1)! for circular arrangements
+- Incorrect factorial calculations
+- Wrong application of combinatorial formulas
+- Arithmetic errors in calculations
+- Logical inconsistencies with the problem setup
+
+IMPROVEMENT PROCESS:
+1. If errors are found: Correct them while explaining the fix
+2. If no errors: Improve clarity, add detail, or use alternative approach
+3. Make the step more mathematically rigorous and clear
+4. Ensure perfect accuracy in all calculations
 
 REQUIREMENTS:
 - Write as if you are the original solver
-- Use clear, direct mathematical language  
+- Use clear, direct mathematical language
 - Ensure logical flow from previous steps
-- Do not reference other steps explicitly
-- Do not include meta-commentary or judgments
-- Keep mathematical notation consistent
-- MAKE IT DIFFERENT from the original step
+- Maintain or improve mathematical correctness
+- Do not include meta-commentary about the analysis process
+- Focus on the mathematical content
+
 {final_instruction}
 
 OUTPUT FORMAT:
-Provide only the improved step content, no additional text or formatting.
+Provide only the corrected/improved step content, no additional text or formatting.
 """
 
 VOTING_PROMPT_WITH_CONTEXT = """

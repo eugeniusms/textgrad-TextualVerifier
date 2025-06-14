@@ -146,30 +146,18 @@ class TextualVerifierExperiment:
             # Include previously generated variants to avoid duplication
             previous_variants_text = ""
             if variants:
-                previous_variants_text = f"""
-                                        PREVIOUSLY GENERATED VARIANTS (DO NOT REPEAT):
-                                        {chr(10).join([f"Variant {j+1}: {var}" for j, var in enumerate(variants)])}
-                                        """
+                previous_variants_text = f"""{chr(10).join([f"Variant {j+1}: {var}" for j, var in enumerate(variants)])}"""
             
-            variant_prompt = f"""{VARIANT_GENERATION_PROMPT_WITH_CONTEXT.format(
+            variant_prompt = VARIANT_GENERATION_PROMPT_WITH_CONTEXT.format(
                 problem=instance,
                 approach=prompt, 
                 context=context,
+                previous_variants_text=previous_variants_text,
                 current_step=step,
                 is_final=is_final,
                 final_instruction=final_instruction
-            )}
+            )
 
-            ADDITIONAL INSTRUCTION FOR VARIANT {i+1}:
-            {diversity_instruction}
-
-            {previous_variants_text}
-
-            IMPORTANT: Generate a DIFFERENT approach or explanation compared to:
-            1. The original step above
-            2. Any previously generated variants listed above
-            Be creative but mathematically sound. Make sure your variant is distinct from all previous attempts."""
-                        
             try:
                 # Track the LLM call
                 call_start_time = time.time()
