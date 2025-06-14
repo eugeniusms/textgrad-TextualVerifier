@@ -6,8 +6,12 @@ from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
 from .verifier_prompts_generic import (
     COT_PROMPT,
+    VARIANT_GENERATION_PROMPT,
+    VARIANT_GENERATION_PROMPT_STEP_BASED,
+    MAJORITY_VOTING_PROMPT,
 )
 
+# OUTPUT: Variable("<VERIFIED></VERIFIED><VERIFIED></VERIFIED>")
 class TextualVerifierGeneric(Verifier):
     def __init__(self,
                 verifier_engine: Union[str, EngineLM], # LLM to verify
@@ -76,17 +80,17 @@ class TextualVerifierGeneric(Verifier):
         voted_variant_list = []
         for step in step_breakdown:
             # 3. Generate variants
-            generated_variants = self._generate_variants(step)
+            generated_variants = self._generate_variants(step, instruction.value, calculation.value, verification_prompt.value)
             # 4. Vote variants
             voted_variant = self._majority_vote_variants(generated_variants)
             voted_variant_list.append(voted_variant)
 
         # 5. Merge voted variants
-        verified_calculaton = "\n".join(f"{step}" for step in enumerate(voted_variant_list))
+        verified_calculaton = "\n".join(f"<VERIFIED>{step}</VERIFIED>" for step in enumerate(voted_variant_list))
 
         return Variable(verified_calculaton, requires_grad=True, role_description="verified calculation")
 
-
+    # For Instance
     def _generate_cot_steps(self, instance: str) -> List[str]:
         generate_cot_prompt = COT_PROMPT.format(
             instance=instance
@@ -94,6 +98,7 @@ class TextualVerifierGeneric(Verifier):
         generated_cot = self.engine(generate_cot_prompt)
         return generated_cot
 
+    # For Instance
     def _convert_cot_format_to_list(self, cot_formatted: str) -> List[str]:
         step_pattern = r"<Step>(.*?)</Step>"
         steps = re.findall(step_pattern, cot_formatted, re.DOTALL)
@@ -109,11 +114,32 @@ class TextualVerifierGeneric(Verifier):
         
         return cleaned_steps
 
-    def _generate_variants(self, )
-        
+    # 
+    def _generate_variants(self, step: str, instruction: str, calculation: str, verification_prompt: str) -> List[str]:
+        generated_variants = []
+        for i in range(self.num_variants):
+            variant_prompt = ""
+            if self.use_step_breakdown:
+                variant_prompt = VARIANT_GENERATION_PROMPT_STEP_BASED.format(
+                    instance=step,
 
-    def _majority_vote_variants():
-        pass
+                    variant_no=i
+                )
+            else:
+                variant_prompt = VARIANT_GENERATION_PROMPT.format(
+                    instance=step,
+                    instruction=instruction,
+                    calculation=calculation,
+                    verification_prompt=verification_prompt
+                )
+                
+            new_variant = self.engine(variant_prompt)
+            generated_variants.append(new_variant)
+        return generated_variants
 
-    def _merge():
-        pass
+    def _majority_vote_variants(self, generated_variants: List[str]) -> str:
+        voting_prompt = MAJORITY_VOTING_PROMPT.format(
+            generated_variants=generated_variants
+        )
+        voted_variant = self.engine(voting_prompt)
+        return voted_variant

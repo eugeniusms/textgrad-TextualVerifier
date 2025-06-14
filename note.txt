@@ -1,0 +1,18 @@
+Definition:
+- instance: input
+- instruction: instruction
+- calculation: output of instruction to input
+- verification_prompt: verification we want to use
+Formula:
+```
+instance + instruction => calculation
+instance + calculation + verification_prompt => verified_calculation
+```
+
+Apa yang diverifikasi? => calculation
+
+[Kasus 1: Raw Verification]
+
+instance:
+Compute $99^2+99+1$ in your head.
+
