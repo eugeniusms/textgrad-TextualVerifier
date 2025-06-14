@@ -11,7 +11,7 @@ from textgrad.variable import Variable
 from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
-from .verifier_prompts_generic import (
+from .verifier_prompts import (
     DEFAULT_VERIFICATION_TASK_PROMPTS,
     COT_PROMPT,
     VARIANT_GENERATION_PROMPT,
@@ -19,7 +19,7 @@ from .verifier_prompts_generic import (
 )
 
 
-class TextualVerifierGeneric(Verifier):
+class TextualVerifier(Verifier):
     """
     A generic textual verifier that validates calculations through:
     1. Breaking down calculations into steps (optional)
