@@ -121,6 +121,7 @@ class TextualVerifierGeneric(Verifier):
     def _generate_variants(self, instance: str, instruction: str, calculation: str) -> List[str]:
         generated_variants = []
         for i in range(len(self.verification_task_prompts)):
+            print(f"Generating variant {i} ...")
             variant_prompt = ""
             if self.use_step_breakdown:
                 variant_prompt = VARIANT_GENERATION_PROMPT_STEP_BASED.format(
@@ -138,12 +139,9 @@ class TextualVerifierGeneric(Verifier):
             new_variant = self.engine(variant_prompt)
             generated_variants.append(new_variant)
 
-        print("GENERATED VARIANTS", generated_variants)
         return generated_variants
 
     def _majority_vote_variants(self, calculation: str, generated_variants: List[str]) -> str:
-        print("CALCULATION", calculation)
-
         generated_variants_formatted = "\n".join(f"Variant {i+1}: ```{variant}```" for i, variant in enumerate(generated_variants))
         voting_prompt = MAJORITY_VOTING_PROMPT.format(
             calculation=calculation,
