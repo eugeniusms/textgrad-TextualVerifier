@@ -3,30 +3,35 @@ Prompts for the TextualVerifier system.
 All prompts are process-focused to encourage better reasoning rather than direct corrections.
 """
 
+DEFAULT_VERIFICATION_TASK_PROMPTS = [
+    "Verify any miss on calculation, if any misses please revise calculation based on misses."
+]
+
 COT_PROMPT = """
-Break down this instance into clear calculation steps.
+Break down this calculation into clear steps.
 Focus only on the mathematical/logical steps needed.
 Mark each step with <STEP> and </STEP> tags.
 
-Instance: {instance}
+Calculation: {calculation}
 
 Let's think step by step:"""
 
 VARIANT_GENERATION_PROMPT_STEP_BASED = """
-Given instance and instruction.
+You are verifying whether the calculation correctly follows from applying the instruction to the instance.
 
-Instance: {instance}
+Instance: 
+{instance}
 
-Instruction: {instruction}
+Instruction: 
+{instruction}
 
-The result of instruction to instance is:
+Calculation:
 {calculation}
 
-Now I build verified calculation, currently I have:
-{context}
+Verification Tasks:
+{verification_task_prompt}
 
-Verification:
-{verification_prompt}
+Provide ONLY the improved calculation, no additional text or formatting.
 """
 
 VARIANT_GENERATION_PROMPT = """"
@@ -42,8 +47,18 @@ Calculation:
 {calculation}
 
 Verification Tasks:
-{verification_prompt}
+{verification_task_prompt}
+
+Provide ONLY the improved calculation, no additional text or formatting.
 """
 
 MAJORITY_VOTING_PROMPT = """
+Original calculation: 
+{calculation}
+
+Generated variants:
+{generated_variants}
+
+USE Majority Voting to choose ONLY 1 from generated variants.
+Provide ONLY the replaced calculation by selected variant, no additional text or formatting.
 """

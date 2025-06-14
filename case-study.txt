@@ -28,7 +28,7 @@ What about $99^2+99+1$?
 So, $99^2+99+1=9900+1=9901$.
 Right. So, $99^2+99+1=9901$. # Answer 9901
 
-------------------------- verification_task_prompt ------------------------------
+------------------------- verification_task_prompts -----------------------------
 
 ------------------------- verified_calculation ---------------------------------- DO: Verify {calculation} <= {instance + instruction} using verification_task_prompt (optional: step-by-step)
 Let's find $99^2$.  We can rewrite 99 as $(100-1)$.  Therefore, $99^2 = (100-1)^2 = 100^2 - 2(100)(1) + 1^2 = 10000 - 200 + 1 = 9801$.
@@ -39,6 +39,8 @@ Therefore, $99^2 + 99 + 1 = \frac{970299 - 1}{98} = \frac{970298}{98} = 9901$.
 Alternatively, since we already calculated $99^2 = 9801$, we have $99^2 + 99 + 1 = 9801 + 99 + 1 = 9801 + 100 = 9901$.
 Since we already calculated $99^2 = 9801$, we can observe that $99^2 + 99 + 1 = 99^2 + (99+1) = 99^2 + 100 = 9801 + 100 = 9901$.
 Right. So, $99^2 + 99 + 1 = 9801 + 99 + 1 = 9801 + 100 = 9901$. # Answer: 9901
+
+=> THEN USE MAJORITY VOTING
 
 =================================================================================
 
@@ -71,12 +73,14 @@ Do not attempt to solve it yourself, do not give a solution, only identify error
 The calculation of  b² - 4ac was incorrect: it should be (-7)² - 4 * 3 * 2 = 49 - 24 = 25, not 49 + 24 = 73.  
 Also, the division by 6 is missing in the final answers for x1 and x2.
 
-------------------------- verification_task_prompt ------------------------------
+------------------------- verification_task_prompts -----------------------------
 
 ------------------------- verified_calculation ---------------------------------- DO: Verify {calculation} <= {instance + instruction} using verification_task_prompt (optional: step-by-step)
 Discriminant Error: The correct discriminant is (-7)² - 4×3×2 = 49 - 24 = 25, not 49 + 24 = 73.
 Square Root Mistake: You used √73, but the correct value is √25 = 5.
 Missing Denominator: Final answers lacked division by 6 (since 2a = 2×3 = 6). Correct form: x = (7 ± 5) / 6, giving x₁ = 2 and x₂ = 1/3.
+
+=> THEN USE MAJORITY VOTING
 
 =================================================================================
 
@@ -118,9 +122,11 @@ Final solutions:
 x₁ = (7 + 5)/6 = 12/6 = 2
 x₂ = (7 - 5)/6 = 2/6 = 1/3
 
-------------------------- verification_task_prompt ------------------------------
+------------------------- verification_task_prompts -----------------------------
 
 ------------------------- verified_calculation ---------------------------------- DO: Verify {calculation} <= {instance + instruction} using verification_task_prompt (optional: step-by-step)
+
+=> THEN USE MAJORITY VOTING
 
 =================================================================================
 
@@ -148,11 +154,17 @@ Sort the following list of words in alphabetical order (A to Z). Return only the
 Words:
 oakland, seaborg, jacobi, membrane, trapezoidal, allis, marmot, toggle, anthology
 
-------------------------- verification_task_prompt ------------------------------
-Verify any miss on calculation, if any misses please revise calculation based on misses.
-Provide ONLY the improved calculation, no additional text or formatting.
+------------------------- verification_task_prompts -----------------------------
+[
+"Verify any miss on calculation, if any misses please revise calculation based on misses.
+Provide ONLY the improved calculation, no additional text or formatting.",
+"Imagine you're a senior AI prompter, suggest revised calculation.
+Provide ONLY the improved calculation, no additional text or formatting."
+]
 
 ------------------------- verified_calculation ---------------------------------- DO: Verify {calculation} <= {instance + instruction} using verification_task_prompt
+[
+"""
 Sort the following list of words in alphabetical order (A to Z). Return only the sorted list, one word per line:
 
 List:
@@ -165,3 +177,13 @@ allis
 marmot
 toggle
 anthology
+""",
+"""
+Sort the following words in alphabetical order (A to Z). Output only the sorted list, each word on a new line, with no explanation:
+
+List:
+oakland, seaborg, jacobi, membrane, trapezoidal, allis, marmot, toggle, anthology
+"""
+]
+
+=> THEN USE MAJORITY VOTING

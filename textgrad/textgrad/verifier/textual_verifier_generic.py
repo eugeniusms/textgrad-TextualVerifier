@@ -5,6 +5,7 @@ from textgrad.engine import EngineLM
 from textgrad.config import validate_engine_or_get_default
 from .verifier import Verifier
 from .verifier_prompts_generic import (
+    DEFAULT_VERIFICATION_TASK_PROMPTS,
     COT_PROMPT,
     VARIANT_GENERATION_PROMPT,
     VARIANT_GENERATION_PROMPT_STEP_BASED,
@@ -18,16 +19,16 @@ class TextualVerifierGeneric(Verifier):
                 use_cot_generation: bool = False, # True if instance need to use CoT Prompt Generation <Step>...</Step>
                 use_step_breakdown: bool = True, # True if instance need to step breakdown -> Solution Optimization, Code Optimization
                                                  # False if don't need to step breakdown -> Prompt Optimization
-                num_variants: int = 3, # Variant number
+                verification_task_prompts: List[str] = DEFAULT_VERIFICATION_TASK_PROMPTS,
                 enable_logging: bool = False): # If want to debug
 
         self.engine = validate_engine_or_get_default(verifier_engine)
         self.use_cot_generation = use_cot_generation
         self.use_step_breakdown = use_step_breakdown
-        self.num_variants = num_variants
+        self.verification_task_prompts = verification_task_prompts
         self.enable_logging = enable_logging
         
-    def verify(self, instance: Variable, instruction: Variable, calculation: Variable, verification_prompt: Variable) -> Variable:
+    def verify(self, instance: Variable, instruction: Variable, calculation: Variable) -> Variable:
         """
         [GENERIC VERIFICATION]
         Definition:
@@ -63,44 +64,46 @@ class TextualVerifierGeneric(Verifier):
         ```
         """
         
-        instance = instance.value
+        calculation_value = calculation.value
 
         # 1. Breakdown to steps with CoT
         if self.use_cot_generation:
-            updated_instance = self._generate_cot_steps(instance) # Format: "<Step> ... </Step>"
+            updated_calculation = self._generate_cot_steps(calculation_value) # Format: "<Step> ... </Step>"
         else:
-            updated_instance = instance
+            updated_calculation = calculation_value
 
         # 2. Convert CoT to list
         if self.use_step_breakdown:
-            step_breakdown = self._convert_cot_format_to_list(updated_instance) # Format: List[str]
+            step_breakdown = self._convert_cot_format_to_list(updated_calculation) # Format: List[str]
         else:
-            step_breakdown = [updated_instance] # Just only 1 step in no step breakdown flag
+            step_breakdown = [updated_calculation] # Just only 1 step in no step breakdown flag
         
         voted_variant_list = []
         for step in step_breakdown:
             # 3. Generate variants
-            generated_variants = self._generate_variants(step, instruction.value, calculation.value, verification_prompt.value)
+            generated_variants = self._generate_variants(instance=instance.value, 
+                                                        instruction=instruction.value, 
+                                                        calculation=calculation.value)
             # 4. Vote variants
-            voted_variant = self._majority_vote_variants(generated_variants)
+            voted_variant = self._majority_vote_variants(step, generated_variants)
             voted_variant_list.append(voted_variant)
 
         # 5. Merge voted variants
-        verified_calculaton = "\n".join(f"<VERIFIED>{step}</VERIFIED>" for step in enumerate(voted_variant_list))
+        verified_calculaton = "\n".join(f"<VERIFIED>{step}</VERIFIED>" for _, step in enumerate(voted_variant_list))
 
         return Variable(verified_calculaton, requires_grad=True, role_description="verified calculation")
 
-    # For Instance
-    def _generate_cot_steps(self, instance: str) -> List[str]:
+    # For Calculation
+    def _generate_cot_steps(self, calculation: str) -> List[str]:
         generate_cot_prompt = COT_PROMPT.format(
-            instance=instance
+            calculation=calculation
         )
         generated_cot = self.engine(generate_cot_prompt)
         return generated_cot
 
-    # For Instance
+    # For Calculation
     def _convert_cot_format_to_list(self, cot_formatted: str) -> List[str]:
-        step_pattern = r"<Step>(.*?)</Step>"
+        step_pattern = r"<STEP>(.*?)</STEP>"
         steps = re.findall(step_pattern, cot_formatted, re.DOTALL)
         
         # Clean up steps
@@ -114,32 +117,37 @@ class TextualVerifierGeneric(Verifier):
         
         return cleaned_steps
 
-    # 
-    def _generate_variants(self, step: str, instruction: str, calculation: str, verification_prompt: str) -> List[str]:
+    # Generate Verified Variants of Calculation
+    def _generate_variants(self, instance: str, instruction: str, calculation: str) -> List[str]:
         generated_variants = []
-        for i in range(self.num_variants):
+        for i in range(len(self.verification_task_prompts)):
             variant_prompt = ""
             if self.use_step_breakdown:
                 variant_prompt = VARIANT_GENERATION_PROMPT_STEP_BASED.format(
-                    instance=step,
-
+                    instance=instance,
                     variant_no=i
                 )
             else:
                 variant_prompt = VARIANT_GENERATION_PROMPT.format(
-                    instance=step,
+                    instance=instance,
                     instruction=instruction,
                     calculation=calculation,
-                    verification_prompt=verification_prompt
+                    verification_task_prompt=self.verification_task_prompts[i]
                 )
                 
             new_variant = self.engine(variant_prompt)
             generated_variants.append(new_variant)
+
+        print("GENERATED VARIANTS", generated_variants)
         return generated_variants
 
-    def _majority_vote_variants(self, generated_variants: List[str]) -> str:
+    def _majority_vote_variants(self, calculation: str, generated_variants: List[str]) -> str:
+        print("CALCULATION", calculation)
+
+        generated_variants_formatted = "\n".join(f"Variant {i+1}: ```{variant}```" for i, variant in enumerate(generated_variants))
         voting_prompt = MAJORITY_VOTING_PROMPT.format(
-            generated_variants=generated_variants
+            calculation=calculation,
+            generated_variants=generated_variants_formatted
         )
         voted_variant = self.engine(voting_prompt)
         return voted_variant
