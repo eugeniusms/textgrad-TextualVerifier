@@ -1,0 +1,33 @@
+{
+  "cot_prompt": "",
+  "processed_calculation": "\nTo solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:\nx = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 + 4(3)(2))) / 6\nx = (7 \u00b1 \u221a73) / 6\nThe solutions are:\nx1 = (7 + \u221a73)\nx2 = (7 - \u221a73)",
+  "verification_steps": [
+    "\nTo solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:\nx = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 + 4(3)(2))) / 6\nx = (7 \u00b1 \u221a73) / 6\nThe solutions are:\nx1 = (7 + \u221a73)\nx2 = (7 - \u221a73)"
+  ],
+  "verification": [
+    {
+      "step_no": 1,
+      "context": "",
+      "variants": [
+        {
+          "variant_no": 1,
+          "llm_input_or_variant_prompt": "\"\nYou are verifying whether the calculation correctly follows from applying the instruction to the instance.\n\nInstance: \nSolve 3x^2-7x+2=0\n\nInstruction: \nYou will answering a math question. \n                        Please using step-by-step explanation. Be super concise.\n\n\n\nCalculation:\n\nTo solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:\nx = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 + 4(3)(2))) / 6\nx = (7 \u00b1 \u221a73) / 6\nThe solutions are:\nx1 = (7 + \u221a73)\nx2 = (7 - \u221a73)\n\nVerification Tasks:\nVerify any miss on calculation, if any misses please revise calculation based on misses.\n\nProvide ONLY the improved calculation, no additional text or formatting.\n",
+          "llm_output_or_variant": "x = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 - 4(3)(2))) / (2*3)\nx = (7 \u00b1 \u221a(49 - 24)) / 6\nx = (7 \u00b1 \u221a25) / 6\nx = (7 \u00b1 5) / 6\nx1 = (7 + 5) / 6 = 2\nx2 = (7 - 5) / 6 = 1/3\nThe solutions are x = 2 and x = 1/3\n"
+        },
+        {
+          "variant_no": 2,
+          "llm_input_or_variant_prompt": "\"\nYou are verifying whether the calculation correctly follows from applying the instruction to the instance.\n\nInstance: \nSolve 3x^2-7x+2=0\n\nInstruction: \nYou will answering a math question. \n                        Please using step-by-step explanation. Be super concise.\n\n\n\nCalculation:\n\nTo solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:\nx = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 + 4(3)(2))) / 6\nx = (7 \u00b1 \u221a73) / 6\nThe solutions are:\nx1 = (7 + \u221a73)\nx2 = (7 - \u221a73)\n\nVerification Tasks:\nImagine you're a senior mathematician, suggest revised calculation.\n\nProvide ONLY the improved calculation, no additional text or formatting.\n",
+          "llm_output_or_variant": "To solve the equation 3x\u00b2 - 7x + 2 = 0, we use the quadratic formula:\n\nx = (-b \u00b1 \u221a(b\u00b2 - 4ac)) / 2a\n\nHere, a = 3, b = -7, and c = 2.\n\nx = (7 \u00b1 \u221a((-7)\u00b2 - 4 * 3 * 2)) / (2 * 3)\n\nx = (7 \u00b1 \u221a(49 - 24)) / 6\n\nx = (7 \u00b1 \u221a25) / 6\n\nx = (7 \u00b1 5) / 6\n\nx\u2081 = (7 + 5) / 6 = 12/6 = 2\n\nx\u2082 = (7 - 5) / 6 = 2/6 = 1/3\n\nThe solutions are x = 2 and x = 1/3.\n"
+        }
+      ],
+      "best_variant": {
+        "llm_input_or_voting_prompt": "\nOriginal calculation: \n\nTo solve the equation 3x^2 - 7x + 2 = 0, we use the quadratic formula:\nx = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 + 4(3)(2))) / 6\nx = (7 \u00b1 \u221a73) / 6\nThe solutions are:\nx1 = (7 + \u221a73)\nx2 = (7 - \u221a73)\n\nGenerated variants:\nVariant 1: ```x = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 - 4(3)(2))) / (2*3)\nx = (7 \u00b1 \u221a(49 - 24)) / 6\nx = (7 \u00b1 \u221a25) / 6\nx = (7 \u00b1 5) / 6\nx1 = (7 + 5) / 6 = 2\nx2 = (7 - 5) / 6 = 1/3\nThe solutions are x = 2 and x = 1/3\n```\nVariant 2: ```To solve the equation 3x\u00b2 - 7x + 2 = 0, we use the quadratic formula:\n\nx = (-b \u00b1 \u221a(b\u00b2 - 4ac)) / 2a\n\nHere, a = 3, b = -7, and c = 2.\n\nx = (7 \u00b1 \u221a((-7)\u00b2 - 4 * 3 * 2)) / (2 * 3)\n\nx = (7 \u00b1 \u221a(49 - 24)) / 6\n\nx = (7 \u00b1 \u221a25) / 6\n\nx = (7 \u00b1 5) / 6\n\nx\u2081 = (7 + 5) / 6 = 12/6 = 2\n\nx\u2082 = (7 - 5) / 6 = 2/6 = 1/3\n\nThe solutions are x = 2 and x = 1/3.\n```\n\nUSE Majority Voting to choose ONLY 1 from generated variants.\nProvide ONLY the replaced calculation by selected variant, no additional text or formatting.\n",
+        "llm_output_or_best_variant": "```\nx = (-b \u00b1 \u221a(b^2 - 4ac)) / 2a\na = 3, b = -7, c = 2\nx = (7 \u00b1 \u221a((-7)^2 - 4(3)(2))) / (2*3)\nx = (7 \u00b1 \u221a(49 - 24)) / 6\nx = (7 \u00b1 \u221a25) / 6\nx = (7 \u00b1 5) / 6\nx1 = (7 + 5) / 6 = 2\nx2 = (7 - 5) / 6 = 1/3\nThe solutions are x = 2 and x = 1/3\n```\n"
+      }
+    }
+  ],
+  "processing_time_ms": 68.464111328125,
+  "total_llm_calls": 3,
+  "total_input_tokens": 520,
+  "total_output_tokens": 264
+}

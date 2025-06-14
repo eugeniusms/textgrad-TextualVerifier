@@ -37,6 +37,7 @@ from .verifier import (
     TextualVerifierV3,
     TextualVerifierV4,
     TextualVerifier,
+    TextualVerifierWithTracker,
     TextualVerifierExperiment,
 )
 
