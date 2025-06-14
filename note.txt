@@ -1,0 +1,28 @@
+1. Coba makin banyak prompt pov -> banyak variant effectnya gimana
+2. Kompleksitas dan grafik waktu basis steps
+3. Versioning dengan nempel-nempel TextGrad di beberapa titik: Loss + Optimizer (LO)
+4. Apa yang dibuktikan?
+
+Validasi TextualVerifier:
+Dataset: PRM800K 
+Mode: Raw Verification (Murni TextualVerifier, Tanpa Loss & Optimization TextGrad)
+Ground Truth: Rating 1 Steps & Ground Truth Answer in PRM800K
+Sample: ~1200 Steps
+Method: Stuart-Maxwell Test (Comparing Rating)
+Analysis: Power Analysis
+
+Performa:
+Dataset: GPQA-Diamond, MMLU-ML, MMLU-CP
+Ground Truth: Correct Answer
+Mode:
+- LLM Biasa
+- TextGrad Biasa
+- TextGrad + TextualVerifier (L)
+- TextGrad + TextualVerifier (O)
+- TextGrad + TextualVerifier (LO)
+Sample: ~500 Combined Datasets
+Method: <TEST NAME> (Comparing Correct Answer & Generated Answer)
+Analysis: Power Analysis
+
+5. LLM Tokens? Cost? Time?
+6. Etc idea
