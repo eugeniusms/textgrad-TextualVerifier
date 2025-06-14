@@ -8,6 +8,22 @@ Key improvements:
 - Stricter output control
 """
 
+SEED_RANDOM_APPROACHES = [
+    "Focus primarily on mathematical rigor and computational accuracy.",
+    "Emphasize clarity and step-by-step logical progression.",
+    "Consider alternative mathematical methods and approaches.",
+    "Prioritize elegant and efficient problem-solving techniques.",
+    "Look for potential edge cases and verify all assumptions."
+]
+
+SEED_RANDOM_IMPROVEMENT = [
+    "Make the solution more detailed with additional explanations.",
+    "Simplify and streamline the mathematical presentation.",
+    "Add more rigorous mathematical justification.",
+    "Focus on computational efficiency and clarity.",
+    "Enhance with alternative solution perspectives."
+]
+
 VARIANT_GENERATION_PROMPT_WITH_CONTEXT = """
 You are a mathematical expert reviewing and improving a step in a solution.
 
@@ -17,9 +33,6 @@ SOLUTION APPROACH: {approach}
 
 VERIFIED PREVIOUS STEPS:
 {context}
-
-PREVIOUSLY GENERATED VARIANTS (DO NOT REPEAT):
-{previous_variants_text}
 
 CURRENT STEP TO ANALYZE AND IMPROVE:
 {current_step}
