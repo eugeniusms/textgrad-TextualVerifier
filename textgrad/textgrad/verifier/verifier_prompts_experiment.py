@@ -1,80 +1,75 @@
 """
-Prompts for the TextualVerifier Experiment (Using v2 Modified due to Feasibility of Experiment).
+Prompts for the TextualVerifier Experiment (using v2 modified due to feasibility of experiment).
 All prompts are process-focused to encourage better reasoning rather than direct corrections.
 """
 
-# ENHANCED: Now includes cumulative context for better step coherence
+# Updated for Experiment
 VARIANT_GENERATION_PROMPT_WITH_CONTEXT = """
-Original problem: {}
+Original solution: {}
 Instruction: {}
 
 CUMULATIVE CONTEXT (Previous verified steps):
 {}
 
-Current step: {}
+Current step to verify: {}
 
-Analyze this step considering the previous context and identify potential process improvements:
-- Are there methodological issues?
-- Could the approach be more systematic?
-- Does this step build logically on previous verified steps?
-- What alternative reasoning methods exist that maintain consistency?
+IS_LAST_STEP: {}
 
-Provide process-focused guidance for improving this step while maintaining coherence with previous steps.
-DO NOT give direct numerical answers.
-Variant {}: """
+Instruction:
+- Verify the current step using the context of the previously verified steps.
+- If the step is correct and consistent, return it as is.
+- If the step contains errors or lacks clarity, revise it to improve the logic and coherence.
+- Maintain the **same format**: Step {} variant {}: <verified or revised step content>
+- Do NOT solve the problem or compute final answers—focus only on logical verification and revision of the current step.
+- ONLY revise the current step. DO NOT include or duplicate other steps.
+
+ONLY return the updated solution in the same format. 
+MUST add # Answer <answer> if IS_LAST_STEP is true.
+DO NOT add any explanation or additional commentary.
+"""
 
 # ENHANCED: Now includes cumulative context for consistency evaluation
 VOTING_PROMPT_WITH_CONTEXT = """
-CUMULATIVE CONTEXT (Previous verified steps):
+CUMULATIVE CONTEXT (Previously verified steps):
 {}
 
-Original step: {}
-
-Process improvement suggestions:
+Original step:
 {}
 
-Which approach provides the best methodological guidance considering the previous context?
-Focus on:
-- Clearest reasoning process that builds on previous steps
-- Best error-prevention strategies
-- Most systematic approach that maintains coherence
-- Consistency with established reasoning chain
-
-Return the best process-focused guidance:"""
-
-MERGE_STEPS_PROMPT = """
-Instruction: {}
-
-Process improvement guidance from verification steps:
+Candidate revisions:
 {}
 
-Synthesize this guidance into coherent process-focused feedback that:
-- Identifies methodology errors
-- Suggests systematic improvements
-- Guides better reasoning approaches
-- Does NOT provide direct numerical answers
+Instruction:
+Select the most methodologically sound and contextually consistent candidate revision.
 
-Provide the merged process feedback:"""
+Evaluation Criteria:
+- Logical continuation of the previous verified steps
+- Clear and systematic reasoning
+- Strong error-prevention and clarity of process
+- Maintains alignment with the reasoning chain established so far
+
+ONLY return the best revised version in the original format:
+"""
 
 DECISION_PROMPT = """
-Compare these two evaluations:
+You are given two reasoning steps for the same problem:
 
-Original evaluation: {}
+Original version:
+{}
+---
+Verified version:
+{}
 
-Process-focused verification: {}
+Your task is to choose which version has better logical and mathematical reasoning.
 
-Your task: Provide feedback that focuses on PROCESS improvements, not direct answers.
+Follow these steps:
+1. Carefully compare the structure, logic, and correctness of the reasoning in both versions.
+2. Identify any flaws, gaps, or invalid steps in either version.
+3. Focus on methodology quality — not just the final answer.
 
-Guidelines:
-- Identify methodology errors and reasoning flaws
-- Suggest systematic approaches for improvement
-- Guide better problem-solving processes
-- Avoid giving direct numerical corrections
-- Focus on teaching better reasoning skills
+Use the following decision rules:
+- Respond with **[REPLACE]** if the Verified version clearly improves or corrects flaws in the Original.
+- Respond with **[SUFFICIENT]** if the Original version is already valid and the Verified version does not add meaningful improvement.
 
-Classify and provide process-focused feedback:
-1. ENHANCE - Original feedback can be improved with process guidance
-2. REPLACE - Original feedback is insufficient, use process-focused version
-3. SUFFICIENT - Original feedback is already process-focused
-
-Respond with: [DECISION]: [PROCESS_FOCUSED_FEEDBACK]"""
+Only respond with one of the following tokens: [REPLACE] or [SUFFICIENT]
+"""

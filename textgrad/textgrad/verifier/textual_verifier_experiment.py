@@ -7,15 +7,16 @@ from .verifier import Verifier
 from .verifier_prompts_experiment import (
     VARIANT_GENERATION_PROMPT_WITH_CONTEXT,
     VOTING_PROMPT_WITH_CONTEXT,
-    MERGE_STEPS_PROMPT,
-    DECISION_PROMPT
+    DECISION_PROMPT,
 )
 
 """
 [Experiment Using TextualVerifier V2]
 
 Due to step is exist step-by-step format, so skip:
-1. _generate_cot_steps
+1. _generate_cot_steps function -> initially formatted
+2. _merge_verified_steps PROMPT phase -> for feedback building
+3. _make_decision Enhance step -> due to specified output
 """
 class TextualVerifierExperiment(Verifier):
     """
@@ -58,11 +59,13 @@ class TextualVerifierExperiment(Verifier):
         # Step 2: Format steps properly
         formatted_steps = self._format_steps(reasoning_steps)
 
+        print("FORMATTED_STEPS", formatted_steps)
+
         # Step 3: Verify each step iteratively
         verified_steps = self._verify_each_step_with_context(instance.value, prompt.value, formatted_steps)
         
         # Step 4: Merge all verified steps
-        merged_calculation = self._merge_verified_steps(prompt.value, verified_steps)
+        merged_calculation = self._merge_verified_steps(verified_steps)
         
         # Step 5: Make final decision
         final_result = self._make_decision(calculation.value, merged_calculation)
@@ -73,33 +76,24 @@ class TextualVerifierExperiment(Verifier):
         return Variable(final_result, requires_grad=True, role_description="verified calculation")
 
     def _extract_steps_from_response(self, response: str) -> List[str]:
-        """Extract steps from LLM response."""
         # Look for <Step>...</Step> patterns
         step_pattern = r"<Step>(.*?)</Step>"
         steps = re.findall(step_pattern, response, re.DOTALL)
+
+        if steps:
+            # Clean up extracted steps (remove leftover HTML or LaTeX artifacts if needed)
+            return [step.strip() for step in steps if step.strip()]
         
-        # Clean up steps
-        cleaned_steps = [step.strip() for step in steps if step.strip()]
-        
-        # Fallback if no tags found
-        if not cleaned_steps:
-            lines = response.split('\n')
-            cleaned_steps = [line.strip() for line in lines 
-                           if line.strip() and len(line.strip()) > 10]
-        
-        return cleaned_steps[:5]  # Limit to 5 steps max
+        # Fallback: assume line-by-line reasoning
+        lines = response.split('\n')
+        return [line.strip() for line in lines if line.strip() and len(line.strip()) > 10]
     
     def _format_steps(self, steps: List[str]) -> List[str]:
-        """Format steps for better processing."""
         if self.logger:
             print("INFO:textgrad:TextualVerifier:format_steps Formatting steps...")
-        
-        formatted = []
-        for i, step in enumerate(steps):
-            formatted_step = f"Step {i+1}: {step}"
-            formatted.append(formatted_step)
-        
-        return formatted
+
+        return [f"Step {i+1}: {step}" for i, step in enumerate(steps)]
+
     
     def _verify_each_step_with_context(self, instance: str, prompt: str, formatted_steps: List[str]) -> List[str]:
         """
@@ -121,20 +115,30 @@ class TextualVerifierExperiment(Verifier):
                 cumulative_context = "\n".join([f"Previous Step {j+1}: {prev_step}" 
                                               for j, prev_step in enumerate(verified_steps)])
             
+            is_last_step = False
+            if i + 1 == len(formatted_steps):
+                is_last_step = True
+
             # ENHANCEMENT: Generate variants with cumulative context
             variants = self._generate_step_variants_with_context(
-                instance, prompt, step, cumulative_context
+                instance, prompt, step, cumulative_context, i+1, is_last_step
             )
             
             # Vote on best variant considering context
-            best_variant = self._vote_on_variants_with_context(step, variants, cumulative_context)
+            best_variant = self._vote_on_variants_with_context(step, variants, cumulative_context, i)
             
             verified_steps.append(best_variant)
         
         return verified_steps
     
-    def _generate_step_variants_with_context(self, instance: str, prompt: str, 
-                                           current_step: str, cumulative_context: str) -> List[str]:
+    def _generate_step_variants_with_context(self, 
+                                            instance: str, 
+                                            prompt: str, 
+                                            current_step: str, 
+                                            cumulative_context: str, 
+                                            step_i: str,
+                                            is_last_step: bool
+                                            ) -> List[str]:
         """
         ENHANCED: Generate multiple variants of a step considering cumulative context.
         This ensures each step builds logically on previous verified steps.
@@ -147,6 +151,8 @@ class TextualVerifierExperiment(Verifier):
                 prompt,
                 cumulative_context if cumulative_context else "None (this is the first step)",
                 current_step,
+                is_last_step,
+                step_i,
                 iteration + 1
             )
             
@@ -156,54 +162,45 @@ class TextualVerifierExperiment(Verifier):
         return variants
     
     def _vote_on_variants_with_context(self, original_step: str, variants: List[str], 
-                                     cumulative_context: str) -> str:
+                                     cumulative_context: str, step_i: str) -> str:
         """
         ENHANCED: Vote on variants considering cumulative context for consistency.
         """
-        variants_text = "\n".join(f"{i+1}. {var}" for i, var in enumerate(variants))
+        variants_text = "\n".join(f"{var}" for var in enumerate(variants))
         
         enhanced_voting_prompt = VOTING_PROMPT_WITH_CONTEXT.format(
             cumulative_context if cumulative_context else "None (this is the first step)",
             original_step,
-            variants_text
+            variants_text,
+            step_i
         )
         
         best_step = self.engine(enhanced_voting_prompt)
+
         return best_step.strip()
-    
-    def _merge_verified_steps(self, prompt: str, verified_steps: List[str]) -> str:
-        """Merge all verified steps into one coherent calculation."""
+
+    def _merge_verified_steps(self, verified_steps: List[str]) -> str:
         if self.logger:
             print("INFO:textgrad:TextualVerifier:merge_verified_steps Merging verified steps...")
         
-        steps_text = chr(10).join(f"{i+1}. {step}" for i, step in enumerate(verified_steps))
-        
-        merge_prompt = MERGE_STEPS_PROMPT.format(prompt, steps_text)
-        
-        merged = self.engine(merge_prompt)
-        return merged.strip()
+        return "\n".join(verified_steps)  # No need for enumerate
     
     def _make_decision(self, original_calculation: str, merged_calculation: str) -> str:
-        """Make final decision: update, merge, or pass."""
+        """Make final decision: update or pass."""
         if self.logger:
             print("INFO:textgrad:TextualVerifier:make_decision Making final decision...")
         
         decision_prompt = DECISION_PROMPT.format(original_calculation, merged_calculation)
+        print(decision_prompt)
         
         decision_response = self.engine(decision_prompt)
         
         # Parse decision
         if "REPLACE" in decision_response:
             if self.logger:
-                print("[X] Original feedback insufficient - using process-focused version")
+                print("[X] Original is insufficient - using verified version")
             return merged_calculation
-        elif "ENHANCE" in decision_response:
+        else: # No Enhance -> Due to Specified Output
             if self.logger:
-                print("[-] Enhancing original feedback with process guidance")
-            # Extract final feedback after the decision
-            final_feedback = decision_response.split(":", 1)[-1].strip()
-            return final_feedback if final_feedback else merged_calculation
-        else:
-            if self.logger:
-                print("[V] Original feedback is already process-focused")
+                print("[V] Original is already correct")
             return original_calculation
