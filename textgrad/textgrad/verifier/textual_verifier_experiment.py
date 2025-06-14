@@ -119,7 +119,7 @@ class TextualVerifierExperiment:
 
     def _generate_improved_variants_with_tracking(self, instance: str, prompt: str, step: str, 
                                                  context: str, is_final: bool, step_index: int):
-        """Generate variants with LLM call tracking"""
+        """Generate diverse variants with better prompting"""
         variants = []
         llm_calls = []
         
@@ -130,24 +130,63 @@ class TextualVerifierExperiment:
         
         final_instruction = get_final_step_instruction(is_final)
         
+        # Create diverse prompts for each variant
+        variant_approaches = [
+            "Focus on mathematical rigor and precision.",
+            "Simplify the explanation while maintaining accuracy.", 
+            "Use a different mathematical approach or method.",
+            "Provide more detailed step-by-step reasoning.",
+            "Consider alternative problem-solving strategies."
+        ]
+        
         for i in range(self.step_eval_iterations):
-            variant_prompt = VARIANT_GENERATION_PROMPT_WITH_CONTEXT.format(
+            # Add diversity by varying the approach
+            diversity_instruction = variant_approaches[i % len(variant_approaches)]
+            
+            # Include previously generated variants to avoid duplication
+            previous_variants_text = ""
+            if variants:
+                previous_variants_text = f"""
+                                        PREVIOUSLY GENERATED VARIANTS (DO NOT REPEAT):
+                                        {chr(10).join([f"Variant {j+1}: {var}" for j, var in enumerate(variants)])}
+                                        """
+            
+            variant_prompt = f"""{VARIANT_GENERATION_PROMPT_WITH_CONTEXT.format(
                 problem=instance,
                 approach=prompt, 
                 context=context,
                 current_step=step,
                 is_final=is_final,
                 final_instruction=final_instruction
-            )
-            
+            )}
+
+            ADDITIONAL INSTRUCTION FOR VARIANT {i+1}:
+            {diversity_instruction}
+
+            {previous_variants_text}
+
+            IMPORTANT: Generate a DIFFERENT approach or explanation compared to:
+            1. The original step above
+            2. Any previously generated variants listed above
+            Be creative but mathematically sound. Make sure your variant is distinct from all previous attempts."""
+                        
             try:
                 # Track the LLM call
                 call_start_time = time.time()
                 variant = self.engine(variant_prompt).strip()
                 call_latency = (time.time() - call_start_time) * 1000
                 
-                if variant:
+                # Check if variant is different from original AND from previous variants
+                if variant and variant != step and variant not in variants:
                     variants.append(variant)
+                elif variant and variant not in variants:  # If same as original but not in variants
+                    modified_variant = self._try_modify_variant(variant, i)
+                    if modified_variant not in variants:
+                        variants.append(modified_variant)
+                elif variant:  # If duplicate of existing variant, try to force a new one
+                    forced_variant = self._force_new_variant(variant, variants, i)
+                    if forced_variant not in variants:
+                        variants.append(forced_variant)
                 
                 # Track this LLM call
                 if self.tracker:
@@ -178,7 +217,43 @@ class TextualVerifierExperiment:
                 if self.logger:
                     print(f"WARN: Failed to generate variant {i+1}: {e}")
         
+        # If all variants are the same, add the original as a fallback
+        if not variants or all(v == variants[0] for v in variants):
+            if self.logger:
+                print(f"WARN: All variants identical for step {step_index}, adding original")
+            if step not in variants:
+                variants.append(step)
+        
         return variants if variants else [step], llm_calls
+    
+    def _try_modify_variant(self, variant: str, iteration: int) -> str:
+        """Try to create a slightly different variant if identical to original"""
+        modifications = [
+            f"Alternative approach: {variant}",
+            f"Refined version: {variant}",
+            f"Detailed explanation: {variant}",
+            f"Simplified approach: {variant}",
+            f"Method {iteration + 1}: {variant}"
+        ]
+        return modifications[iteration % len(modifications)]
+    
+    def _force_new_variant(self, variant: str, existing_variants: list, iteration: int) -> str:
+        """Force creation of a new variant when duplicates are generated"""
+        alternative_approaches = [
+            f"Using combinatorial reasoning: {variant}",
+            f"Step-by-step calculation: {variant}",
+            f"Alternative mathematical notation: {variant}",
+            f"Conceptual explanation: {variant}",
+            f"Computational approach: {variant}"
+        ]
+        
+        # Try each approach until we find one not in existing variants
+        for i, approach in enumerate(alternative_approaches):
+            if approach not in existing_variants:
+                return approach
+        
+        # If all approaches are somehow used, add iteration number
+        return f"Variant {iteration + 1} - {variant}"
 
     def _select_best_variant_with_tracking(self, original: str, variants: List[str], 
                                           context: str, step_index: int, total_steps: int):

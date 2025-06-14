@@ -8,9 +8,8 @@ Key improvements:
 - Stricter output control
 """
 
-# Updated prompts with better formatting and clearer instructions
 VARIANT_GENERATION_PROMPT_WITH_CONTEXT = """
-You are improving a step in a mathematical solution. Your job is to rewrite the current step to be logically sound and clear.
+You are improving a step in a mathematical solution. Your job is to rewrite the current step with a DIFFERENT approach or explanation style.
 
 PROBLEM: {problem}
 
@@ -25,15 +24,21 @@ CURRENT STEP TO IMPROVE:
 IS_FINAL_STEP: {is_final}
 
 TASK:
-Rewrite the current step to be mathematically correct and logically consistent with the previous steps. 
+Create a DIFFERENT version of this step that:
+1. Uses different wording or mathematical notation
+2. May use an alternative mathematical approach
+3. Provides a different level of detail (more or less)
+4. Maintains mathematical correctness
+5. Is DISTINCT from the original step
 
 REQUIREMENTS:
 - Write as if you are the original solver
-- Use clear, direct mathematical language
+- Use clear, direct mathematical language  
 - Ensure logical flow from previous steps
-- Do not reference other steps explicitly ("the previous step", "this step")
+- Do not reference other steps explicitly
 - Do not include meta-commentary or judgments
 - Keep mathematical notation consistent
+- MAKE IT DIFFERENT from the original step
 {final_instruction}
 
 OUTPUT FORMAT:
