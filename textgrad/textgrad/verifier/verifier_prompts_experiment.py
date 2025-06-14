@@ -5,27 +5,40 @@ All prompts are process-focused to encourage better reasoning rather than direct
 
 # Updated for Experiment
 VARIANT_GENERATION_PROMPT_WITH_CONTEXT = """
-Original solution: {}
-Instruction: {}
+You are verifying the correctness of a step-by-step solution.
 
-CUMULATIVE CONTEXT (Previous verified steps):
+Original solution:
 {}
 
-Current step to verify: {}
+Verification instruction:
+{}
+
+Previously verified steps (cumulative context):
+{}
+
+Current step to verify:
+{}
 
 IS_LAST_STEP: {}
 
-Instruction:
-- Verify the current step using the context of the previously verified steps.
-- If the step is correct and consistent, return it as is.
-- If the step contains errors or lacks clarity, revise it to improve the logic and coherence.
-- Maintain the **same format**: Step {} variant {}: <verified or revised step content>
-- Do NOT solve the problem or compute final answers—focus only on logical verification and revision of the current step.
-- ONLY revise the current step. DO NOT include or duplicate other steps.
+Instructions for you:
+- Focus only on verifying or revising **the current step** using the context above.
+- If the current step is correct and logically consistent, keep it as is.
+- If the step has errors, unclear logic, or poor structure, revise it to improve reasoning and clarity.
+- Preserve the **exact original format**:
+  Step {} variant {}: <your verified or revised step goes here>
+- DO NOT solve the problem or compute the final answer.
+- DO NOT include or duplicate any previous steps.
+- ONLY output the verified or revised current step.
 
-ONLY return the updated solution in the same format. 
-MUST add # Answer <answer> if IS_LAST_STEP is true.
-DO NOT add any explanation or additional commentary.
+If IS_LAST_STEP is true:
+- Append the answer in a new line at the end using this exact format:
+  # Answer <answer>
+
+Important:
+- Do NOT provide explanations.
+- Do NOT include any commentary.
+- Output only the revised step and optional answer if applicable.
 """
 
 # ENHANCED: Now includes cumulative context for consistency evaluation
