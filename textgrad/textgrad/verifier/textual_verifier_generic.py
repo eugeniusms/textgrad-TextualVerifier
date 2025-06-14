@@ -8,7 +8,6 @@ from .verifier_prompts_generic import (
     DEFAULT_VERIFICATION_TASK_PROMPTS,
     COT_PROMPT,
     VARIANT_GENERATION_PROMPT,
-    VARIANT_GENERATION_PROMPT_STEP_BASED,
     MAJORITY_VOTING_PROMPT,
 )
 
@@ -78,14 +77,19 @@ class TextualVerifierGeneric(Verifier):
         else:
             step_breakdown = [updated_calculation] # Just only 1 step in no step breakdown flag
         
+        initial_context = f"These are previous context to help you verify calculation:\n{instance.value}\n"
         voted_variant_list = []
         for step in step_breakdown:
             # 3. Generate variants
+            context = initial_context.join(f"Step {i+1}: ```{voted_variant}```" for i, voted_variant in enumerate(voted_variant_list))
             generated_variants = self._generate_variants(instance=instance.value, 
-                                                        instruction=instruction.value, 
-                                                        calculation=calculation.value)
+                                                         instruction=instruction.value, 
+                                                         previous_context=context,
+                                                         calculation=step)
             # 4. Vote variants
-            voted_variant = self._majority_vote_variants(step, generated_variants)
+            voted_variant = self._majority_vote_variants(calculation=step, 
+                                                         generated_variants=generated_variants)
+            
             voted_variant_list.append(voted_variant)
 
         # 5. Merge voted variants
@@ -118,23 +122,21 @@ class TextualVerifierGeneric(Verifier):
         return cleaned_steps
 
     # Generate Verified Variants of Calculation
-    def _generate_variants(self, instance: str, instruction: str, calculation: str) -> List[str]:
+    def _generate_variants(self, instance: str, instruction: str, previous_context: str, calculation: str) -> List[str]:
         generated_variants = []
         for i in range(len(self.verification_task_prompts)):
             print(f"Generating variant {i} ...")
-            variant_prompt = ""
-            if self.use_step_breakdown:
-                variant_prompt = VARIANT_GENERATION_PROMPT_STEP_BASED.format(
-                    instance=instance,
-                    variant_no=i
-                )
-            else:
-                variant_prompt = VARIANT_GENERATION_PROMPT.format(
-                    instance=instance,
-                    instruction=instruction,
-                    calculation=calculation,
-                    verification_task_prompt=self.verification_task_prompts[i]
-                )
+
+            if not self.use_step_breakdown: # If no use_step_breakdown -> ""
+                previous_context = ""
+
+            variant_prompt = VARIANT_GENERATION_PROMPT.format(
+                instance=instance,
+                instruction=instruction,
+                previous_context=previous_context,
+                calculation=calculation,
+                verification_task_prompt=self.verification_task_prompts[i]
+            )
                 
             new_variant = self.engine(variant_prompt)
             generated_variants.append(new_variant)

@@ -16,24 +16,6 @@ Calculation: {calculation}
 
 Let's think step by step:"""
 
-VARIANT_GENERATION_PROMPT_STEP_BASED = """
-You are verifying whether the calculation correctly follows from applying the instruction to the instance.
-
-Instance: 
-{instance}
-
-Instruction: 
-{instruction}
-
-Calculation:
-{calculation}
-
-Verification Tasks:
-{verification_task_prompt}
-
-Provide ONLY the improved calculation, no additional text or formatting.
-"""
-
 VARIANT_GENERATION_PROMPT = """"
 You are verifying whether the calculation correctly follows from applying the instruction to the instance.
 
@@ -42,6 +24,8 @@ Instance:
 
 Instruction: 
 {instruction}
+
+{previous_context}
 
 Calculation:
 {calculation}
