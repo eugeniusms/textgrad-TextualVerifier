@@ -53,8 +53,26 @@ class TextualVerifierExperiment:
 
         return Variable(result, requires_grad=True, role_description="verified calculation")
 
+    def track_detailed_step_verification(self, step_index: int, original_step: str, 
+                                       variants: List[str], selected_variant: str,
+                                       selection_reason: str, processing_time_ms: float,
+                                       llm_calls: List):
+        """Override to use enhanced tracking"""
+        if self.tracker and hasattr(self.tracker, 'track_detailed_step_verification'):
+            self.tracker.track_detailed_step_verification(
+                step_index, original_step, variants, selected_variant,
+                selection_reason, processing_time_ms, llm_calls
+            )
+        else:
+            # Fallback to regular tracking
+            if self.tracker:
+                self.tracker.track_step_verification(
+                    step_index, original_step, variants, selected_variant,
+                    selection_reason, processing_time_ms, llm_calls
+                )
+
     def _verify_steps_with_tracking(self, instance: str, prompt: str, steps: List[str]) -> List[str]:
-        """Verify steps with comprehensive tracking"""
+        """Override to capture detailed information"""
         verified_steps = []
         
         for i, step in enumerate(steps):
@@ -84,20 +102,20 @@ class TextualVerifierExperiment:
             cleaned_step = self._clean_step_output(best_step, is_final)
             verified_steps.append(cleaned_step)
             
-            # Track step-level metrics
+            # Track step-level metrics with detailed information
             step_processing_time = (time.time() - step_start_time) * 1000
-            if self.tracker:
-                self.tracker.track_step_verification(
-                    step_index=i,
-                    original_step=step,
-                    variants=variants,
-                    selected_variant=cleaned_step,
-                    selection_reason="voting_based_selection",
-                    processing_time_ms=step_processing_time,
-                    llm_calls=step_llm_calls
-                )
+            self.track_detailed_step_verification(
+                step_index=i,
+                original_step=step,
+                variants=variants,
+                selected_variant=cleaned_step,
+                selection_reason="voting_based_selection",
+                processing_time_ms=step_processing_time,
+                llm_calls=step_llm_calls
+            )
         
         return verified_steps
+
 
     def _generate_improved_variants_with_tracking(self, instance: str, prompt: str, step: str, 
                                                  context: str, is_final: bool, step_index: int):

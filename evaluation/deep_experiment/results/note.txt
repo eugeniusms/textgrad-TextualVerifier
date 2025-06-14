@@ -1,0 +1,14 @@
+result
+{ 
+    steps: [
+        {
+            "original": ... -> original step from initial solution
+            "generated_variants": [
+                {
+                    "text": ... -> generated variant step
+                }],
+            "verified": ... -> final selected variant (voted) step
+        },
+        {...}
+    ]
+}
