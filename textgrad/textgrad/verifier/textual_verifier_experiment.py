@@ -68,7 +68,7 @@ class TextualVerifierExperiment(Verifier):
         merged_calculation = self._merge_verified_steps(verified_steps)
         
         # Step 5: Make final decision
-        final_result = self._make_decision(calculation.value, merged_calculation)
+        final_result = self._make_decision(formatted_steps, merged_calculation)
         
         if self.logger:
             print("[V] Verification complete!")
@@ -184,23 +184,53 @@ class TextualVerifierExperiment(Verifier):
             print("INFO:textgrad:TextualVerifier:merge_verified_steps Merging verified steps...")
         
         return "\n".join(verified_steps)  # No need for enumerate
-    
+
+    def _convert_steps_to_tags(self, text: str) -> str:
+        """
+        Convert 'Step X: ...' lines to <Step>...</Step> and include everything after
+        the last step into the last <Step> block (e.g., # Answer and final value).
+        """
+        lines = text.strip().splitlines()
+        step_pattern = re.compile(r"^Step \d+:\s*(.*)")
+        output = []
+
+        current_step_content = None
+        for line in lines:
+            match = step_pattern.match(line)
+            if match:
+                # Save previous step if exists
+                if current_step_content is not None:
+                    output.append(f"<Step>{current_step_content.strip()}</Step>")
+                current_step_content = match.group(1)
+            else:
+                # Continuation of current step or post-step content
+                if current_step_content is not None:
+                    current_step_content += "\n" + line
+                else:
+                    # If no step yet, just keep accumulating
+                    current_step_content = line
+
+        # Append last step with post-content included
+        if current_step_content:
+            output.append(f"<Step>{current_step_content.strip()}</Step>")
+
+        return "\n".join(output)
+
     def _make_decision(self, original_calculation: str, merged_calculation: str) -> str:
         """Make final decision: update or pass."""
         if self.logger:
             print("INFO:textgrad:TextualVerifier:make_decision Making final decision...")
-        
+
         decision_prompt = DECISION_PROMPT.format(original_calculation, merged_calculation)
-        print(decision_prompt)
-        
+
         decision_response = self.engine(decision_prompt)
         
         # Parse decision
         if "REPLACE" in decision_response:
             if self.logger:
                 print("[X] Original is insufficient - using verified version")
-            return merged_calculation
+            return self._convert_steps_to_tags(merged_calculation)
         else: # No Enhance -> Due to Specified Output
             if self.logger:
                 print("[V] Original is already correct")
-            return original_calculation
+            return self._convert_steps_to_tags(original_calculation)
