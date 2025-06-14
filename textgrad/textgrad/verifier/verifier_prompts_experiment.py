@@ -1,88 +1,94 @@
 """
 Prompts for the TextualVerifier Experiment (using v2 modified due to feasibility of experiment).
 All prompts are process-focused to encourage better reasoning rather than direct corrections.
+Key improvements:
+- Clearer format specifications
+- Better context utilization
+- Reduced redundancy
+- Stricter output control
 """
 
-# Updated for Experiment
+# Updated prompts with better formatting and clearer instructions
 VARIANT_GENERATION_PROMPT_WITH_CONTEXT = """
-You are verifying the correctness of a step-by-step solution.
+You are improving a step in a mathematical solution. Your job is to rewrite the current step to be logically sound and clear.
 
-Original solution:
-{}
+PROBLEM: {problem}
 
-Verification instruction:
-{}
+SOLUTION APPROACH: {approach}
 
-Previously verified steps (cumulative context):
-{}
+VERIFIED PREVIOUS STEPS:
+{context}
 
-Current step to verify:
-{}
+CURRENT STEP TO IMPROVE:
+{current_step}
 
-IS_LAST_STEP: {}
+IS_FINAL_STEP: {is_final}
 
-Instructions for you:
-- Focus only on verifying or revising **the current step** using the context above.
-- If the current step is correct and logically consistent, keep it as is.
-- If the step has errors, unclear logic, or poor structure, revise it to improve reasoning and clarity.
-- Preserve the **exact original format**:
-  Step {} variant {}: <your verified or revised step goes here>
-- DO NOT solve the problem or compute the final answer.
-- DO NOT include or duplicate any previous steps.
-- ONLY output the verified or revised current step.
+TASK:
+Rewrite the current step to be mathematically correct and logically consistent with the previous steps. 
 
-If IS_LAST_STEP is true:
-- Append the answer in a new line at the end using this exact format:
-  # Answer <answer>
+REQUIREMENTS:
+- Write as if you are the original solver
+- Use clear, direct mathematical language
+- Ensure logical flow from previous steps
+- Do not reference other steps explicitly ("the previous step", "this step")
+- Do not include meta-commentary or judgments
+- Keep mathematical notation consistent
+{final_instruction}
 
-Important:
-- Do NOT provide explanations.
-- Do NOT include any commentary.
-- Output only the revised step and optional answer if applicable.
+OUTPUT FORMAT:
+Provide only the improved step content, no additional text or formatting.
 """
 
-# ENHANCED: Now includes cumulative context for consistency evaluation
 VOTING_PROMPT_WITH_CONTEXT = """
-CUMULATIVE CONTEXT (Previously verified steps):
-{}
+You need to select the best mathematical step from the candidates provided.
 
-Original step:
-{}
+CONTEXT FROM PREVIOUS VERIFIED STEPS:
+{context}
 
-Candidate revisions:
-{}
+ORIGINAL STEP:
+{original_step}
 
-Instruction:
-Select the most methodologically sound and contextually consistent candidate revision.
+CANDIDATE IMPROVEMENTS:
+{candidates}
 
-Evaluation Criteria:
-- Logical continuation of the previous verified steps
-- Clear and systematic reasoning
-- Strong error-prevention and clarity of process
-- Maintains alignment with the reasoning chain established so far
+SELECT the candidate that:
+1. Is mathematically most accurate
+2. Follows logically from previous steps  
+3. Uses clear, direct language
+4. Contains no meta-commentary
 
-ONLY return the best revised version in the original format:
+OUTPUT FORMAT:
+Return only the selected candidate content (no "Candidate X:" prefix, no explanations).
+{voting_instruction}
 """
 
 DECISION_PROMPT = """
-You are given two reasoning steps for the same problem:
+Compare the mathematical correctness and logical flow of these two solution versions:
 
-Original version:
-{}
----
-Verified version:
-{}
+ORIGINAL SOLUTION STEPS:
+{original_steps}
 
-Your task is to choose which version has better logical and mathematical reasoning.
+VERIFIED SOLUTION STEPS: 
+{verified_steps}
 
-Follow these steps:
-1. Carefully compare the structure, logic, and correctness of the reasoning in both versions.
-2. Identify any flaws, gaps, or invalid steps in either version.
-3. Focus on methodology quality — not just the final answer.
+TASK: Determine which version is better.
 
-Use the following decision rules:
-- Respond with **[REPLACE]** if the Verified version clearly improves or corrects flaws in the Original.
-- Respond with **[SUFFICIENT]** if the Original version is already valid and the Verified version does not add meaningful improvement.
+DECISION RULES:
+- Use REPLACE if verified version fixes mathematical errors or significantly improves clarity
+- Use SUFFICIENT if original version is already mathematically sound
 
-Only respond with one of the following tokens: [REPLACE] or [SUFFICIENT]
+OUTPUT: Respond with exactly one word: REPLACE or SUFFICIENT
 """
+
+def get_final_step_instruction(is_final_step: bool) -> str:
+    """Helper function to format final step instruction"""
+    if is_final_step:
+        return "\n- Since this is the final step, end with the final answer in the format: Answer: [numerical_value]"
+    return ""
+
+def get_voting_final_instruction(step_index: int, total_steps: int) -> str:
+    """Helper function to format voting final instruction"""
+    if step_index == total_steps - 1:
+        return "\nEnsure the selected step ends with: Answer: [numerical_value]"
+    return ""
