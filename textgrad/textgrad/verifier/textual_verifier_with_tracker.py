@@ -208,8 +208,13 @@ class TextualVerifierWithTracker(Verifier):
             )
             
             # Vote on best variant
-            tracker_best_variant = {}
-            if len(steps) > 1:
+            tracker_best_variant = {
+                "calculation": "No voting",
+                "generated_variants": "No voting",
+                "llm_input_or_voting_prompt": "No voting",
+                "llm_output_or_best_variant": "",
+            }
+            if len(self.verification_task_prompts) > 1:
                 best_variant, tracker_best_variant = self._majority_vote_variants(
                     calculation=step,
                     generated_variants=variants,
@@ -218,6 +223,7 @@ class TextualVerifierWithTracker(Verifier):
                 self.tracker['total_output_tokens'] += self._count_tokens(best_variant)
             else:
                 best_variant = variants[0]
+                tracker_best_variant["llm_output_or_best_variant"] = best_variant
             
             verified_steps.append(best_variant)
 
