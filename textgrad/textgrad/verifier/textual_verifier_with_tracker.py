@@ -53,7 +53,7 @@ class TextualVerifierWithTracker(Verifier):
         self.enable_logging = enable_logging
         self.tracker = {
             "setup": {
-                "verifier_engine": verifier_engine,
+                "verifier_engine": str(verifier_engine),
                 "use_cot_generation": use_cot_generation,
                 "use_step_breakdown": use_step_breakdown,
                 "verification_task_prompts": verification_task_prompts,
@@ -109,9 +109,9 @@ class TextualVerifierWithTracker(Verifier):
         """
         start_time = self._start_timer()
         self._log("Start verification process...")
-        self.tracker["variable"]["instance"] = instance
-        self.tracker["variable"]["instruction"] = instruction
-        self.tracker["variable"]["calculation"] = calculation
+        self.tracker["variable"]["instance"] = instance.value
+        self.tracker["variable"]["instruction"] = instruction.value
+        self.tracker["variable"]["calculation"] = calculation.value
         
         # Phase 1: Generate Chain-of-Thought steps if enabled
         processed_calculation = self._process_calculation_with_cot(calculation.value)
