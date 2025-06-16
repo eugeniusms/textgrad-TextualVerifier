@@ -38,7 +38,6 @@ from .verifier import (
     TextualVerifierV4,
     TextualVerifier,
     TextualVerifierWithTracker,
-    TextualVerifierExperiment,
 )
 
 singleton_backward_engine = SingletonBackwardEngine()
