@@ -173,11 +173,14 @@ class TextualVerifier(Verifier):
             )
             
             # Vote on best variant
-            best_variant = self._majority_vote_variants(
-                calculation=step,
-                generated_variants=variants,
-                step_number=i+1
-            )
+            if len(steps) > 1:
+                best_variant = self._majority_vote_variants(
+                    calculation=step,
+                    generated_variants=variants,
+                    step_number=i+1
+                )
+            else:
+                best_variant = variants[0]
             
             verified_steps.append(best_variant)
             
