@@ -1,0 +1,7 @@
+Dataset: GPQA, MMLU-ML, MMLU-CP
+Bandingkan:
+1. Baseline (Dataset -> LLM)
+2. TextGrad
+3. TextGrad + TV (L)
+4. TextGrad + TV (O)
+5. TextGrad + TV (LO)
