@@ -34,6 +34,7 @@ Avoid expanding beyond the current step or solving the entire problem.
 """,
 
 VERSION: 1v Domain Spesific (mmlu-ml)
+OPTIMIZER
 # Perspective 1: Rule-based verifier (objective, procedural)
 """
 You are a rule-based verifier evaluating a single reasoning step within a solution to a machine learning question. Your task is to assess whether this step is:
@@ -56,6 +57,7 @@ Proceed with output:
 """,
 
 VERSION: 1v Longer
+OPTIMIZER
 # General Perspective: Rule-based verifier (cross-domain, focused, corrective)
 """
 Carefully analyze the provided step from a solution in the context of its domain (e.g., mathematics, physics, chemistry, or machine learning).
@@ -76,6 +78,7 @@ Corrected Step: [provide the corrected version]
 """
 
 VERSION: 1v Using Variables
+OPTIMIZER
 """
 1. When using $instruction to $instance, I got $previous context and now in the stage of $calculation.
 2. Evaluate the $calculation value correctly reflects the performance of the instance.
