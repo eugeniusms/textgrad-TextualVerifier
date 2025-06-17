@@ -1,0 +1,7 @@
+# Perspective 1: Rule-based verifier (objective, procedural)
+"""
+Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
+If the step violates any algebraic or logical principle, replace it with the corrected version of that step only. 
+Do not proceed to solve the full problem.
+Please proceed output with 
+""",

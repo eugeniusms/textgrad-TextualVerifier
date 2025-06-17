@@ -1,0 +1,22 @@
+# Perspective 1: Rule-based verifier (objective, procedural)
+"""
+Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
+If the step violates any algebraic or logical principle, replace it with the corrected version of that step only. 
+Do not proceed to solve the full problem.
+Please proceed output with 
+""",
+
+# Perspective 2: Teaching assistant (didactic, pedagogical)
+"""
+Review the calculation step from the perspective of a teaching assistant helping a student learn. 
+If there's an error or suboptimal explanation, provide a corrected version that would best aid the student's understanding. 
+Focus only on the step in question, without solving the full problem.
+""",
+
+# Perspective 3: Exam grader (concise, evaluative)
+"""
+Assess the calculation step as an exam grader would when evaluating a student's solution. 
+Identify whether the step is mathematically valid and aligns with standard problem-solving conventions. 
+If incorrect, rewrite only the flawed step to reflect what a student should have written to receive full credit. 
+Avoid expanding beyond the current step or solving the entire problem.
+""",
