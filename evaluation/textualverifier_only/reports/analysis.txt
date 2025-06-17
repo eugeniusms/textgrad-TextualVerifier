@@ -35,6 +35,116 @@ Version 5:
   • Avg Processing Time: 327053.2 ms
   • Avg LLM Calls: 112.7
 
+
+📋 STUART-MAXWELL TEST RESULTS:
+==================================================
+
+Version 1:
+  • Sample Size: 1315
+  • Test Statistic: 601974929.7192
+  • P-value: 0.0000
+  • Marginal Homogeneity: Rejected
+  • Status: Success
+  • Original Ratings: [-1: 280, 0: 104, +1: 931]
+  • Verified Ratings: [-1: 0, 0: 19, +1: 1296]
+
+Version 2:
+  • Sample Size: 1315
+  • Test Statistic: 581899030.0864
+  • P-value: 0.0000
+  • Marginal Homogeneity: Rejected
+  • Status: Success
+  • Original Ratings: [-1: 280, 0: 104, +1: 931]
+  • Verified Ratings: [-1: 0, 0: 26, +1: 1289]
+
+Version 3:
+  • Sample Size: 1315
+  • Test Statistic: 580347421.5625
+  • P-value: 0.0000
+  • Marginal Homogeneity: Rejected
+  • Status: Success
+  • Original Ratings: [-1: 280, 0: 104, +1: 931]
+  • Verified Ratings: [-1: 0, 0: 27, +1: 1288]
+
+Version 4:
+  • Sample Size: 1315
+  • Test Statistic: 591683592.1041
+  • P-value: 0.0000
+  • Marginal Homogeneity: Rejected
+  • Status: Success
+  • Original Ratings: [-1: 280, 0: 104, +1: 931]
+  • Verified Ratings: [-1: 0, 0: 27, +1: 1288]
+
+Version 5:
+  • Sample Size: 1315
+  • Test Statistic: 588309587.4211
+  • P-value: 0.0000
+  • Marginal Homogeneity: Rejected
+  • Status: Success
+  • Original Ratings: [-1: 280, 0: 104, +1: 931]
+  • Verified Ratings: [-1: 0, 0: 25, +1: 1290]
+
+🔍 CROSS-VERSION COMPARISON:
+========================================
+🔥 Most asymmetric transitions: Version 1 (χ²=601974929.719)
+✅ Most symmetric transitions: Version 3 (χ²=580347421.563)
+
+📊 SUMMARY STATISTICS:
+  • Versions with significant asymmetry: 5/5
+  • Asymmetric versions: Version 1, Version 2, Version 3, Version 4, Version 5
+
+📈 RATING CHANGE PATTERNS:
+  Version 1:
+    • Improvements: 29.0% (382/1315)
+    • Degradations: 0.9% (12/1315)
+    • Stable: 70.0% (921/1315)
+  Version 2:
+    • Improvements: 28.9% (380/1315)
+    • Degradations: 1.3% (17/1315)
+    • Stable: 69.8% (918/1315)
+  Version 3:
+    • Improvements: 28.8% (379/1315)
+    • Degradations: 1.3% (17/1315)
+    • Stable: 69.9% (919/1315)
+  Version 4:
+    • Improvements: 29.0% (381/1315)
+    • Degradations: 1.0% (13/1315)
+    • Stable: 70.0% (921/1315)
+  Version 5:
+    • Improvements: 29.0% (381/1315)
+    • Degradations: 1.1% (15/1315)
+    • Stable: 69.9% (919/1315)
+
+⚖️  NET RATING CHANGES:
+------------------------------
+Version 1:
+  • Net change to -1: -280
+  • Net change to  0: -85
+  • Net change to +1: +365
+Version 2:
+  • Net change to -1: -280
+  • Net change to  0: -78
+  • Net change to +1: +358
+Version 3:
+  • Net change to -1: -280
+  • Net change to  0: -77
+  • Net change to +1: +357
+Version 4:
+  • Net change to -1: -280
+  • Net change to  0: -77
+  • Net change to +1: +357
+Version 5:
+  • Net change to -1: -280
+  • Net change to  0: -79
+  • Net change to +1: +359
+
+💡 KEY INSIGHTS:
+=========================
+🔄 MAJOR FINDING: Most versions show significant rating asymmetries
+   → Verification process systematically changes rating distributions
+
+🏆 Most balanced rating transitions: Version 3
+   → Lowest asymmetry score: 580347421.563
 ================================================================================
 STUART-MAXWELL TEST ANALYSIS REPORT
 Marginal Homogeneity Testing for Rating Transition Matrices
@@ -384,6 +494,428 @@ Quality Assurance Guidelines:
 
 ================================================================================
 END OF STUART-MAXWELL TEST ANALYSIS REPORT
+================================================================================
+================================================================================
+CORRELATION HEATMAP ANALYSIS REPORT
+Multi-Variable Relationship Analysis Across Verification System Metrics
+================================================================================
+
+EXECUTIVE SUMMARY
+--------------------------------------------------
+Total variables analyzed: 14
+Total correlation pairs: 78
+Missing variables: 0
+
+Correlation Statistics:
+  Mean correlation: 0.375
+  Standard deviation: 0.404
+  Range: -0.297 to 1.000
+
+Correlation Strength Distribution:
+  Strong Positive (≥0.7):      22 ( 28.2%)
+  Moderate Positive (0.3-0.7):  22 ( 28.2%)
+  Weak Positive (0.1-0.3):      10 ( 12.8%)
+  Negligible (-0.1 to 0.1):     11 ( 14.1%)
+  Weak Negative (-0.3 to -0.1):  13 ( 16.7%)
+  Moderate Negative (-0.7 to -0.3):   0 (  0.0%)
+  Strong Negative (≤-0.7):       0 (  0.0%)
+
+STRONGEST CORRELATIONS
+--------------------------------------------------
+Top 10 Strongest Positive Correlations:
+   1. original_total_steps      ↔ verified_total_steps      r =  1.000
+   2. original_total_steps      ↔ verifier_pos1             r =  0.998
+   3. verified_total_steps      ↔ verifier_pos1             r =  0.998
+   4. processing_time_ms        ↔ total_output_tokens       r =  0.960
+   5. processing_time_ms        ↔ total_input_tokens        r =  0.945
+   6. original_total_steps      ↔ original_pos1             r =  0.931
+   7. original_pos1             ↔ verified_total_steps      r =  0.931
+   8. original_pos1             ↔ verifier_pos1             r =  0.929
+   9. total_input_tokens        ↔ total_output_tokens       r =  0.913
+  10. processing_time_ms        ↔ total_llm_calls           r =  0.885
+
+Top 10 Strongest Negative Correlations:
+   1. original_answer_correctness ↔ original_neg1             r = -0.297
+   2. verifier_answer_correctness ↔ processing_time_ms        r = -0.286
+   3. verifier_answer_correctness ↔ verifier_pos1             r = -0.272
+   4. verifier_answer_correctness ↔ verified_total_steps      r = -0.266
+   5. original_total_steps      ↔ verifier_answer_correctness r = -0.266
+   6. original_pos1             ↔ verifier_answer_correctness r = -0.264
+   7. verifier_answer_correctness ↔ total_output_tokens       r = -0.224
+   8. verifier_answer_correctness ↔ total_input_tokens        r = -0.222
+   9. verifier_answer_correctness ↔ total_llm_calls           r = -0.184
+  10. original_answer_correctness ↔ total_output_tokens       r = -0.180
+
+COMPLETE CORRELATION MATRIX
+--------------------------------------------------
+Variable                        1       2       3       4       5       6       7       8       9      10      11      12      13      14
+-----------------------------------------------------------------------------------------------------------------------------------------
+ 1. original_answer_corr   1.000                                                                                                        
+ 2. original_total_steps  -0.058   1.000                                                                                                
+ 3. original_neg1         -0.297   0.662   1.000                                                                                        
+ 4. original_zero          0.059   0.443   0.115   1.000                                                                                
+ 5. original_pos1          0.058   0.931   0.372   0.348   1.000                                                                        
+ 6. verifier_answer_corr   0.089  -0.266  -0.145  -0.110  -0.264   1.000                                                                
+ 7. verified_total_steps  -0.058   1.000   0.662   0.443   0.931  -0.266   1.000                                                        
+ 8. verifier_neg1            nan     nan     nan     nan     nan     nan     nan   1.000                                                
+ 9. verifier_zero          0.096   0.203   0.091   0.155   0.198   0.064   0.203     nan   1.000                                        
+10. verifier_pos1         -0.065   0.998   0.663   0.439   0.929  -0.272   0.998     nan   0.144   1.000                                
+11. processing_time_ms    -0.145   0.746   0.623   0.369   0.623  -0.286   0.746     nan   0.116   0.747   1.000                        
+12. total_llm_calls       -0.044   0.758   0.502   0.336   0.706  -0.184   0.758     nan   0.176   0.756   0.885   1.000                
+13. total_input_tokens    -0.093   0.780   0.626   0.392   0.663  -0.222   0.780     nan   0.153   0.779   0.945   0.880   1.000        
+14. total_output_tokens   -0.180   0.658   0.608   0.356   0.515  -0.224   0.658     nan   0.134   0.657   0.960   0.816   0.913   1.000
+
+Variable Legend:
+   1. original_answer_correctness
+   2. original_total_steps
+   3. original_neg1
+   4. original_zero
+   5. original_pos1
+   6. verifier_answer_correctness
+   7. verified_total_steps
+   8. verifier_neg1
+   9. verifier_zero
+  10. verifier_pos1
+  11. processing_time_ms
+  12. total_llm_calls
+  13. total_input_tokens
+  14. total_output_tokens
+
+KEY RELATIONSHIP ANALYSIS
+--------------------------------------------------
+Performance Correlations:
+  original_answer_correctness:
+    → original_neg1            : -0.297
+    → total_output_tokens      : -0.180
+    → processing_time_ms       : -0.145
+  verifier_answer_correctness:
+    → processing_time_ms       : -0.286
+    → verifier_pos1            : -0.272
+    → verified_total_steps     : -0.266
+    → original_total_steps     : -0.266
+    → original_pos1            : -0.264
+
+Efficiency Correlations:
+  processing_time_ms:
+    → total_output_tokens      :  0.960
+    → total_input_tokens       :  0.945
+    → total_llm_calls          :  0.885
+  total_llm_calls:
+    → processing_time_ms       :  0.885
+    → total_input_tokens       :  0.880
+    → total_output_tokens      :  0.816
+  total_input_tokens:
+    → processing_time_ms       :  0.945
+    → total_output_tokens      :  0.913
+    → total_llm_calls          :  0.880
+  total_output_tokens:
+    → processing_time_ms       :  0.960
+    → total_input_tokens       :  0.913
+    → total_llm_calls          :  0.816
+
+VERSION-SPECIFIC CORRELATION PATTERNS
+--------------------------------------------------
+Version 1:
+  Sample size: 70
+  Top correlations (|r| > 0.3):
+    original_total_steps ↔ verified_total_steps:  1.000
+    original_total_steps ↔ total_llm_calls     :  1.000
+    verified_total_steps ↔ total_llm_calls     :  1.000
+    original_total_steps ↔ verifier_pos1       :  0.999
+    verified_total_steps ↔ verifier_pos1       :  0.999
+  Average correlation strength: 0.722
+
+Version 2:
+  Sample size: 70
+  Top correlations (|r| > 0.3):
+    original_total_steps ↔ total_llm_calls     :  1.000
+    verified_total_steps ↔ total_llm_calls     :  1.000
+    original_total_steps ↔ verified_total_steps:  1.000
+    original_total_steps ↔ verifier_pos1       :  0.998
+    verified_total_steps ↔ verifier_pos1       :  0.998
+  Average correlation strength: 0.681
+
+Version 3:
+  Sample size: 70
+  Top correlations (|r| > 0.3):
+    original_total_steps ↔ verified_total_steps:  1.000
+    original_total_steps ↔ total_llm_calls     :  1.000
+    verified_total_steps ↔ total_llm_calls     :  1.000
+    original_total_steps ↔ verifier_pos1       :  0.998
+    verified_total_steps ↔ verifier_pos1       :  0.998
+  Average correlation strength: 0.735
+
+Version 4:
+  Sample size: 70
+  Top correlations (|r| > 0.3):
+    original_total_steps ↔ verified_total_steps:  1.000
+    original_total_steps ↔ total_llm_calls     :  1.000
+    verified_total_steps ↔ total_llm_calls     :  1.000
+    verifier_pos1        ↔ total_llm_calls     :  0.998
+    original_total_steps ↔ verifier_pos1       :  0.998
+  Average correlation strength: 0.708
+
+Version 5:
+  Sample size: 70
+  Top correlations (|r| > 0.3):
+    original_total_steps ↔ total_llm_calls     :  1.000
+    verified_total_steps ↔ total_llm_calls     :  1.000
+    original_total_steps ↔ verified_total_steps:  1.000
+    original_total_steps ↔ verifier_pos1       :  0.998
+    verified_total_steps ↔ verifier_pos1       :  0.998
+  Average correlation strength: 0.748
+
+STATISTICAL INSIGHTS
+--------------------------------------------------
+🔍 HIGH MULTICOLLINEARITY DETECTED
+  Multiple strong correlations (|r| ≥ 0.7) found.
+  Consider dimensionality reduction or variable selection.
+
+PRACTICAL IMPLICATIONS
+--------------------------------------------------
+Model Building Considerations:
+  • High multicollinearity detected - consider feature selection
+  • Use regularization techniques (Ridge/Lasso) for regression
+  • Consider principal component analysis for dimensionality reduction
+
+System Optimization Insights:
+  Key efficiency relationships identified:
+    • processing_time_ms and total_output_tokens increase together (r=0.960)
+    • processing_time_ms and total_input_tokens increase together (r=0.945)
+    • total_input_tokens and total_output_tokens increase together (r=0.913)
+
+Quality Monitoring Recommendations:
+  • Monitor strongly correlated variables together
+  • Set up alerts for unusual correlation pattern changes
+  • Use correlation patterns for anomaly detection
+
+================================================================================
+END OF CORRELATION HEATMAP ANALYSIS REPORT
+================================================================================
+
+================================================================================
+
+================================================================================
+ORIGINAL STEPS vs LLM CALLS RELATIONSHIP ANALYSIS REPORT
+Resource Scaling and Predictability Analysis Across Verification Versions
+================================================================================
+
+EXECUTIVE SUMMARY
+--------------------------------------------------
+Versions analyzed: 5
+Overall relationship strength: 1.000
+Correlation range: 1.000 to 1.000
+
+Overall Relationship: STRONG
+Predictability: Highly predictable
+Practical Implication: LLM usage can be reliably estimated from problem complexity
+
+INDIVIDUAL VERSION ANALYSIS
+--------------------------------------------------
+1. Version 1
+   Correlation coefficient (r):  1.000
+   Relationship strength: Strong
+   Interpretation: Highly predictable scaling
+   Sample size: 70 problems
+
+   Descriptive Statistics:
+     Original Steps: Mean =  18.8, SD =  11.7
+     LLM Calls:      Mean =  18.8, SD =  11.7
+
+   Linear Relationship:
+     LLM Calls = 1.000 × Original Steps + -0.000
+     Slope interpretation: 1.000 additional LLM calls per step
+     Baseline: 0.0 LLM calls saved (efficiency)
+
+   Explained Variance (R²): 1.000 (100.0%)
+   → 100.0% of LLM call variation explained by step count
+
+   Resource Planning Capability: HIGH
+   → Can estimate LLM usage with 100% accuracy
+   → Suitable for cost prediction and capacity planning
+
+----------------------------------------
+
+2. Version 2
+   Correlation coefficient (r):  1.000
+   Relationship strength: Strong
+   Interpretation: Highly predictable scaling
+   Sample size: 70 problems
+
+   Descriptive Statistics:
+     Original Steps: Mean =  18.8, SD =  11.7
+     LLM Calls:      Mean =  56.4, SD =  35.2
+
+   Linear Relationship:
+     LLM Calls = 3.000 × Original Steps + -0.000
+     Slope interpretation: 3.000 additional LLM calls per step
+     Baseline: 0.0 LLM calls saved (efficiency)
+
+   Explained Variance (R²): 1.000 (100.0%)
+   → 100.0% of LLM call variation explained by step count
+
+   Resource Planning Capability: HIGH
+   → Can estimate LLM usage with 100% accuracy
+   → Suitable for cost prediction and capacity planning
+
+----------------------------------------
+
+3. Version 3
+   Correlation coefficient (r):  1.000
+   Relationship strength: Strong
+   Interpretation: Highly predictable scaling
+   Sample size: 70 problems
+
+   Descriptive Statistics:
+     Original Steps: Mean =  18.8, SD =  11.7
+     LLM Calls:      Mean =  75.1, SD =  46.9
+
+   Linear Relationship:
+     LLM Calls = 4.000 × Original Steps + -0.000
+     Slope interpretation: 4.000 additional LLM calls per step
+     Baseline: 0.0 LLM calls saved (efficiency)
+
+   Explained Variance (R²): 1.000 (100.0%)
+   → 100.0% of LLM call variation explained by step count
+
+   Resource Planning Capability: HIGH
+   → Can estimate LLM usage with 100% accuracy
+   → Suitable for cost prediction and capacity planning
+
+----------------------------------------
+
+4. Version 4
+   Correlation coefficient (r):  1.000
+   Relationship strength: Strong
+   Interpretation: Highly predictable scaling
+   Sample size: 70 problems
+
+   Descriptive Statistics:
+     Original Steps: Mean =  18.8, SD =  11.7
+     LLM Calls:      Mean =  93.9, SD =  58.6
+
+   Linear Relationship:
+     LLM Calls = 5.000 × Original Steps + 0.000
+     Slope interpretation: 5.000 additional LLM calls per step
+     Baseline: 0.0 LLM calls saved (efficiency)
+
+   Explained Variance (R²): 1.000 (100.0%)
+   → 100.0% of LLM call variation explained by step count
+
+   Resource Planning Capability: HIGH
+   → Can estimate LLM usage with 100% accuracy
+   → Suitable for cost prediction and capacity planning
+
+----------------------------------------
+
+5. Version 5
+   Correlation coefficient (r):  1.000
+   Relationship strength: Strong
+   Interpretation: Highly predictable scaling
+   Sample size: 70 problems
+
+   Descriptive Statistics:
+     Original Steps: Mean =  18.8, SD =  11.7
+     LLM Calls:      Mean = 112.7, SD =  70.3
+
+   Linear Relationship:
+     LLM Calls = 6.000 × Original Steps + -0.000
+     Slope interpretation: 6.000 additional LLM calls per step
+     Baseline: 0.0 LLM calls saved (efficiency)
+
+   Explained Variance (R²): 1.000 (100.0%)
+   → 100.0% of LLM call variation explained by step count
+
+   Resource Planning Capability: HIGH
+   → Can estimate LLM usage with 100% accuracy
+   → Suitable for cost prediction and capacity planning
+
+----------------------------------------
+
+CROSS-VERSION COMPARISON
+--------------------------------------------------
+Most Predictable Version: Version 1
+  Correlation: 1.000
+  Resource planning: Highly reliable
+
+Least Predictable Version: Version 1
+  Correlation: 1.000
+  Resource planning: Unreliable
+
+Version Consistency Analysis:
+  Correlation range: 1.000 to 1.000
+  Coefficient of variation: 0.000
+  → HIGH CONSISTENCY: All versions show similar scaling patterns
+
+EFFICIENCY SCALING ANALYSIS
+--------------------------------------------------
+Version 1:
+  Scaling rate: 1.000 LLM calls per step
+  Efficiency: EFFICIENT
+  Description: Uses ~1-1.5 LLM calls per step
+  Efficiency bonus: 0.0 LLM calls saved
+
+Version 2:
+  Scaling rate: 3.000 LLM calls per step
+  Efficiency: INEFFICIENT
+  Description: Uses >2 LLM calls per step
+  Efficiency bonus: 0.0 LLM calls saved
+
+Version 3:
+  Scaling rate: 4.000 LLM calls per step
+  Efficiency: INEFFICIENT
+  Description: Uses >2 LLM calls per step
+  Efficiency bonus: 0.0 LLM calls saved
+
+Version 4:
+  Scaling rate: 5.000 LLM calls per step
+  Efficiency: INEFFICIENT
+  Description: Uses >2 LLM calls per step
+  Efficiency bonus: 0.0 LLM calls saved
+
+Version 5:
+  Scaling rate: 6.000 LLM calls per step
+  Efficiency: INEFFICIENT
+  Description: Uses >2 LLM calls per step
+  Efficiency bonus: 0.0 LLM calls saved
+
+PREDICTIVE MODELING INSIGHTS
+--------------------------------------------------
+High Predictability Versions (5):
+  • Version 1: r = 1.000 (R² = 1.000)
+  • Version 2: r = 1.000 (R² = 1.000)
+  • Version 3: r = 1.000 (R² = 1.000)
+  • Version 4: r = 1.000 (R² = 1.000)
+  • Version 5: r = 1.000 (R² = 1.000)
+
+Moderate Predictability Versions (0):
+
+Low Predictability Versions (0):
+
+PRACTICAL RECOMMENDATIONS
+--------------------------------------------------
+Resource Planning:
+  • Use Version 1, Version 2, Version 3, Version 4, Version 5 for reliable cost estimation
+  • Step count provides good proxy for LLM usage
+  • Implement step-based capacity planning
+
+Version Selection:
+  • Recommended: Version 1 (most predictable scaling)
+  • Provides 100% resource predictability
+  • Avoid: Version 1 (unpredictable scaling)
+
+Cost Optimization:
+  • Most efficient: Version 1 (1.000 LLM calls per step)
+  • Focus optimization efforts on inefficient versions
+  • Monitor scaling rates for cost control
+
+Quality Assurance:
+  • Set up monitoring for step-to-LLM call ratios
+  • Alert on deviations from expected scaling patterns
+  • Regular recalibration of prediction models
+
+================================================================================
+END OF STEPS vs LLM CALLS RELATIONSHIP ANALYSIS REPORT
 ================================================================================
 
 ======================================================================
