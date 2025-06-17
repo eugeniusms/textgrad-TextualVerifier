@@ -54,3 +54,23 @@ Identify whether the step is mathematically valid and aligns with standard probl
 If incorrect, rewrite only the flawed step to reflect what a student should have written to receive full credit. 
 Avoid expanding beyond the current step or solving the entire problem.
 """,
+
+VERSION: 1v-step
+LOSS
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
+"""
+1. When using $instruction to $instance, I got the loss $calculation.
+2. Evaluate the loss $calculation value correctly reflects the performance of the instance.
+3. If the loss $calculation is incorrect or inconsistent, provide the corrected version of the loss $calculation. 
+4. Do NOT calculate the solution/instance, evaluate $calculation ONLY.
+"""
+OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
+# Perspective 1: Rule-based verifier (objective, procedural)
+"""
+Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
+If the step violates any algebraic or logical principle, replace it with the corrected version of that step only. 
+Do not proceed to solve the full problem.
+"""
