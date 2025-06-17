@@ -1,5 +1,7 @@
 VERSION: 1v
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 # Perspective 1: Rule-based verifier (objective, procedural)
 """
 Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
@@ -10,6 +12,8 @@ Please proceed output with
 
 VERSION: 3v
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 # Perspective 1: Rule-based verifier (objective, procedural)
 """
 Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
@@ -35,6 +39,8 @@ Avoid expanding beyond the current step or solving the entire problem.
 
 VERSION: 1v Domain Spesific (mmlu-ml)
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 # Perspective 1: Rule-based verifier (objective, procedural)
 """
 You are a rule-based verifier evaluating a single reasoning step within a solution to a machine learning question. Your task is to assess whether this step is:
@@ -58,6 +64,8 @@ Proceed with output:
 
 VERSION: 1v Longer
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 # General Perspective: Rule-based verifier (cross-domain, focused, corrective)
 """
 Carefully analyze the provided step from a solution in the context of its domain (e.g., mathematics, physics, chemistry, or machine learning).
@@ -79,6 +87,8 @@ Corrected Step: [provide the corrected version]
 
 VERSION: 1v Using Variables
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 """
 1. When using $instruction to $instance, I got $previous context and now in the stage of $calculation.
 2. Evaluate the $calculation value correctly reflects the performance of the instance.

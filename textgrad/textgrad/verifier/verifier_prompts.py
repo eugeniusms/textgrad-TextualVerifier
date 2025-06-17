@@ -46,5 +46,5 @@ Generated variants:
 
 Use majority voting to identify the variant that appears most frequently.
 Select that single variant as the replacement for the original calculation.
-Provide ONLY the selected variant, with no additional text or formatting.
+Provide ONLY the selected variant/merged variant, with no additional text or formatting.
 """

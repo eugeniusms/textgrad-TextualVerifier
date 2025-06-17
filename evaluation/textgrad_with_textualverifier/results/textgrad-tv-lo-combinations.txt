@@ -1,5 +1,7 @@
 VERSION: 1v
 LOSS
+COT_PROMPT: FALSE
+STEP_BREAKDOWN: FALSE
 """
 1. When using $instruction to $instance, I got the loss $calculation.
 2. Evaluate the loss $calculation value correctly reflects the performance of the instance.
@@ -7,6 +9,8 @@ LOSS
 4. Do NOT calculate the solution/instance, evaluate $calculation ONLY.
 """
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 # Perspective 1: Rule-based verifier (objective, procedural)
 """
 Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
@@ -17,6 +21,8 @@ Please proceed output with
 
 VERSION: 3v
 LOSS
+COT_PROMPT: FALSE
+STEP_BREAKDOWN: FALSE
 """
 1. When using $instruction to $instance, I got the loss $calculation.
 2. Evaluate the loss $calculation value correctly reflects the performance of the instance.
@@ -24,6 +30,8 @@ LOSS
 4. Do NOT calculate the solution/instance, evaluate $calculation ONLY.
 """
 OPTIMIZER
+COT_PROMPT: TRUE
+STEP_BREAKDOWN: TRUE
 # Perspective 1: Rule-based verifier (objective, procedural)
 """
 Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
