@@ -26,3 +26,5 @@ Analysis: Power Analysis
 
 5. LLM Tokens? Cost? Time?
 6. Etc idea
+
+OK THIS
