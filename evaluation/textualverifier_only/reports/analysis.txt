@@ -35,117 +35,356 @@ Version 5:
   • Avg Processing Time: 327053.2 ms
   • Avg LLM Calls: 112.7
 
+================================================================================
+STUART-MAXWELL TEST ANALYSIS REPORT
+Marginal Homogeneity Testing for Rating Transition Matrices
+================================================================================
 
-📋 STUART-MAXWELL TEST RESULTS:
-==================================================
+EXECUTIVE SUMMARY
+--------------------------------------------------
+Total versions analyzed: 5
+Versions with significant asymmetry (p < 0.05): 5/5 (100.0%)
+Average test statistic across versions: 588842912.179
 
-Version 1:
-  • Sample Size: 1315
-  • Test Statistic: 601974929.7192
-  • P-value: 0.0000
-  • Marginal Homogeneity: Rejected
-  • Status: Success
-  • Original Ratings: [-1: 280, 0: 104, +1: 931]
-  • Verified Ratings: [-1: 0, 0: 19, +1: 1296]
+OVERALL FINDING: SYSTEMATIC RATING BIAS DETECTED
+The majority of versions show statistically significant evidence of
+non-symmetric rating transitions, indicating systematic bias in the
+verification process.
 
-Version 2:
-  • Sample Size: 1315
-  • Test Statistic: 581899030.0864
-  • P-value: 0.0000
-  • Marginal Homogeneity: Rejected
-  • Status: Success
-  • Original Ratings: [-1: 280, 0: 104, +1: 931]
-  • Verified Ratings: [-1: 0, 0: 26, +1: 1289]
+DETAILED VERSION ANALYSIS
+--------------------------------------------------
+VERSION 1
+─────────
+Sample size: 1315 transitions
+Stuart-Maxwell χ² statistic: 601974929.7192
+Degrees of freedom: 2
+P-value: 0.0000
+Significance: p < 0.001 (***)
+Interpretation: Highly significant evidence against marginal homogeneity
 
-Version 3:
-  • Sample Size: 1315
-  • Test Statistic: 580347421.5625
-  • P-value: 0.0000
-  • Marginal Homogeneity: Rejected
-  • Status: Success
-  • Original Ratings: [-1: 280, 0: 104, +1: 931]
-  • Verified Ratings: [-1: 0, 0: 27, +1: 1288]
+Transition Matrix Details:
+  From -1 → To -1:    0   From -1 → To  0:    5   From -1 → To +1:  275
+  From  0 → To -1:    0   From  0 → To  0:    2   From  0 → To +1:  102
+  From +1 → To -1:    0   From +1 → To  0:   12   From +1 → To +1:  919
 
-Version 4:
-  • Sample Size: 1315
-  • Test Statistic: 591683592.1041
-  • P-value: 0.0000
-  • Marginal Homogeneity: Rejected
-  • Status: Success
-  • Original Ratings: [-1: 280, 0: 104, +1: 931]
-  • Verified Ratings: [-1: 0, 0: 27, +1: 1288]
+Transition Percentages:
+  From -1 → To -1:    0 (  0.0%)
+  From -1 → To  0:    5 (  0.4%)
+  From -1 → To +1:  275 ( 20.9%)
+  From  0 → To -1:    0 (  0.0%)
+  From  0 → To  0:    2 (  0.2%)
+  From  0 → To +1:  102 (  7.8%)
+  From +1 → To -1:    0 (  0.0%)
+  From +1 → To  0:   12 (  0.9%)
+  From +1 → To +1:  919 ( 69.9%)
 
-Version 5:
-  • Sample Size: 1315
-  • Test Statistic: 588309587.4211
-  • P-value: 0.0000
-  • Marginal Homogeneity: Rejected
-  • Status: Success
-  • Original Ratings: [-1: 280, 0: 104, +1: 931]
-  • Verified Ratings: [-1: 0, 0: 25, +1: 1290]
+Conditional Transition Probabilities (by original rating):
+  Given original rating -1:
+    → To -1:    0/ 280 (  0.0%)
+    → To  0:    5/ 280 (  1.8%)
+    → To +1:  275/ 280 ( 98.2%)
+  Given original rating  0:
+    → To -1:    0/ 104 (  0.0%)
+    → To  0:    2/ 104 (  1.9%)
+    → To +1:  102/ 104 ( 98.1%)
+  Given original rating +1:
+    → To -1:    0/ 931 (  0.0%)
+    → To  0:   12/ 931 (  1.3%)
+    → To +1:  919/ 931 ( 98.7%)
 
-🔍 CROSS-VERSION COMPARISON:
-========================================
-🔥 Most asymmetric transitions: Version 1 (χ²=601974929.719)
-✅ Most symmetric transitions: Version 3 (χ²=580347421.563)
+Marginal Distributions:
+  Original ratings:  -1: 280, 0: 104, +1: 931
+  Verified ratings:  -1: 0, 0: 19, +1: 1296
 
-📊 SUMMARY STATISTICS:
-  • Versions with significant asymmetry: 5/5
-  • Asymmetric versions: Version 1, Version 2, Version 3, Version 4, Version 5
+Net Rating Changes:
+  Net flow to -1: -280
+  Net flow to  0: -85
+  Net flow to +1: +365
+  → Overall tendency: Ratings improve (positive bias)
 
-📈 RATING CHANGE PATTERNS:
-  Version 1:
-    • Improvements: 29.0% (382/1315)
-    • Degradations: 0.9% (12/1315)
-    • Stable: 70.0% (921/1315)
-  Version 2:
-    • Improvements: 28.9% (380/1315)
-    • Degradations: 1.3% (17/1315)
-    • Stable: 69.8% (918/1315)
-  Version 3:
-    • Improvements: 28.8% (379/1315)
-    • Degradations: 1.3% (17/1315)
-    • Stable: 69.9% (919/1315)
-  Version 4:
-    • Improvements: 29.0% (381/1315)
-    • Degradations: 1.0% (13/1315)
-    • Stable: 70.0% (921/1315)
-  Version 5:
-    • Improvements: 29.0% (381/1315)
-    • Degradations: 1.1% (15/1315)
-    • Stable: 69.9% (919/1315)
+Transition Patterns:
+  Improvements: 29.0% (382/1315)
+  Degradations: 0.9% (12/1315)
+  Unchanged:    70.0% (921/1315)
 
-⚖️  NET RATING CHANGES:
-------------------------------
-Version 1:
-  • Net change to -1: -280
-  • Net change to  0: -85
-  • Net change to +1: +365
-Version 2:
-  • Net change to -1: -280
-  • Net change to  0: -78
-  • Net change to +1: +358
-Version 3:
-  • Net change to -1: -280
-  • Net change to  0: -77
-  • Net change to +1: +357
-Version 4:
-  • Net change to -1: -280
-  • Net change to  0: -77
-  • Net change to +1: +357
-Version 5:
-  • Net change to -1: -280
-  • Net change to  0: -79
-  • Net change to +1: +359
 
-💡 KEY INSIGHTS:
-=========================
-🔄 MAJOR FINDING: Most versions show significant rating asymmetries
-   → Verification process systematically changes rating distributions
+VERSION 2
+─────────
+Sample size: 1315 transitions
+Stuart-Maxwell χ² statistic: 581899030.0864
+Degrees of freedom: 2
+P-value: 0.0000
+Significance: p < 0.001 (***)
+Interpretation: Highly significant evidence against marginal homogeneity
 
-🏆 Most balanced rating transitions: Version 3
-   → Lowest asymmetry score: 580347421.563
+Transition Matrix Details:
+  From -1 → To -1:    0   From -1 → To  0:    5   From -1 → To +1:  275
+  From  0 → To -1:    0   From  0 → To  0:    4   From  0 → To +1:  100
+  From +1 → To -1:    0   From +1 → To  0:   17   From +1 → To +1:  914
 
+Transition Percentages:
+  From -1 → To -1:    0 (  0.0%)
+  From -1 → To  0:    5 (  0.4%)
+  From -1 → To +1:  275 ( 20.9%)
+  From  0 → To -1:    0 (  0.0%)
+  From  0 → To  0:    4 (  0.3%)
+  From  0 → To +1:  100 (  7.6%)
+  From +1 → To -1:    0 (  0.0%)
+  From +1 → To  0:   17 (  1.3%)
+  From +1 → To +1:  914 ( 69.5%)
+
+Conditional Transition Probabilities (by original rating):
+  Given original rating -1:
+    → To -1:    0/ 280 (  0.0%)
+    → To  0:    5/ 280 (  1.8%)
+    → To +1:  275/ 280 ( 98.2%)
+  Given original rating  0:
+    → To -1:    0/ 104 (  0.0%)
+    → To  0:    4/ 104 (  3.8%)
+    → To +1:  100/ 104 ( 96.2%)
+  Given original rating +1:
+    → To -1:    0/ 931 (  0.0%)
+    → To  0:   17/ 931 (  1.8%)
+    → To +1:  914/ 931 ( 98.2%)
+
+Marginal Distributions:
+  Original ratings:  -1: 280, 0: 104, +1: 931
+  Verified ratings:  -1: 0, 0: 26, +1: 1289
+
+Net Rating Changes:
+  Net flow to -1: -280
+  Net flow to  0: -78
+  Net flow to +1: +358
+  → Overall tendency: Ratings improve (positive bias)
+
+Transition Patterns:
+  Improvements: 28.9% (380/1315)
+  Degradations: 1.3% (17/1315)
+  Unchanged:    69.8% (918/1315)
+
+
+VERSION 3
+─────────
+Sample size: 1315 transitions
+Stuart-Maxwell χ² statistic: 580347421.5625
+Degrees of freedom: 2
+P-value: 0.0000
+Significance: p < 0.001 (***)
+Interpretation: Highly significant evidence against marginal homogeneity
+
+Transition Matrix Details:
+  From -1 → To -1:    0   From -1 → To  0:    5   From -1 → To +1:  275
+  From  0 → To -1:    0   From  0 → To  0:    5   From  0 → To +1:   99
+  From +1 → To -1:    0   From +1 → To  0:   17   From +1 → To +1:  914
+
+Transition Percentages:
+  From -1 → To -1:    0 (  0.0%)
+  From -1 → To  0:    5 (  0.4%)
+  From -1 → To +1:  275 ( 20.9%)
+  From  0 → To -1:    0 (  0.0%)
+  From  0 → To  0:    5 (  0.4%)
+  From  0 → To +1:   99 (  7.5%)
+  From +1 → To -1:    0 (  0.0%)
+  From +1 → To  0:   17 (  1.3%)
+  From +1 → To +1:  914 ( 69.5%)
+
+Conditional Transition Probabilities (by original rating):
+  Given original rating -1:
+    → To -1:    0/ 280 (  0.0%)
+    → To  0:    5/ 280 (  1.8%)
+    → To +1:  275/ 280 ( 98.2%)
+  Given original rating  0:
+    → To -1:    0/ 104 (  0.0%)
+    → To  0:    5/ 104 (  4.8%)
+    → To +1:   99/ 104 ( 95.2%)
+  Given original rating +1:
+    → To -1:    0/ 931 (  0.0%)
+    → To  0:   17/ 931 (  1.8%)
+    → To +1:  914/ 931 ( 98.2%)
+
+Marginal Distributions:
+  Original ratings:  -1: 280, 0: 104, +1: 931
+  Verified ratings:  -1: 0, 0: 27, +1: 1288
+
+Net Rating Changes:
+  Net flow to -1: -280
+  Net flow to  0: -77
+  Net flow to +1: +357
+  → Overall tendency: Ratings improve (positive bias)
+
+Transition Patterns:
+  Improvements: 28.8% (379/1315)
+  Degradations: 1.3% (17/1315)
+  Unchanged:    69.9% (919/1315)
+
+
+VERSION 4
+─────────
+Sample size: 1315 transitions
+Stuart-Maxwell χ² statistic: 591683592.1041
+Degrees of freedom: 2
+P-value: 0.0000
+Significance: p < 0.001 (***)
+Interpretation: Highly significant evidence against marginal homogeneity
+
+Transition Matrix Details:
+  From -1 → To -1:    0   From -1 → To  0:   11   From -1 → To +1:  269
+  From  0 → To -1:    0   From  0 → To  0:    3   From  0 → To +1:  101
+  From +1 → To -1:    0   From +1 → To  0:   13   From +1 → To +1:  918
+
+Transition Percentages:
+  From -1 → To -1:    0 (  0.0%)
+  From -1 → To  0:   11 (  0.8%)
+  From -1 → To +1:  269 ( 20.5%)
+  From  0 → To -1:    0 (  0.0%)
+  From  0 → To  0:    3 (  0.2%)
+  From  0 → To +1:  101 (  7.7%)
+  From +1 → To -1:    0 (  0.0%)
+  From +1 → To  0:   13 (  1.0%)
+  From +1 → To +1:  918 ( 69.8%)
+
+Conditional Transition Probabilities (by original rating):
+  Given original rating -1:
+    → To -1:    0/ 280 (  0.0%)
+    → To  0:   11/ 280 (  3.9%)
+    → To +1:  269/ 280 ( 96.1%)
+  Given original rating  0:
+    → To -1:    0/ 104 (  0.0%)
+    → To  0:    3/ 104 (  2.9%)
+    → To +1:  101/ 104 ( 97.1%)
+  Given original rating +1:
+    → To -1:    0/ 931 (  0.0%)
+    → To  0:   13/ 931 (  1.4%)
+    → To +1:  918/ 931 ( 98.6%)
+
+Marginal Distributions:
+  Original ratings:  -1: 280, 0: 104, +1: 931
+  Verified ratings:  -1: 0, 0: 27, +1: 1288
+
+Net Rating Changes:
+  Net flow to -1: -280
+  Net flow to  0: -77
+  Net flow to +1: +357
+  → Overall tendency: Ratings improve (positive bias)
+
+Transition Patterns:
+  Improvements: 29.0% (381/1315)
+  Degradations: 1.0% (13/1315)
+  Unchanged:    70.0% (921/1315)
+
+
+VERSION 5
+─────────
+Sample size: 1315 transitions
+Stuart-Maxwell χ² statistic: 588309587.4211
+Degrees of freedom: 2
+P-value: 0.0000
+Significance: p < 0.001 (***)
+Interpretation: Highly significant evidence against marginal homogeneity
+
+Transition Matrix Details:
+  From -1 → To -1:    0   From -1 → To  0:    7   From -1 → To +1:  273
+  From  0 → To -1:    0   From  0 → To  0:    3   From  0 → To +1:  101
+  From +1 → To -1:    0   From +1 → To  0:   15   From +1 → To +1:  916
+
+Transition Percentages:
+  From -1 → To -1:    0 (  0.0%)
+  From -1 → To  0:    7 (  0.5%)
+  From -1 → To +1:  273 ( 20.8%)
+  From  0 → To -1:    0 (  0.0%)
+  From  0 → To  0:    3 (  0.2%)
+  From  0 → To +1:  101 (  7.7%)
+  From +1 → To -1:    0 (  0.0%)
+  From +1 → To  0:   15 (  1.1%)
+  From +1 → To +1:  916 ( 69.7%)
+
+Conditional Transition Probabilities (by original rating):
+  Given original rating -1:
+    → To -1:    0/ 280 (  0.0%)
+    → To  0:    7/ 280 (  2.5%)
+    → To +1:  273/ 280 ( 97.5%)
+  Given original rating  0:
+    → To -1:    0/ 104 (  0.0%)
+    → To  0:    3/ 104 (  2.9%)
+    → To +1:  101/ 104 ( 97.1%)
+  Given original rating +1:
+    → To -1:    0/ 931 (  0.0%)
+    → To  0:   15/ 931 (  1.6%)
+    → To +1:  916/ 931 ( 98.4%)
+
+Marginal Distributions:
+  Original ratings:  -1: 280, 0: 104, +1: 931
+  Verified ratings:  -1: 0, 0: 25, +1: 1290
+
+Net Rating Changes:
+  Net flow to -1: -280
+  Net flow to  0: -79
+  Net flow to +1: +359
+  → Overall tendency: Ratings improve (positive bias)
+
+Transition Patterns:
+  Improvements: 29.0% (381/1315)
+  Degradations: 1.1% (15/1315)
+  Unchanged:    69.9% (919/1315)
+
+
+CROSS-VERSION COMPARISON
+--------------------------------------------------
+Version Rankings (by asymmetry level, low to high):
+  1. Version 3: χ² = 580347421.563 (Asymmetric)
+  2. Version 2: χ² = 581899030.086 (Asymmetric)
+  3. Version 5: χ² = 588309587.421 (Asymmetric)
+  4. Version 4: χ² = 591683592.104 (Asymmetric)
+  5. Version 1: χ² = 601974929.719 (Asymmetric)
+
+Most balanced transitions: Version 3
+  χ² = 580347421.563, p = 0.0000
+
+Most asymmetric transitions: Version 1
+  χ² = 601974929.719, p = 0.0000
+
+Effect Sizes (Cramér's V approximation):
+  Version 3: 469.749 (Large)
+  Version 2: 470.377 (Large)
+  Version 5: 472.961 (Large)
+  Version 4: 474.315 (Large)
+  Version 1: 478.422 (Large)
+
+STATISTICAL INTERPRETATION GUIDE
+--------------------------------------------------
+Stuart-Maxwell Test:
+  H₀: Marginal distributions are homogeneous (no systematic bias)
+  H₁: Marginal distributions are not homogeneous (systematic bias exists)
+
+Significance Levels:
+  p < 0.001 (***): Highly significant evidence of bias
+  p < 0.01  (**):  Strong evidence of bias
+  p < 0.05  (*):   Significant evidence of bias
+  p ≥ 0.05  (ns):  No significant evidence of bias
+
+Effect Size Interpretation (Cramér's V):
+  < 0.1: Negligible effect
+  0.1-0.3: Small effect
+  0.3-0.5: Medium effect
+  > 0.5: Large effect
+
+PRACTICAL IMPLICATIONS
+--------------------------------------------------
+RECOMMENDATION: SYSTEMATIC BIAS CORRECTION NEEDED
+• Multiple versions show significant rating asymmetries
+• Consider implementing bias correction mechanisms
+• Investigate root causes of systematic rating shifts
+• Use Version 3 as benchmark for balanced transitions
+
+Quality Assurance Guidelines:
+• Monitor transition matrices regularly for bias development
+• Set up alerts for p-values < 0.05 in production systems
+• Consider periodic recalibration if systematic bias emerges
+• Use Version 3 configuration as the gold standard
+
+================================================================================
+END OF STUART-MAXWELL TEST ANALYSIS REPORT
+================================================================================
 
 ======================================================================
 🏆 COMPREHENSIVE VERSION RANKING ANALYSIS
@@ -272,44 +511,3 @@ Version 5:
   Success Rate: 100.0% [100.0%, 100.0%]
   Processing Time: 327053.2ms [257319.5ms, 396787.0ms]
 
-🎯 ACTIONABLE RECOMMENDATIONS:
-==================================================
-
-🏆 METRIC CHAMPIONS:
-  • Success Rate: Version 1 (100.0/100)
-  • Accuracy Improvement: Version 4 (100.0/100)
-  • Processing Speed: Version 1 (100.0/100)
-  • Token Efficiency: Version 2 (100.0/100)
-  • Rating Improvement: Version 1 (100.0/100)
-
-🔍 IMPROVEMENT OPPORTUNITIES:
-  • Version 1: Improve token efficiency (current: 0.0/100)
-  • Version 2: Improve processing speed (current: 17.0/100)
-  • Version 3: Improve processing speed (current: 11.2/100)
-  • Version 4: Improve rating improvement (current: 0.0/100)
-  • Version 5: Improve accuracy improvement (current: 0.0/100)
-
-💡 VERSION-SPECIFIC INSIGHTS:
-  • Version 1: Very high reliability, Slow processing, Low token efficiency
-  • Version 2: Very high reliability, Slow processing, Low token efficiency
-  • Version 3: Very high reliability, Slow processing, Low token efficiency
-  • Version 4: Very high reliability, Slow processing, Low token efficiency
-  • Version 5: Very high reliability, Slow processing, Low token efficiency
-
-📋 FINAL RECOMMENDATIONS:
-1. 🥇 ADOPT BEST PRACTICES: Version 1 achieved the highest overall score (66.3/100)
-2. 🎯 ACCURACY FOCUS: Adopt Version 4's verification strategies
-3. ⚡ SPEED OPTIMIZATION: Learn from Version 1's processing optimizations
-4. 💰 COST OPTIMIZATION: Implement Version 2's token efficiency techniques
-5. 📈 Version 1 FOCUS: Prioritize token efficiency improvements
-6. 📈 Version 2 FOCUS: Prioritize processing speed improvements
-7. 📈 Version 3 FOCUS: Prioritize processing speed improvements
-8. 📈 Version 4 FOCUS: Prioritize rating improvement improvements
-9. 📈 Version 5 FOCUS: Prioritize accuracy improvement improvements
-
-🚀 STRATEGIC RECOMMENDATIONS:
-1. 🔄 Implement A/B testing framework to continuously evaluate version performance
-2. 📊 Set up monitoring dashboards to track key metrics in real-time
-3. 🎯 Focus development efforts on the weakest performing metrics
-4. 🔬 Conduct detailed analysis of failure cases to improve reliability
-5. 💰 Optimize token usage based on best-performing version's strategies
