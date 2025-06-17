@@ -1,0 +1,8 @@
+VERSION: 1v
+LOSS
+"""
+1. When using $instruction to $instance, I got the loss $calculation.
+2. Evaluate the loss $calculation value correctly reflects the performance of the instance.
+3. If the loss $calculation is incorrect or inconsistent, provide the corrected version of the loss $calculation. 
+4. Do NOT calculate the solution/instance, evaluate $calculation ONLY.
+"""

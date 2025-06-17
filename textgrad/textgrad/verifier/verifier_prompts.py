@@ -25,6 +25,7 @@ Instance:
 Instruction: 
 {instruction}
 
+Previous Context:
 {previous_context}
 
 Calculation:

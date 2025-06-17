@@ -1,0 +1,84 @@
+VERSION: 1v
+OPTIMIZER
+# Perspective 1: Rule-based verifier (objective, procedural)
+"""
+Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
+If the step violates any algebraic or logical principle, replace it with the corrected version of that step only. 
+Do not proceed to solve the full problem.
+Please proceed output with 
+""",
+
+VERSION: 3v
+OPTIMIZER
+# Perspective 1: Rule-based verifier (objective, procedural)
+"""
+Evaluate the calculation step strictly based on mathematical correctness and procedural rules. 
+If the step violates any algebraic or logical principle, replace it with the corrected version of that step only. 
+Do not proceed to solve the full problem.
+Please proceed output with 
+""",
+
+# Perspective 2: Teaching assistant (didactic, pedagogical)
+"""
+Review the calculation step from the perspective of a teaching assistant helping a student learn. 
+If there's an error or suboptimal explanation, provide a corrected version that would best aid the student's understanding. 
+Focus only on the step in question, without solving the full problem.
+""",
+
+# Perspective 3: Exam grader (concise, evaluative)
+"""
+Assess the calculation step as an exam grader would when evaluating a student's solution. 
+Identify whether the step is mathematically valid and aligns with standard problem-solving conventions. 
+If incorrect, rewrite only the flawed step to reflect what a student should have written to receive full credit. 
+Avoid expanding beyond the current step or solving the entire problem.
+""",
+
+VERSION: 1v Domain Spesific (mmlu-ml)
+# Perspective 1: Rule-based verifier (objective, procedural)
+"""
+You are a rule-based verifier evaluating a single reasoning step within a solution to a machine learning question. Your task is to assess whether this step is:
+
+1. Mathematically and statistically correct,
+2. Consistent with core principles of machine learning (e.g., definitions, algorithms, assumptions),
+3. Logically sound given the preceding context.
+
+If the step contains a technical, conceptual, or procedural mistake, rewrite **only that specific step** with a corrected version.  
+Do **not** rewrite the entire solution or explain your reasoning unless prompted.  
+Do **not** attempt to continue solving the problem.
+
+Please return only one of the following outputs:
+- If the step is **correct**, return the **existing version* of that step.
+- If the step is **incorrect**, return the **corrected version** of that step.
+
+This prompt is designed for technical verification, not subjective interpretation or rewording.
+
+Proceed with output:
+""",
+
+VERSION: 1v Longer
+# General Perspective: Rule-based verifier (cross-domain, focused, corrective)
+"""
+Carefully analyze the provided step from a solution in the context of its domain (e.g., mathematics, physics, chemistry, or machine learning).
+
+Your task is to:
+- Verify whether the step follows the domain-specific principles, rules, or logic (e.g., mathematical correctness, scientific laws, statistical validity).
+- If there is a mistake in reasoning, computation, formula usage, or logical inference, provide a corrected version of **only that step**.
+- Do not attempt to solve the full problem or make assumptions about future steps.
+- Be concise and objective in your correction.
+
+Output format:
+If the step is correct:
+Correct Step: [repeat the step as is]
+
+If the step is incorrect:
+Original Step: [copy the original step]
+Corrected Step: [provide the corrected version]
+"""
+
+VERSION: 1v Using Variables
+"""
+1. When using $instruction to $instance, I got $previous context and now in the stage of $calculation.
+2. Evaluate the $calculation value correctly reflects the performance of the instance.
+3. If the $calculation is incorrect or inconsistent, provide the corrected version of the $calculation. 
+4. Do NOT calculate the solution/instance, evaluate $calculation ONLY.
+"""
