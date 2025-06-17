@@ -1,0 +1,220 @@
+=== TextGrad + TextualVerifier Experiment Analysis ===
+Comparing 6 different configurations:
+
+1. textgrad-only: Basic TextGrad optimization
+2. textgrad-tv-l: TextGrad + TextualVerifier for Loss only
+3. textgrad-tv-o: TextGrad + TextualVerifier for Optimizer
+6. textgrad-tv-lo: TextGrad + TextualVerifier for Loss + Optimizer
+
+IMPORTANT: Success Rate => means no error while processing data.
+
+================================================================================
+SOURCE-SPECIFIC ANALYSIS
+================================================================================
+
+--- GPQA-Diamond Dataset ---
+
+textgrad-only:
+  • Samples: 198
+  • Success rate: 100.0%
+  • Overall accuracy: 53.0%
+  • Avg LLM calls: 0.0
+  • Avg processing time: 0.0ms
+
+textgrad-tv-l:
+  • Samples: 198
+  • Success rate: 100.0%
+  • Overall accuracy: 55.1%
+  • Avg LLM calls: 6.9
+  • Avg processing time: 16440.7ms
+
+textgrad-tv-o:
+  • Samples: 198
+  • Success rate: 100.0%
+  • Overall accuracy: 55.1%
+  • Avg LLM calls: 10.4
+  • Avg processing time: 95.0ms
+
+textgrad-tv-lo:
+  • Samples: 198
+  • Success rate: 100.0%
+  • Overall accuracy: 57.1%
+  • Avg LLM calls: 17.1
+  • Avg processing time: 42926.5ms
+
+--- MMLU-ML Dataset ---
+
+textgrad-only:
+  • Samples: 112
+  • Success rate: 100.0%
+  • Overall accuracy: 77.7%
+  • Avg LLM calls: 0.0
+  • Avg processing time: 0.0ms
+
+textgrad-tv-l:
+  • Samples: 112
+  • Success rate: 100.0%
+  • Overall accuracy: 80.4%
+  • Avg LLM calls: 5.4
+  • Avg processing time: 9128.7ms
+
+textgrad-tv-o:
+  • Samples: 112
+  • Success rate: 100.0%
+  • Overall accuracy: 58.9%
+  • Avg LLM calls: 8.7
+  • Avg processing time: 41.4ms
+
+textgrad-tv-lo:
+  • Samples: 112
+  • Success rate: 100.0%
+  • Overall accuracy: 62.5%
+  • Avg LLM calls: 13.9
+  • Avg processing time: 26284.0ms
+
+--- MMLU-CP Dataset ---
+
+textgrad-only:
+  • Samples: 102
+  • Success rate: 100.0%
+  • Overall accuracy: 87.3%
+  • Avg LLM calls: 0.0
+  • Avg processing time: 0.0ms
+
+textgrad-tv-l:
+  • Samples: 102
+  • Success rate: 100.0%
+  • Overall accuracy: 89.2%
+  • Avg LLM calls: 4.3
+  • Avg processing time: 6305.1ms
+
+textgrad-tv-o:
+  • Samples: 102
+  • Success rate: 100.0%
+  • Overall accuracy: 91.2%
+  • Avg LLM calls: 8.9
+  • Avg processing time: 41.0ms
+
+textgrad-tv-lo:
+  • Samples: 102
+  • Success rate: 100.0%
+  • Overall accuracy: 92.2%
+  • Avg LLM calls: 12.8
+  • Avg processing time: 20547.4ms
+
+============================================================
+GPQA-Diamond SUMMARY TABLE
+============================================================
+                success_rate  accuracy_overall  avg_llm_calls  avg_processing_time  avg_total_tokens
+textgrad-only            1.0             0.530          0.000                0.000             0.000
+textgrad-tv-l            1.0             0.551          6.944            16440.708          4990.889
+textgrad-tv-o            1.0             0.551         10.429               95.021         10051.682
+textgrad-tv-lo           1.0             0.571         17.056            42926.508         14130.747
+
+============================================================
+MMLU-ML SUMMARY TABLE
+============================================================
+                success_rate  accuracy_overall  avg_llm_calls  avg_processing_time  avg_total_tokens
+textgrad-only            1.0             0.777          0.000                0.000             0.000
+textgrad-tv-l            1.0             0.804          5.357             9128.660          2573.286
+textgrad-tv-o            1.0             0.589          8.705               41.375          5776.839
+textgrad-tv-lo           1.0             0.625         13.920            26283.964          7845.777
+
+============================================================
+MMLU-CP SUMMARY TABLE
+============================================================
+                success_rate  accuracy_overall  avg_llm_calls  avg_processing_time  avg_total_tokens
+textgrad-only            1.0             0.873          0.000                0.000             0.000
+textgrad-tv-l            1.0             0.892          4.294             6305.110          1973.157
+textgrad-tv-o            1.0             0.912          8.882               40.981          5466.794
+textgrad-tv-lo           1.0             0.922         12.755            20547.399          6758.049
+
+
+================================================================================
+DETAILED METRICS TABLE - OVERALL
+================================================================================
+        Method  Total Samples Success Rate Overall Accuracy Accuracy (Success Only) Avg LLM Calls Median LLM Calls Avg Processing Time (ms) Avg Input Tokens Avg Output Tokens Avg Total Tokens
+ textgrad-only            412       100.0%            68.2%                   68.2%           0.0              0.0                      0.0                0                 0                0
+ textgrad-tv-l            412       100.0%            70.4%                   70.4%           5.9              6.0                  11943.7             3330               256             3587
+ textgrad-tv-o            412       100.0%            65.0%                   65.0%           9.6              8.0                     67.1             7300               454             7754
+textgrad-tv-lo            412       100.0%            67.2%                   67.2%          15.1             14.0                  32861.9             9944               653            10597
+
+================================================================================
+DETAILED METRICS TABLE - GPQA-Diamond
+================================================================================
+        Method  Total Samples Success Rate Overall Accuracy Accuracy (Success Only) Avg LLM Calls Avg Processing Time (ms) Avg Total Tokens
+ textgrad-only            198       100.0%            53.0%                   53.0%           0.0                      0.0                0
+ textgrad-tv-l            198       100.0%            55.1%                   55.1%           6.9                  16440.7             4991
+ textgrad-tv-o            198       100.0%            55.1%                   55.1%          10.4                     95.0            10052
+textgrad-tv-lo            198       100.0%            57.1%                   57.1%          17.1                  42926.5            14131
+
+================================================================================
+DETAILED METRICS TABLE - MMLU-ML
+================================================================================
+        Method  Total Samples Success Rate Overall Accuracy Accuracy (Success Only) Avg LLM Calls Avg Processing Time (ms) Avg Total Tokens
+ textgrad-only            112       100.0%            77.7%                   77.7%           0.0                      0.0                0
+ textgrad-tv-l            112       100.0%            80.4%                   80.4%           5.4                   9128.7             2573
+ textgrad-tv-o            112       100.0%            58.9%                   58.9%           8.7                     41.4             5777
+textgrad-tv-lo            112       100.0%            62.5%                   62.5%          13.9                  26284.0             7846
+
+================================================================================
+DETAILED METRICS TABLE - MMLU-CP
+================================================================================
+        Method  Total Samples Success Rate Overall Accuracy Accuracy (Success Only) Avg LLM Calls Avg Processing Time (ms) Avg Total Tokens
+ textgrad-only            102       100.0%            87.3%                   87.3%           0.0                      0.0                0
+ textgrad-tv-l            102       100.0%            89.2%                   89.2%           4.3                   6305.1             1973
+ textgrad-tv-o            102       100.0%            91.2%                   91.2%           8.9                     41.0             5467
+textgrad-tv-lo            102       100.0%            92.2%                   92.2%          12.8                  20547.4             6758
+
+================================================================================
+ANALYSIS & RECOMMENDATIONS
+================================================================================
+
+🏆 OVERALL BEST PERFORMERS:
+  • Highest Overall Accuracy: textgrad-tv-l (70.4%)
+  • Most Efficient (fewest LLM calls): textgrad-tv-l (5.9 calls)
+  • Fastest Processing: textgrad-only (0.0ms)
+
+🎯 BEST PERFORMERS BY DATASET:
+
+--- GPQA-Diamond ---
+  • Highest Accuracy: textgrad-tv-lo (57.1%)
+  • Most Efficient: textgrad-tv-l (6.9 calls)
+  • Fastest: textgrad-only (0.0ms)
+  • Best Efficiency Score: textgrad-tv-l (0.079)
+
+--- MMLU-ML ---
+  • Highest Accuracy: textgrad-tv-l (80.4%)
+  • Most Efficient: textgrad-tv-l (5.4 calls)
+  • Fastest: textgrad-only (0.0ms)
+  • Best Efficiency Score: textgrad-tv-l (0.150)
+
+--- MMLU-CP ---
+  • Highest Accuracy: textgrad-tv-lo (92.2%)
+  • Most Efficient: textgrad-tv-l (4.3 calls)
+  • Fastest: textgrad-only (0.0ms)
+  • Best Efficiency Score: textgrad-tv-l (0.208)
+
+📊 KEY INSIGHTS:
+  • TextualVerifier Impact:
+    - Accuracy: TV methods 67.6% vs Non-TV 68.2%
+    - LLM Calls: TV methods 10.2 vs Non-TV 0.0
+  • Loss-only TextualVerifier: 68.8% accuracy
+  • Optimizer-only TextualVerifier: 65.0% accuracy
+  • Combined Loss+Optimizer TextualVerifier: 67.2% accuracy
+
+💡 RECOMMENDATIONS:
+  1. For best accuracy: Use textgrad-tv-l
+  2. For efficiency: Use textgrad-tv-l (good accuracy with fewer LLM calls)
+  3. For speed: Use textgrad-only (fastest processing)
+
+📋 METHODOLOGY INSIGHTS:
+  • TextualVerifier (TV) adds verification layers to TextGrad optimization
+  • 'L' variants verify loss calculations
+  • 'O' variants verify optimizer steps
+  • 'LO' variants verify both loss and optimizer
+  • Multiple variants (1v vs 3v) test robustness through repetition
+
+================================================================================
+Analysis Complete!
+================================================================================
