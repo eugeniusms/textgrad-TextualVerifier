@@ -1,0 +1,110 @@
+TextGrad Only
+
+Source
+Zero-shot (%)
+Final (%)
+Majority (%)
+GPQA-Diamond
+51.01
+51.01
+58.59
+MMLU-ML
+76.79
+79.46
+83.93
+MMLU-CP
+91.18
+94.12
+97.06
+Combined
+67.96
+69.42
+75.00
+
+TextGrad + TextualVerifierV1
+Source
+Zero-shot (%)
+Final (%)
+Majority (%)
+GPQA-Diamond
+56.06
+59.60
+61.11
+MMLU-ML
+74.11
+75.89
+78.57
+MMLU-CP
+95.10
+89.22
+94.12
+Combined
+70.63
+71.36
+74.03
+
+TextGrad + TextualVerifierV2
+Source
+Zero-shot (%)
+Final (%)
+Majority (%)
+GPQA-Diamond
+56.57
+56.57
+59.09
+MMLU-ML
+83.93
+81.25
+85.71
+MMLU-CP
+94.12
+96.08
+96.08
+Combined
+73.30
+73.06
+75.49
+
+TextGrad + TextualVerifierV3
+Source
+Zero-shot (%)
+Final (%)
+Majority (%)
+GPQA-Diamond
+59.09
+60.10
+60.61
+MMLU-ML
+87.50
+80.36
+83.04
+MMLU-CP
+92.16
+91.18
+93.14
+Combined
+73.30
+73.30
+74.76
+
+TextGrad + TextualVerifierV4
+Source
+Zero-shot (%)
+Final (%)
+Majority (%)
+GPQA-Diamond
+52.02
+51.52
+55.56
+MMLU-ML
+82.14
+76.79
+83.04
+MMLU-CP
+88.24
+92.16
+95.10
+Combined
+69.17
+68.45
+72.82
